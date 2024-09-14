@@ -1,0 +1,33 @@
+.login-logo {
+    text-align: center;
+    margin-top: 50px;
+  }
+  
+  ion-button {
+    margin-top: 30px;
+    --background: #b18b2d; /* Color mostaza para el botón */
+    --background-activated: #ceab44; /* Color cuando se presiona */
+    --background-focused: #a18739; /* Color cuando está enfocado */
+    color: #fff; /* Texto blanco */
+  }
+  
+  
+  ion-content {
+    --background: #1A3D5D; 
+  }
+  
+  ion-item {
+    --background: #1A3D5D; /* Un color claro para las casillas */
+    --color: #ffffff; /* Texto en negro */
+    --border-color: #b4ab24; /* Color del borde */
+  }
+  
+  ion-label {
+    --color-focused: #888; /* Color del texto cuando se enfoca */
+    --color: #555; /* Color del texto en estado normal */
+  }
+  
+  ion-input {
+    color: #000; /* Asegura que el texto del input sea negro */
+  }
+  

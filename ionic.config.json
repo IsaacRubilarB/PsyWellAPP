@@ -1,0 +1,7 @@
+{
+  "name": "PsyWell",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

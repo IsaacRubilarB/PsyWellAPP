@@ -1,0 +1,50 @@
+  <!-- Logo centrado -->
+  <div class="logo-container">
+    <img src="assets/logo1.png" alt="PsyWell Logo" class="small-logo" />
+  </div>
+  
+<ion-content>
+  <div class="profile-info">
+    <ion-avatar>
+      <img src="assets/profile.jpg" alt="User Profile">
+    </ion-avatar>
+    <div class="user-details">
+      <h2>Cristopher Soto</h2>
+      <p>Depresión</p>
+      <p>25 Años</p>
+    </div>
+  </div>
+
+  <div class="summary">
+    <h3>Resumen emocional / fisiológico</h3>
+    <div class="stats">
+      <div class="chart">
+        <!-- Aquí puedes añadir el gráfico con los datos reales -->
+        <p>Gráfico de resumen emocional/fisiológico</p>
+      </div>
+      <div class="stress-level">
+        <h4>Nivel de Estrés: <!-- Aquí irá el dato dinámico del estrés --> </h4>
+      </div>
+    </div>
+  </div>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-segment>
+      <!-- Botón de registrar emociones -->
+      <ion-segment-button [ngClass]="{'active-segment': currentSegment === 'registrar-emociones'}" (click)="navigateTo('/registrar-emociones')">
+        <img src="assets/emotes/calendario.svg" alt="Registrar emociones" class="nav-icon" />
+      </ion-segment-button>
+      <!-- Botón de home -->
+      <ion-segment-button [ngClass]="{'active-segment': currentSegment === 'home'}" (click)="navigateTo('/home')">
+        <img src="assets/emotes/home.svg" alt="Home" class="nav-icon" />
+      </ion-segment-button>
+      <!-- Botón de ver registros -->
+      <ion-segment-button [ngClass]="{'active-segment': currentSegment === 'ver-registros'}" (click)="navigateTo('/ver-registros')">
+        <img src="assets/emotes/informe.svg" alt="Ver registros" class="nav-icon" />
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-footer>
+

@@ -1,0 +1,71 @@
+/* Fondo azul oscuro */
+ion-content {
+  --background: #1A3D5D; /* Fondo general azul oscuro */
+}
+
+/* Logo centrado y más pequeño */
+.logo-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.small-logo {
+  width: 150px;
+}
+
+/* Centrar el texto */
+.center-text {
+  text-align: center;
+  color: #fff;
+}
+
+/* Estilos para el resumen de emociones */
+.emotion-summary {
+  display: flex;
+  justify-content: space-around;
+  margin: 20px 0;
+}
+
+.emotion-count {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #fff;
+}
+
+.emotion-summary-icon {
+  width: 60px;
+  height: 60px;
+}
+
+/* Estilos para la lista de registros emocionales */
+ion-list {
+  margin-top: 20px;
+  background-color: transparent !important; /* Asegurarse de que el fondo sea transparente */
+}
+
+ion-item {
+  --background: #F4D03F; /* Fondo amarillo suave */
+  --color: #000; /* Texto negro */
+  margin: 10px 0;
+  border-radius: 8px;
+  --inner-border-width: 0px; /* Eliminar cualquier borde adicional */
+  --box-shadow: none; /* Eliminar sombra que pueda estar causando el fondo oscuro */
+}
+
+/* Barra de navegación */
+ion-footer {
+  --background: #1A3D5D;
+}
+
+ion-segment {
+  display: flex;
+  justify-content: space-around;
+}
+
+/* Estilos para los iconos de la barra de navegación */
+.nav-icon {
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+}
