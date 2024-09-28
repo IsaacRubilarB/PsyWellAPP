@@ -1,0 +1,137 @@
+/* Fondo azul oscuro */
+ion-content {
+    --background: #0878c2;
+    padding: 15px; /* Mantener el padding uniforme en todas las páginas */
+  }
+  
+  /* Logo centrado y más pequeño */
+  .logo-container {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .small-logo {
+    width: 150px; /* Mismo tamaño del logo en todas las páginas */
+  }
+  
+  /* Texto centrado */
+  .center-text {
+    text-align: center;
+    color: #fff;
+    font-size: 24px;
+    margin-bottom: 15px;
+    font-weight: bold;
+  }
+  
+  /* Secciones de tips */
+  .sound-section, .breathing-section {
+    background-color: #437ba0;
+    border-radius: 15px;
+    padding: 20px;
+    margin: 20px 0;
+    color: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .sound-section:hover, .breathing-section:hover {
+    transform: scale(1.02);
+  }
+  
+  /* Contenedor centrado para la respiración */
+  .breathing-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+  }
+  
+  /* Fondo del círculo de respiración */
+  .circle-background {
+    width: 320px;
+    height: 320px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(43, 66, 90, 0.5), rgba(0, 0, 0, 0.1));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Círculo interno de respiración */
+  .breathing-circle {
+    width: 160px;
+    height: 160px;
+    background-color: rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 4s ease-in-out, background-color 4s ease-in-out;
+  }
+  
+  .breathe-in {
+    transform: scale(1.6);
+    background-color: rgba(255, 255, 255, 0.7);
+  }
+  
+  .breathe-out {
+    transform: scale(1);
+    background-color: rgba(255, 255, 255, 0.4);
+  }
+  
+  /* Texto dentro del círculo */
+  .breath-text {
+    font-size: 28px;
+    font-weight: bold;
+    color: #fff;
+    text-align: center;
+  }
+  
+  /* Botón estilizado */
+  ion-button {
+    --background: #d4a017 !important;
+    --background-activated: #b3880c;
+    --background-focused: #b3880c;
+    color: #fff;
+    border-radius: 50px;
+    width: 100%;
+    height: 50px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  ion-button:hover {
+    transform: scale(1.05);
+  }
+  
+  /* Barra de navegación */
+  ion-footer {
+    --background: #083d5d;
+    border-top: 1px solid #ccc;
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.3);
+  }
+  
+  ion-segment {
+    display: flex;
+    justify-content: space-around;
+  }
+  
+  /* Iconos de la barra de navegación */
+  .nav-icon {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .nav-icon:active {
+    transform: scale(1.2);
+  }
+  
+  /* Resaltar el botón activo */
+  .active-segment {
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+    background-color: #ffffff20;
+    border-radius: 8px;
+  }
+  

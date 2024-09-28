@@ -5,7 +5,7 @@
   
   ion-button {
     margin-top: 30px;
-    --background: #b18b2d; /* Color mostaza para el botón */
+    --background: #bb9432; /* Color mostaza para el botón */
     --background-activated: #ceab44; /* Color cuando se presiona */
     --background-focused: #a18739; /* Color cuando está enfocado */
     color: #fff; /* Texto blanco */
@@ -13,17 +13,17 @@
   
   
   ion-content {
-    --background: #1A3D5D; 
+    --background: #0878c2; 
   }
   
   ion-item {
-    --background: #1A3D5D; /* Un color claro para las casillas */
+    --background: #658baf; /* Un color claro para las casillas */
     --color: #ffffff; /* Texto en negro */
-    --border-color: #b4ab24; /* Color del borde */
+    --border-color: #000000; /* Color del borde */
   }
   
   ion-label {
-    --color-focused: #888; /* Color del texto cuando se enfoca */
+    --color-focused: #4d4646; /* Color del texto cuando se enfoca */
     --color: #555; /* Color del texto en estado normal */
   }
   

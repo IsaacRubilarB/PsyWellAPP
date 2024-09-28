@@ -11,8 +11,14 @@ export class HomePage {
 
   constructor(private router: Router) { }
 
+  // Función de navegación genérica
   navigateTo(path: string) {
     this.router.navigate([path]);
     this.currentSegment = path.substring(1); // Actualiza el segmento activo
+  }
+
+  // Función específica para navegar a la página de ajustes
+  navigateToAjustes() {
+    this.router.navigate(['/ajustes']);
   }
 }

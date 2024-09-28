@@ -10,19 +10,19 @@
   <!-- Escala de emociones con los SVG como botones -->
   <div class="emotion-scale">
     <div class="emotion-container" [ngClass]="{'selected': selectedEmotion === 'very-angry'}">
-      <img src="assets/emotes/enojado.svg" alt="Very Angry" class="emotion-icon" (click)="selectEmotion('very-angry')"/>
+      <img src="assets/emotes/enojado.svg" alt="Very Angry" class="emotion-icon" (click)="selectEmotion('very-angry')" />
     </div>
     <div class="emotion-container" [ngClass]="{'selected': selectedEmotion === 'angry'}">
-      <img src="assets/emotes/triste.svg" alt="Angry" class="emotion-icon" (click)="selectEmotion('angry')"/>
+      <img src="assets/emotes/triste.svg" alt="Angry" class="emotion-icon" (click)="selectEmotion('angry')" />
     </div>
     <div class="emotion-container" [ngClass]="{'selected': selectedEmotion === 'neutral'}">
-      <img src="assets/emotes/normal.svg" alt="Neutral" class="emotion-icon" (click)="selectEmotion('neutral')"/>
+      <img src="assets/emotes/normal.svg" alt="Neutral" class="emotion-icon" (click)="selectEmotion('neutral')" />
     </div>
     <div class="emotion-container" [ngClass]="{'selected': selectedEmotion === 'happy'}">
-      <img src="assets/emotes/feliz.svg" alt="Happy" class="emotion-icon" (click)="selectEmotion('happy')"/>
+      <img src="assets/emotes/feliz.svg" alt="Happy" class="emotion-icon" (click)="selectEmotion('happy')" />
     </div>
     <div class="emotion-container" [ngClass]="{'selected': selectedEmotion === 'very-happy'}">
-      <img src="assets/emotes/espectacular.svg" alt="Very Happy" class="emotion-icon" (click)="selectEmotion('very-happy')"/>
+      <img src="assets/emotes/espectacular.svg" alt="Very Happy" class="emotion-icon" (click)="selectEmotion('very-happy')" />
     </div>
   </div>
 
@@ -40,13 +40,18 @@
   <!-- Recordatorio de toma de pastillas -->
   <ion-item lines="none" class="toggle-medication">
     <ion-avatar slot="start">
-      <img src="assets/emotes/pastilla.svg" alt="Recordatorio de pastilla" class="pill-icon"/>
+      <img src="assets/emotes/pastilla.svg" alt="Recordatorio de pastilla" class="pill-icon" />
     </ion-avatar>
     <ion-label>Recordar tomar pastilla</ion-label>
     <ion-toggle [(ngModel)]="remindMedication"></ion-toggle>
   </ion-item>
-</ion-content>
 
+  <!-- Gratificación emocional -->
+  <div *ngIf="showGratification" class="gratification-overlay" (click)="closeOverlay()">
+    <img [src]="'assets/image.registro/' + getEmotionImage(sexoPaciente, selectedEmotion)" class="gratification-image" alt="Gratificación emocional" />
+    <span class="close-button" (click)="closeOverlay()">✖</span>
+  </div>
+</ion-content>
 
 <ion-footer>
   <ion-toolbar>
@@ -59,10 +64,11 @@
       <ion-segment-button [ngClass]="{'active-segment': currentSegment === 'home'}" (click)="navigateTo('/home')">
         <img src="assets/emotes/home.svg" alt="Home" class="nav-icon" />
       </ion-segment-button>
-      <!-- Botón de ver registros -->
-      <ion-segment-button [ngClass]="{'active-segment': currentSegment === 'ver-registros'}" (click)="navigateTo('/ver-registros')">
-        <img src="assets/emotes/informe.svg" alt="Ver registros" class="nav-icon" />
+      <!-- Botón de tips -->
+      <ion-segment-button [ngClass]="{'active-segment': currentSegment === 'tips'}" (click)="navigateTo('/tips')">
+        <img src="assets/emotes/tips.svg" alt="Tips" class="nav-icon" />
       </ion-segment-button>
     </ion-segment>
   </ion-toolbar>
 </ion-footer>
+

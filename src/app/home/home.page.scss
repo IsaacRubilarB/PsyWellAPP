@@ -1,24 +1,41 @@
 /* Fondo azul oscuro */
 ion-content {
-  --background: #1A3D5D;
+  --background: #0878c2;
+}
+
+/* Contenedor del encabezado */
+.header-container {
+  display: flex;
+  justify-content: space-between; /* Espacio entre logo y botón de ajustes */
+  align-items: center;
+  padding: 10px 20px;
 }
 
 /* Logo centrado y más pequeño */
 .logo-container {
+  flex: 1; /* Para que el logo tome espacio disponible */
   text-align: center;
-  margin-top: 20px;
 }
 
 .small-logo {
   width: 150px;
 }
 
+/* Botón de ajustes */
+.settings-button {
+  color: #fff; /* Color del icono de ajustes */
+  font-size: 24px; /* Tamaño del icono */
+}
+
 /* Estilos para la información de perfil */
 .profile-info {
   display: flex;
   align-items: center;
-  padding: 20px;
+  padding: 15px 20px;
   background-color: #bb9f25;
+  border-radius: 10px;
+  margin: 10px 20px; /* Margen alrededor del perfil */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para dar profundidad */
 }
 
 ion-avatar {
@@ -27,11 +44,27 @@ ion-avatar {
 
 .user-details h2 {
   margin: 0;
-  font-size: 20px;
+  font-size: 22px;
+  color: #fff; /* Texto en blanco */
 }
 
+.user-details p {
+  margin: 2px 0; /* Espacio entre líneas */
+  color: #f9f9f9; /* Color de texto para detalles del usuario */
+}
+
+/* Resumen emocional / fisiológico */
 .summary {
   padding: 20px;
+  background-color: #ffffff20; /* Fondo ligeramente transparente */
+  margin: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para darle profundidad */
+}
+
+.summary h3 {
+  text-align: center;
+  color: #fff;
 }
 
 .chart {
@@ -40,11 +73,14 @@ ion-avatar {
   display: flex;
   justify-content: center;
   align-items: center;
+  border-radius: 10px;
+  margin-bottom: 20px;
 }
 
 .stress-level {
   margin-top: 20px;
   text-align: center;
+  color: #fff; /* Texto blanco para el nivel de estrés */
 }
 
 /* Estilos para los iconos de la navbar */
@@ -52,16 +88,25 @@ ion-avatar {
   width: 30px;
   height: 30px;
   cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.nav-icon:active {
+  transform: scale(1.2); /* Efecto de agrandamiento al presionar */
 }
 
 /* Resaltar el botón activo en la navbar */
 .active-segment {
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5); /* Efecto de sombra */
   background-color: #ffffff20; /* Fondo ligeramente transparente para el botón activo */
+  border-radius: 8px; /* Bordes redondeados */
 }
 
 /* Alinear los elementos de la barra de navegación */
 ion-segment {
   display: flex;
   justify-content: space-around;
+  background-color: #083d5d; /* Color de fondo de la barra de navegación */
+  padding: 5px 0;
+  border-top: 1px solid #ccc;
 }
