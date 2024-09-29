@@ -12,17 +12,41 @@
     <ion-button expand="block" (click)="playSound('bosque')">Bosque</ion-button>
   </div>
 
-  <!-- Ejercicios de Respiración con animación visual mejorada -->
+  <!-- Sección de Videos de Ayuda con Accordion -->
   <div class="breathing-section">
-    <h2 class="center-text">Ejercicios de Respiración</h2>
-    <div class="breathing-container">
-      <div class="circle-background">
-        <div class="breathing-circle" [ngClass]="{'breathe-in': isBreathingIn, 'breathe-out': !isBreathingIn}">
-          <div class="breath-text">{{ breathText }}</div>
-        </div>
-      </div>
+    <h2 class="center-text">Videos de ayuda</h2>
+
+    <!-- Título 1 -->
+    <ion-item button (click)="toggleVideo('video1')">
+      Ejercicios de Respiración
+    </ion-item>
+    <div *ngIf="showVideo === 'video1'">
+      <iframe width="100%" height="315" src="https://www.youtube.com/embed/Lt0dpOi-AOk" frameborder="0" allowfullscreen></iframe>
     </div>
-    <ion-button expand="block" (click)="startBreathing()">Comenzar</ion-button>
+
+    <!-- Título 2 -->
+    <ion-item button (click)="toggleVideo('video2')">
+      Técnicas de Meditación
+    </ion-item>
+    <div *ngIf="showVideo === 'video2'">
+      <iframe width="100%" height="315" src="https://www.youtube.com/embed/5y5sMjyPDog" frameborder="0" allowfullscreen></iframe>
+    </div>
+
+    <!-- Título 3 -->
+    <ion-item button (click)="toggleVideo('video3')">
+      Estiramientos para Relajar
+    </ion-item>
+    <div *ngIf="showVideo === 'video3'">
+      <iframe width="100%" height="315" src="https://www.youtube.com/embed/2L2lnxIcNmo" frameborder="0" allowfullscreen></iframe>
+    </div>
+
+    <!-- Título 4 -->
+    <ion-item button (click)="toggleVideo('video4')">
+      Mindfulness Básico
+    </ion-item>
+    <div *ngIf="showVideo === 'video4'">
+      <iframe width="100%" height="315" src="https://www.youtube.com/embed/w6T02g5hnT4" frameborder="0" allowfullscreen></iframe>
+    </div>
   </div>
 </ion-content>
 
@@ -39,7 +63,7 @@
       </ion-segment-button>
       <!-- Botón de tips -->
       <ion-segment-button [ngClass]="{'active-segment': currentSegment === 'tips'}" (click)="navigateTo('/tips')">
-        <img src="assets/emotes/tips.svg" alt="Tips" class="nav-icon" />
+        <img src="assets/emotes/tranquilidad.svg" alt="Tips" class="nav-icon" />
       </ion-segment-button>
     </ion-segment>
   </ion-toolbar>

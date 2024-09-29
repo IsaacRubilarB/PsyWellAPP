@@ -15,11 +15,18 @@ export class RegistrarEmocionesPage implements OnInit {
   gratificationClass: string = '';  // Clase para animaciones de gratificación
   sexoPaciente: string = 'hombre';  // Variable para determinar el sexo del paciente
 
+  // Lista de palabras clave para cada emoción
+  emotionKeywords: { [key: string]: string[] } = {
+    'very-angry': ['Discutí con alguien', 'Me siento frustrado', 'Tuve un mal día'],
+    'angry': ['Me siento decepcionado', 'Problemas en el trabajo'],
+    'neutral': ['Día normal', 'Todo tranquilo'],
+    'happy': ['Me hicieron un cumplido', 'Pasé tiempo con amigos', 'Tuve un buen día'],
+    'very-happy': ['Logré una meta', 'Recibí buenas noticias']
+  };
+
   constructor(private router: Router) {}
 
-  ngOnInit() {
-    // No necesitamos cargar nada aquí por ahora
-  }
+  ngOnInit() {}
 
   // Función para seleccionar la emoción y mostrar la gratificación
   selectEmotion(emotion: string) {
@@ -81,6 +88,11 @@ export class RegistrarEmocionesPage implements OnInit {
         break;
     }
     return imagePath;
+  }
+
+  // Obtener las palabras clave según la emoción seleccionada
+  getEmotionKeywords(emotion: string): string[] {
+    return this.emotionKeywords[emotion] || [];
   }
 
   // Función para cambiar el segmento activo y navegar

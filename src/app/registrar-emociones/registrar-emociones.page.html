@@ -26,6 +26,34 @@
     </div>
   </div>
 
+  <!-- Palabras clave relacionadas con la emoción seleccionada -->
+  <div *ngIf="selectedEmotion === 'very-angry'" class="emotion-keywords">
+    <ion-item button>Discutí con alguien</ion-item>
+    <ion-item button>Me siento frustrado</ion-item>
+    <ion-item button>Tuve un mal día</ion-item>
+  </div>
+
+  <div *ngIf="selectedEmotion === 'angry'" class="emotion-keywords">
+    <ion-item button>Me siento decepcionado</ion-item>
+    <ion-item button>Problemas en el trabajo</ion-item>
+  </div>
+
+  <div *ngIf="selectedEmotion === 'neutral'" class="emotion-keywords">
+    <ion-item button>Día normal</ion-item>
+    <ion-item button>Todo tranquilo</ion-item>
+  </div>
+
+  <div *ngIf="selectedEmotion === 'happy'" class="emotion-keywords">
+    <ion-item button>Me hicieron un cumplido</ion-item>
+    <ion-item button>Pasé tiempo con amigos</ion-item>
+    <ion-item button>Tuve un buen día</ion-item>
+  </div>
+
+  <div *ngIf="selectedEmotion === 'very-happy'" class="emotion-keywords">
+    <ion-item button>Logré una meta</ion-item>
+    <ion-item button>Recibí buenas noticias</ion-item>
+  </div>
+
   <!-- Campo de comentarios con nuevo comportamiento -->
   <ion-item class="comment-box">
     <ion-label *ngIf="comment === ''" position="floating">Escribe un comentario (opcional)</ion-label>
@@ -42,7 +70,7 @@
     <ion-avatar slot="start">
       <img src="assets/emotes/pastilla.svg" alt="Recordatorio de pastilla" class="pill-icon" />
     </ion-avatar>
-    <ion-label>Recordar tomar pastilla</ion-label>
+    <ion-label>¿Cuidaste de ti mismo hoy?</ion-label>
     <ion-toggle [(ngModel)]="remindMedication"></ion-toggle>
   </ion-item>
 
@@ -66,9 +94,8 @@
       </ion-segment-button>
       <!-- Botón de tips -->
       <ion-segment-button [ngClass]="{'active-segment': currentSegment === 'tips'}" (click)="navigateTo('/tips')">
-        <img src="assets/emotes/tips.svg" alt="Tips" class="nav-icon" />
+        <img src="assets/emotes/tranquilidad.svg" alt="Tips" class="nav-icon" />
       </ion-segment-button>
     </ion-segment>
   </ion-toolbar>
 </ion-footer>
-

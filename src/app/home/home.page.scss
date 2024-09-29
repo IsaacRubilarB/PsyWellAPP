@@ -6,15 +6,18 @@ ion-content {
 /* Contenedor del encabezado */
 .header-container {
   display: flex;
-  justify-content: space-between; /* Espacio entre logo y botón de ajustes */
+  justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
 }
 
-/* Logo centrado y más pequeño */
+/* Centrado del logo */
 .logo-container {
-  flex: 1; /* Para que el logo tome espacio disponible */
-  text-align: center;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
 }
 
 .small-logo {
@@ -23,67 +26,117 @@ ion-content {
 
 /* Botón de ajustes */
 .settings-button {
-  color: #fff; /* Color del icono de ajustes */
-  font-size: 24px; /* Tamaño del icono */
+  color: #f5f5f5;
+  font-size: 24px;
+  position: absolute;
+  top: 60px;
+  right: 10px;
 }
 
-/* Estilos para la información de perfil */
+/* Información del perfil */
 .profile-info {
   display: flex;
   align-items: center;
   padding: 15px 20px;
   background-color: #bb9f25;
   border-radius: 10px;
-  margin: 10px 20px; /* Margen alrededor del perfil */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para dar profundidad */
+  margin: 0 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 ion-avatar {
   margin-right: 15px;
+  width: 100px;
+  height: 100px;
+  flex-shrink: 0;
+  border: 3px solid #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.user-details {
+  flex: 1;
+  text-align: left;
 }
 
 .user-details h2 {
   margin: 0;
   font-size: 22px;
-  color: #fff; /* Texto en blanco */
-}
-
-.user-details p {
-  margin: 2px 0; /* Espacio entre líneas */
-  color: #f9f9f9; /* Color de texto para detalles del usuario */
-}
-
-/* Resumen emocional / fisiológico */
-.summary {
-  padding: 20px;
-  background-color: #ffffff20; /* Fondo ligeramente transparente */
-  margin: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para darle profundidad */
-}
-
-.summary h3 {
-  text-align: center;
   color: #fff;
 }
 
-.chart {
-  height: 200px;
-  background-color: #f5f5f5;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.user-details p {
+  margin: 2px 0;
+  color: #f9f9f9;
+}
+
+/* Contenedor de datos IoT */
+.iot-data-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;  /* Se ajusta a 2 columnas */
+  grid-gap: 15px;
+  padding: 20px;
+}
+
+/* Estilo para las tarjetas de los datos IoT */
+.data-card {
+  background-color: #ffffff;
   border-radius: 10px;
-  margin-bottom: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  color: #000;
+  display: flex;
+  align-items: center;  /* Alineación vertical */
+  justify-content: space-between;  /* Alineación horizontal */
+  text-align: left;  /* Texto alineado a la izquierda */
+  height: 100px;  /* Ajuste de altura */
+  max-width: 350px;  /* Ancho */
+  gap: 15px;  /* Espacio entre icono y texto */
 }
 
-.stress-level {
-  margin-top: 20px;
-  text-align: center;
-  color: #fff; /* Texto blanco para el nivel de estrés */
+/* Ajustes del contenido dentro de cada tarjeta */
+.data-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
 }
 
-/* Estilos para los iconos de la navbar */
+.data-card img {
+  width: 40px;
+}
+
+.data-text h3 {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.data-text h4 {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
+/* Estilo especial para la tarjeta de monitoreo del sueño */
+.data-card.sleep-card {
+  grid-column: span 2;  /* Ocupa todo el ancho disponible en la fila */
+  height: 100px;  /* Ajuste de altura */
+  max-width: calc(120% - 40px);  /* Ancho para ocupar más espacio */
+}
+
+/* Barra de navegación */
+ion-footer {
+  --background: #083d5d;
+}
+
+ion-segment {
+  display: flex;
+  justify-content: space-around;
+  background-color: #083d5d;
+  padding: 5px 0;
+  border-top: 1px solid #ccc;
+}
+
 .nav-icon {
   width: 30px;
   height: 30px;
@@ -92,21 +145,12 @@ ion-avatar {
 }
 
 .nav-icon:active {
-  transform: scale(1.2); /* Efecto de agrandamiento al presionar */
+  transform: scale(1.2);
 }
 
 /* Resaltar el botón activo en la navbar */
 .active-segment {
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5); /* Efecto de sombra */
-  background-color: #ffffff20; /* Fondo ligeramente transparente para el botón activo */
-  border-radius: 8px; /* Bordes redondeados */
-}
-
-/* Alinear los elementos de la barra de navegación */
-ion-segment {
-  display: flex;
-  justify-content: space-around;
-  background-color: #083d5d; /* Color de fondo de la barra de navegación */
-  padding: 5px 0;
-  border-top: 1px solid #ccc;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+  background-color: #ffffff20;
+  border-radius: 8px;
 }

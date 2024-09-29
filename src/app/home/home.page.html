@@ -4,7 +4,7 @@
     <div class="logo-container">
       <img src="assets/logo1.png" alt="PsyWell Logo" class="small-logo" />
     </div>
-    
+
     <!-- Botón de ajustes en la esquina superior derecha -->
     <ion-button fill="clear" class="settings-button" (click)="navigateTo('/ajustes')">
       <ion-icon name="settings-outline"></ion-icon>
@@ -14,25 +14,69 @@
   <!-- Información del perfil -->
   <div class="profile-info">
     <ion-avatar>
-      <img src="assets/profile.jpg" alt="User Profile">
+      <img src="assets/perfil.png" alt="User Profile">
     </ion-avatar>
     <div class="user-details">
-      <h2>PACIENTE 0</h2>
+      <h2>Cristina Zapata</h2>
       <p>Depresión</p>
       <p>25 Años</p>
     </div>
   </div>
 
-  <!-- Resumen emocional / fisiológico -->
-  <div class="summary">
-    <h3>Resumen emocional / fisiológico</h3>
-    <div class="stats">
-      <div class="chart">
-        <!-- Aquí puedes añadir el gráfico con los datos reales -->
-        <p>Gráfico de resumen emocional/fisiológico</p>
+  <!-- Datos IoT en dos filas de 2 columnas -->
+  <div class="iot-data-container">
+    <!-- Tarjeta de Frecuencia Cardíaca -->
+    <div class="data-card">
+      <div class="data-content">
+        <img src="assets/fisiologico/bpm.svg" alt="Frecuencia Cardíaca">
+        <div class="data-text">
+          <h3>{{ heartRate }} bpm</h3>
+          <h4>Frecuencia Cardíaca</h4>
+        </div>
       </div>
-      <div class="stress-level">
-        <h4>Nivel de Estrés: <!-- Aquí irá el dato dinámico del estrés --> </h4>
+    </div>
+
+    <!-- Tarjeta de Temperatura Corporal -->
+    <div class="data-card">
+      <div class="data-content">
+        <img src="assets/fisiologico/temp.svg" alt="Temperatura Corporal">
+        <div class="data-text">
+          <h3>{{ bodyTemperature }} °C</h3>
+          <h4>Temperatura Corporal</h4>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tarjeta de Nivel de Actividad -->
+    <div class="data-card">
+      <div class="data-content">
+        <img src="assets/fisiologico/walk.svg" alt="Nivel de Actividad">
+        <div class="data-text">
+          <h3>{{ activityLevel }} pasos</h3>
+          <h4>Nivel de Actividad</h4>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tarjeta de Hidratación -->
+    <div class="data-card">
+      <div class="data-content">
+        <img src="assets/fisiologico/agua.svg" alt="Hidratación">
+        <div class="data-text">
+          <h3>{{ hydration }} ml</h3>
+          <h4>Hidratación</h4>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tarjeta de Monitoreo del Sueño -->
+    <div class="data-card sleep-card">
+      <div class="data-content">
+        <img src="assets/fisiologico/sueño.svg" alt="Monitoreo del Sueño">
+        <div class="data-text">
+          <h3>{{ sleepQuality }} horas</h3>
+          <h4>Monitoreo del Sueño</h4>
+        </div>
       </div>
     </div>
   </div>
@@ -41,17 +85,14 @@
 <ion-footer>
   <ion-toolbar>
     <ion-segment>
-      <!-- Botón de registrar emociones -->
       <ion-segment-button [ngClass]="{'active-segment': currentSegment === 'registrar-emociones'}" (click)="navigateTo('/registrar-emociones')">
         <img src="assets/emotes/calendario.svg" alt="Registrar emociones" class="nav-icon" />
       </ion-segment-button>
-      <!-- Botón de home -->
       <ion-segment-button [ngClass]="{'active-segment': currentSegment === 'home'}" (click)="navigateTo('/home')">
         <img src="assets/emotes/home.svg" alt="Home" class="nav-icon" />
       </ion-segment-button>
-      <!-- Botón de tips -->
       <ion-segment-button [ngClass]="{'active-segment': currentSegment === 'tips'}" (click)="navigateTo('/tips')">
-        <img src="assets/emotes/tips.svg" alt="Tips" class="nav-icon" />
+        <img src="assets/emotes/tranquilidad.svg" alt="Tips" class="nav-icon" />
       </ion-segment-button>
     </ion-segment>
   </ion-toolbar>
