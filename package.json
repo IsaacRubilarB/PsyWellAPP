@@ -27,11 +27,12 @@
     "@capacitor/haptics": "6.0.1",
     "@capacitor/keyboard": "6.0.2",
     "@capacitor/status-bar": "6.0.1",
-    "@ionic/angular": "^8.0.0",
+    "@ionic/angular": "^8.3.2",
     "animate.css": "^4.1.1",
     "chart.js": "^4.4.4",
     "ionicons": "^7.0.0",
     "rxjs": "~7.8.0",
+    "swiper": "^11.1.14",
     "tslib": "^2.3.0",
     "tsparticles": "^3.5.0",
     "zone.js": "~0.14.2"
