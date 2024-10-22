@@ -23,11 +23,16 @@
     "@angular/router": "^18.0.0",
     "@capacitor/android": "6.1.2",
     "@capacitor/app": "6.0.1",
-    "@capacitor/core": "6.1.2",
+    "@capacitor/core": "^6.1.2",
     "@capacitor/haptics": "6.0.1",
     "@capacitor/keyboard": "6.0.2",
     "@capacitor/status-bar": "6.0.1",
+<<<<<<< HEAD
     "@ionic/angular": "^8.3.2",
+=======
+    "@hmscore/cordova-plugin-hms-health": "^6.11.0-304",
+    "@ionic/angular": "^8.0.0",
+>>>>>>> df409512de49b466f4af603067dcf493ffeccd9b
     "animate.css": "^4.1.1",
     "chart.js": "^4.4.4",
     "ionicons": "^7.0.0",
@@ -47,7 +52,7 @@
     "@angular/cli": "^18.0.0",
     "@angular/compiler-cli": "^18.0.0",
     "@angular/language-service": "^18.0.0",
-    "@capacitor/cli": "6.1.2",
+    "@capacitor/cli": "^6.1.2",
     "@ionic/angular-toolkit": "^11.0.1",
     "@ionic/lab": "^3.2.15",
     "@types/jasmine": "~5.1.0",

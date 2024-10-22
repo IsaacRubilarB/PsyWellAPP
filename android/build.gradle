@@ -1,26 +1,33 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-
 buildscript {
-    
     repositories {
         google()
         mavenCentral()
+        maven { url 'https://developer.huawei.com/repo/' }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:8.2.1'
-        classpath 'com.google.gms:google-services:4.4.0'
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+        classpath 'com.huawei.agconnect:agcp:1.9.1.300'
     }
 }
 
-apply from: "variables.gradle"
+ext {
+    compileSdkVersion = 34
+    minSdkVersion = 21
+    targetSdkVersion = 34
+
+    androidxAppCompatVersion = "1.6.1"
+    androidxCoordinatorLayoutVersion = "1.1.0"
+    coreSplashScreenVersion = "1.0.0"
+    junitVersion = "4.13.2"
+    androidxJunitVersion = "1.1.5"
+    androidxEspressoCoreVersion = "3.5.1"
+}
 
 allprojects {
     repositories {
         google()
         mavenCentral()
+        maven { url 'https://developer.huawei.com/repo/' }
     }
 }
 
