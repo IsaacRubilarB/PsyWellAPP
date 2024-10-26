@@ -27,14 +27,11 @@
     "@capacitor/haptics": "6.0.1",
     "@capacitor/keyboard": "6.0.2",
     "@capacitor/status-bar": "6.0.1",
-<<<<<<< HEAD
-    "@ionic/angular": "^8.3.2",
-=======
     "@hmscore/cordova-plugin-hms-health": "^6.11.0-304",
-    "@ionic/angular": "^8.0.0",
->>>>>>> df409512de49b466f4af603067dcf493ffeccd9b
+    "@ionic/angular": "^8.3.2",
     "animate.css": "^4.1.1",
     "chart.js": "^4.4.4",
+    "date-fns": "^4.1.0",
     "ionicons": "^7.0.0",
     "rxjs": "~7.8.0",
     "swiper": "^11.1.14",
@@ -68,8 +65,7 @@
     "karma-chrome-launcher": "~3.2.0",
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
-    "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.4.0"
+    "karma-jasmine-html-reporter": "~2.1.0"
   },
   "description": "An Ionic project"
 }

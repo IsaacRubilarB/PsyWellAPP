@@ -9,52 +9,54 @@
 
   <!-- Escala de emociones con los SVG como botones -->
   <div class="emotion-scale">
-    <div class="emotion-container" [ngClass]="{'selected': selectedEmotion === 'very-angry'}">
-      <img src="assets/emotes/enojado.svg" alt="Very Angry" class="emotion-icon" (click)="selectEmotion('very-angry')" />
+    <div class="emotion-container" [ngClass]="{'selected': selectedEmotion === 'Muy enojado'}">
+      <img src="assets/emotes/enojado.svg" alt="Muy enojado" class="emotion-icon" (click)="selectedEmotion = 'Muy enojado'" />
     </div>
-    <div class="emotion-container" [ngClass]="{'selected': selectedEmotion === 'angry'}">
-      <img src="assets/emotes/triste.svg" alt="Angry" class="emotion-icon" (click)="selectEmotion('angry')" />
+    <div class="emotion-container" [ngClass]="{'selected': selectedEmotion === 'Molesto'}">
+      <img src="assets/emotes/triste.svg" alt="Molesto" class="emotion-icon" (click)="selectedEmotion = 'Molesto'" />
     </div>
     <div class="emotion-container" [ngClass]="{'selected': selectedEmotion === 'neutral'}">
-      <img src="assets/emotes/normal.svg" alt="Neutral" class="emotion-icon" (click)="selectEmotion('neutral')" />
+      <img src="assets/emotes/normal.svg" alt="Neutral" class="emotion-icon" (click)="selectedEmotion = 'neutral'" />
     </div>
-    <div class="emotion-container" [ngClass]="{'selected': selectedEmotion === 'happy'}">
-      <img src="assets/emotes/feliz.svg" alt="Happy" class="emotion-icon" (click)="selectEmotion('happy')" />
+    <div class="emotion-container" [ngClass]="{'selected': selectedEmotion === 'Feliz'}">
+      <img src="assets/emotes/feliz.svg" alt="Feliz" class="emotion-icon" (click)="selectedEmotion = 'Feliz'" />
     </div>
-    <div class="emotion-container" [ngClass]="{'selected': selectedEmotion === 'very-happy'}">
-      <img src="assets/emotes/espectacular.svg" alt="Very Happy" class="emotion-icon" (click)="selectEmotion('very-happy')" />
+    <div class="emotion-container" [ngClass]="{'selected': selectedEmotion === 'Muy Feliz!'}">
+      <img src="assets/emotes/espectacular.svg" alt="Muy Feliz!" class="emotion-icon" (click)="selectedEmotion = 'Muy Feliz!'" />
     </div>
   </div>
+  
 
   <!-- Palabras clave relacionadas con la emoción seleccionada -->
-  <div *ngIf="selectedEmotion === 'very-angry'" class="emotion-keywords">
-    <ion-item button>Discutí con alguien</ion-item>
-    <ion-item button>Me siento frustrado</ion-item>
-    <ion-item button>Tuve un mal día</ion-item>
-  </div>
+<div *ngIf="selectedEmotion === 'Muy enojado'" class="emotion-keywords">
+  <ion-item button (click)="addKeywordToComment('Discutí con alguien')">Discutí con alguien</ion-item>
+  <ion-item button (click)="addKeywordToComment('Me siento frustrado')">Me siento frustrado</ion-item>
+  <ion-item button (click)="addKeywordToComment('Tuve un mal día')">Tuve un mal día</ion-item>
+</div>
 
-  <div *ngIf="selectedEmotion === 'angry'" class="emotion-keywords">
-    <ion-item button>Me siento decepcionado</ion-item>
-    <ion-item button>Problemas en el trabajo</ion-item>
-  </div>
+<div *ngIf="selectedEmotion === 'Molesto'" class="emotion-keywords">
+  <ion-item button (click)="addKeywordToComment('Me siento decepcionado')">Me siento decepcionado</ion-item>
+  <ion-item button (click)="addKeywordToComment('Problemas en el trabajo')">Problemas en el trabajo</ion-item>
+</div>
 
-  <div *ngIf="selectedEmotion === 'neutral'" class="emotion-keywords">
-    <ion-item button>Día normal</ion-item>
-    <ion-item button>Todo tranquilo</ion-item>
-  </div>
+<div *ngIf="selectedEmotion === 'neutral'" class="emotion-keywords">
+  <ion-item button (click)="addKeywordToComment('Día normal')">Día normal</ion-item>
+  <ion-item button (click)="addKeywordToComment('Todo tranquilo')">Todo tranquilo</ion-item>
+</div>
 
-  <div *ngIf="selectedEmotion === 'happy'" class="emotion-keywords">
-    <ion-item button>Me hicieron un cumplido</ion-item>
-    <ion-item button>Pasé tiempo con amigos</ion-item>
-    <ion-item button>Tuve un buen día</ion-item>
-  </div>
+<div *ngIf="selectedEmotion === 'Feliz'" class="emotion-keywords">
+  <ion-item button (click)="addKeywordToComment('Me hicieron un cumplido')">Me hicieron un cumplido</ion-item>
+  <ion-item button (click)="addKeywordToComment('Pasé tiempo con amigos')">Pasé tiempo con amigos</ion-item>
+  <ion-item button (click)="addKeywordToComment('Tuve un buen día')">Tuve un buen día</ion-item>
+</div>
 
-  <div *ngIf="selectedEmotion === 'very-happy'" class="emotion-keywords">
-    <ion-item button>Logré una meta</ion-item>
-    <ion-item button>Recibí buenas noticias</ion-item>
-  </div>
+<div *ngIf="selectedEmotion === 'Muy Feliz!'" class="emotion-keywords">
+  <ion-item button (click)="addKeywordToComment('Logré una meta')">Logré una meta</ion-item>
+  <ion-item button (click)="addKeywordToComment('Recibí buenas noticias')">Recibí buenas noticias</ion-item>
+</div>
 
-  <!-- Campo de comentarios con nuevo comportamiento -->
+
+  <!-- Campo de comentarios -->
   <ion-item class="comment-box">
     <ion-label *ngIf="comment === ''" position="floating">Escribe un comentario (opcional)</ion-label>
     <ion-textarea [(ngModel)]="comment"></ion-textarea>
@@ -76,7 +78,7 @@
 
   <!-- Gratificación emocional -->
   <div *ngIf="showGratification" class="gratification-overlay" (click)="closeOverlay()">
-    <img [src]="'assets/image.registro/' + getEmotionImage(sexoPaciente, selectedEmotion)" class="gratification-image" alt="Gratificación emocional" />
+    <img [src]="'assets/image.registro/' + getEmotionImage( selectedEmotion)" class="gratification-image" alt="Gratificación emocional" />
     <span class="close-button" (click)="closeOverlay()">✖</span>
   </div>
 </ion-content>

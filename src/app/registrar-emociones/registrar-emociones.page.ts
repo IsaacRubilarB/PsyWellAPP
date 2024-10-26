@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { RegistroService } from 'src/app/services/registroService';
+import { RegistroEmocionalDTO } from 'src/app/models/registro-emocional-dto';
 
 @Component({
   selector: 'app-registrar-emociones',
@@ -7,97 +9,74 @@ import { Router } from '@angular/router';
   styleUrls: ['./registrar-emociones.page.scss'],
 })
 export class RegistrarEmocionesPage implements OnInit {
-  selectedEmotion: string = '';  // Emoción seleccionada
-  comment: string = '';  // Comentario del usuario
-  remindMedication: boolean = false;  // Recordatorio de medicación
-  currentSegment: string = 'registrar-emociones';  // Segmento de navegación
-  showGratification: boolean = false;  // Mostrar gratificación emocional
-  gratificationClass: string = '';  // Clase para animaciones de gratificación
-  sexoPaciente: string = 'hombre';  // Variable para determinar el sexo del paciente
+  selectedEmotion: string = '';
+  comment: string = ''; // Comentario visible en el front y personalizado por el usuario
+  hiddenComment: string = ''; // Comentario oculto con palabras clave predefinidas
+  remindMedication: boolean = false;
+  currentSegment: string = 'registrar-emociones';
+  showGratification: boolean = false;
+  idUsuario: string = '2'; // Obtén el ID del usuario dinámicamente
+  idRegistro: string = '1'; // También puede ser dinámico
 
-  // Lista de palabras clave para cada emoción
-  emotionKeywords: { [key: string]: string[] } = {
-    'very-angry': ['Discutí con alguien', 'Me siento frustrado', 'Tuve un mal día'],
-    'angry': ['Me siento decepcionado', 'Problemas en el trabajo'],
-    'neutral': ['Día normal', 'Todo tranquilo'],
-    'happy': ['Me hicieron un cumplido', 'Pasé tiempo con amigos', 'Tuve un buen día'],
-    'very-happy': ['Logré una meta', 'Recibí buenas noticias']
-  };
-
-  constructor(private router: Router) {}
+  constructor(private router: Router, private registroService: RegistroService) {}
 
   ngOnInit() {}
 
-  // Función para seleccionar la emoción y mostrar la gratificación
-  selectEmotion(emotion: string) {
-    this.selectedEmotion = emotion;
-    this.showGratification = true;
-
-    // Definir la animación según la emoción seleccionada
-    if (emotion === 'happy' || emotion === 'very-happy') {
-      this.gratificationClass = 'animate__animated animate__bounce';  // Animación bounce para emociones positivas
-    } else {
-      this.gratificationClass = 'animate__animated animate__fadeIn';  // Animación fadeIn para otras emociones
-    }
-
-    // Mostramos la ruta de la imagen en la consola para verificar
-    const imagePath = this.getEmotionImage(this.sexoPaciente, this.selectedEmotion);
-    console.log(`Ruta de la imagen: assets/image.registro/${imagePath}`);
+  getEmotionImage(selectedEmotion: string): string {
+    return `${selectedEmotion}.svg`;
   }
 
-  // Función para guardar la emoción y registrar los datos
-  saveEmotion() {
-    console.log(`Emoción seleccionada: ${this.selectedEmotion}`);
-    console.log(`Comentario: ${this.comment}`);
-    console.log(`Recordar tomar pastilla: ${this.remindMedication}`);
-
-    // Lógica para guardar los datos en la base de datos (por implementar)
-    
-    alert('Emoción registrada correctamente');
-    this.selectedEmotion = '';  // Reiniciar emoción seleccionada después de guardar
-    this.comment = '';  // Limpiar el comentario
-    this.remindMedication = false;  // Reiniciar el estado del toggle
-  }
-
-  // Función para cerrar la gratificación emocional con un clic en cualquier parte del overlay
   closeOverlay() {
-    this.showGratification = false;  // Ocultar la imagen de gratificación
+    this.showGratification = false;
   }
 
-  // Obtener la imagen de gratificación según el sexo y la emoción seleccionada
-  getEmotionImage(sexo: string, emotion: string): string {
-    let imagePath = '';
-    switch (emotion) {
-      case 'very-angry':
-        imagePath = sexo === 'hombre' ? 'hombre_triste.png' : 'mujer_triste.png';
-        break;
-      case 'angry':
-        imagePath = sexo === 'hombre' ? 'hombre_triste.png' : 'mujer_triste.png';
-        break;
-      case 'neutral':
-        imagePath = sexo === 'hombre' ? 'hombre_normal.png' : 'mujer_normal.png';
-        break;
-      case 'happy':
-        imagePath = sexo === 'hombre' ? 'hombre_feliz.png' : 'mujer_feliz.png';
-        break;
-      case 'very-happy':
-        imagePath = sexo === 'hombre' ? 'hombre_feliz.png' : 'mujer_feliz.png';
-        break;
-      default:
-        imagePath = sexo === 'hombre' ? 'hombre_normal.png' : 'mujer_normal.png';
-        break;
+  navigateTo(route: string) {
+    this.router.navigate([route]);
+  }
+
+  saveEmotion() {
+    // Combina hiddenComment y comment personalizado, separados por una coma
+    const combinedComment = this.hiddenComment 
+      ? `${this.hiddenComment}, ${this.comment}` 
+      : this.comment;
+
+    // Preparar los datos con la fecha actual y el estado de remindMedication
+    const emotionData: RegistroEmocionalDTO = {
+      idRegistro: this.idRegistro,
+      idUsuario: this.idUsuario,
+      fecha: new Date(), // Fecha actual
+      estadoEmocional: this.selectedEmotion,
+      comentarios: combinedComment, // Enviar el comentario combinado al backend
+      pastilla: this.remindMedication ? true : false // True si está activado, false si no
+    };
+
+    this.registroService.addRegistro(emotionData).subscribe(
+      (response: any) => {
+        console.log('Emoción registrada:', response);
+        alert('Emoción registrada correctamente');
+        this.resetForm();
+      },
+      (error: any) => {
+        console.error('Error al registrar la emoción:', error);
+        alert('Hubo un error al registrar la emoción. Inténtalo de nuevo.');
+      }
+    );
+  }
+
+  addKeywordToComment(keyword: string) {
+    if (this.hiddenComment) {
+      // Si ya hay texto en hiddenComment, agrega la palabra clave al inicio con una coma
+      this.hiddenComment = `${keyword}, ${this.hiddenComment}`;
+    } else {
+      // Si hiddenComment está vacío, simplemente agrega la palabra clave
+      this.hiddenComment = keyword;
     }
-    return imagePath;
   }
 
-  // Obtener las palabras clave según la emoción seleccionada
-  getEmotionKeywords(emotion: string): string[] {
-    return this.emotionKeywords[emotion] || [];
-  }
-
-  // Función para cambiar el segmento activo y navegar
-  navigateTo(path: string) {
-    this.router.navigate([path]);
-    this.currentSegment = path.substring(1);  // Actualiza el segmento activo basado en la ruta
+  private resetForm() {
+    this.selectedEmotion = '';
+    this.comment = '';
+    this.hiddenComment = ''; // También resetea el comentario oculto
+    this.remindMedication = false;
   }
 }
