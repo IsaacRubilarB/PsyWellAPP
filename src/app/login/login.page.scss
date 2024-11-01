@@ -1,33 +1,86 @@
+/* Fondo suave /
+ion-content {
+  --background: #E3F2FD;
+}
+
+/ Logo centrado /
 .login-logo {
-    text-align: center;
-    margin-top: 50px;
-  }
-  
-  ion-button {
-    margin-top: 30px;
-    --background: #bb9432; /* Color mostaza para el botón */
-    --background-activated: #ceab44; /* Color cuando se presiona */
-    --background-focused: #a18739; /* Color cuando está enfocado */
-    color: #fff; /* Texto blanco */
-  }
-  
-  
-  ion-content {
-    --background: #0878c2; 
-  }
-  
-  ion-item {
-    --background: #658baf; /* Un color claro para las casillas */
-    --color: #ffffff; /* Texto en negro */
-    --border-color: #000000; /* Color del borde */
-  }
-  
-  ion-label {
-    --color-focused: #4d4646; /* Color del texto cuando se enfoca */
-    --color: #555; /* Color del texto en estado normal */
-  }
-  
-  ion-input {
-    color: #000; /* Asegura que el texto del input sea negro */
-  }
-  
+  text-align: center;
+  margin-top: 30px;
+}
+
+/ Botón de Ingresar /
+ion-button {
+  margin-top: 20px;
+  --background: #90A4AE;
+  --background-activated: #B0BEC5;
+  color: #FFFFFF;
+}
+
+/ Estilos de los ítems de input /
+ion-item {
+  --background: #CFD8DC;
+  --color: #37474F;
+  --border-color: #90A4AE;
+}
+
+ion-label {
+  --color-focused: #546E7A;
+  --color: #37474F;
+}
+
+ion-input {
+  color: #37474F;
+}
+
+/ Contenedor del login y registro con efecto flip /
+.login-register-container {
+  display: flex;
+  perspective: 1000px;
+}
+
+.login-card, .register-card {
+  width: 100%;
+  backface-visibility: hidden;
+  transition: transform 0.6s;
+}
+
+.login-card {
+  transform: rotateY(0deg);
+}
+
+.register-card {
+  position: absolute;
+  top: 0;
+  transform: rotateY(180deg);
+}
+
+.login-register-container.flip .login-card {
+  transform: rotateY(-180deg);
+}
+
+.login-register-container.flip .register-card {
+  transform: rotateY(0deg);
+}
+
+/ Enlace de registro /
+.register-link {
+  margin-top: 20px;
+  text-align: center;
+  color: #546E7A;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/ Flecha de retroceso en la vista de registro */
+.back-arrow {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  color: #546E7A;
+  font-size: 24px;
+  cursor: pointer;
+}

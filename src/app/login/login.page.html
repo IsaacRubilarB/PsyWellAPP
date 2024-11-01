@@ -1,17 +1,55 @@
 <ion-content class="ion-padding">
-  <div class="login-logo">
-    <img src="assets/logo.png" alt="PsyWell Logo" />
-  </div>
-  
-  <ion-item>
-    <ion-label position="floating">Usuario</ion-label>
-    <ion-input type="text"></ion-input>
-  </ion-item>
+  <form [formGroup]="isRegisterMode ? registerForm : loginForm" (ngSubmit)="isRegisterMode ? register() : login()">
+    <div class="login-register-container" [class.flip]="isRegisterMode">
+      <div class="login-card" *ngIf="!isRegisterMode">
+        <div class="login-logo">
+          <img src="assets/logo.png" alt="PsyWell Logo" />
+        </div>
+        <ion-item>
+          <ion-label position="floating">Correo Electrónico</ion-label>
+          <ion-input type="email" formControlName="email" required></ion-input>
+        </ion-item>        
+        <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" class="error-message">
+          Por favor, introduce un correo electrónico válido.
+        </div>
+        <ion-item>
+          <ion-label position="floating">Contraseña</ion-label>
+          <ion-input type="password" formControlName="password" required></ion-input>
+        </ion-item>        
+        <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="error-message">
+          La contraseña es obligatoria.
+        </div>
+        <ion-button expand="full" type="submit">Ingresar</ion-button>
+        <div class="register-link" (click)="toggleRegisterMode()">Registrar <ion-icon name="arrow-forward-outline"></ion-icon></div>
+      </div>
 
-  <ion-item>
-    <ion-label position="floating">Contraseña</ion-label>
-    <ion-input type="password"></ion-input>
-  </ion-item>
-
-  <ion-button expand="full">Ingresar</ion-button>
+      <!-- Vista de Registro -->
+      <div class="register-card" *ngIf="isRegisterMode">
+        <ion-icon name="arrow-back-outline" class="back-arrow" (click)="toggleRegisterMode()"></ion-icon>
+        <div class="login-logo">
+          <img src="assets/logo.png" alt="PsyWell Logo" />
+        </div>
+        <ion-item>
+          <ion-label position="floating">Nombre</ion-label>
+          <ion-input type="text" formControlName="username" required></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">Correo Electrónico</ion-label>
+          <ion-input type="email" formControlName="email" required></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">Contraseña</ion-label>
+          <ion-input type="password" formControlName="password" required></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">Confirmar Contraseña</ion-label>
+          <ion-input type="password" formControlName="confirmPassword" required></ion-input>
+        </ion-item>
+        <div *ngIf="registerForm.get('confirmPassword')?.value !== registerForm.get('password')?.value && isRegisterMode" class="error-message">
+          Las contraseñas no coinciden.
+        </div>
+        <ion-button expand="full" type="submit">Crear Cuenta</ion-button>
+      </div>
+    </div>
+  </form>
 </ion-content>

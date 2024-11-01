@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AngularFireAuth } from '@angular/fire/compat/auth'; // Asegúrate de importar AngularFireAuth
 
 @Component({
   selector: 'app-home',
@@ -16,7 +17,7 @@ export class HomePage implements OnInit {
   hydration: number = 0;
   sleepQuality: number = 0;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private afAuth: AngularFireAuth) {} // Inyecta AngularFireAuth
 
   ngOnInit() {
     this.connectToIoTDevice();
@@ -51,5 +52,15 @@ export class HomePage implements OnInit {
 
   navigateToAjustes() {
     this.router.navigate(['/ajustes']);
+  }
+
+  async logout() {
+    try {
+      await this.afAuth.signOut(); // Cierra sesión
+      console.log('Cierre de sesión exitoso');
+      this.router.navigate(['/login']); // Redirige a la página de inicio de sesión
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
+    }
   }
 }
