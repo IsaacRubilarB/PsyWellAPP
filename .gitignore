@@ -1,5 +1,4 @@
-# Specifies intentionally untracked files to ignore when using Git
-# http://git-scm.com/docs/gitignore
+# Especifica archivos y directorios para ignorar en Git
 
 *~
 *.sw[mnpcod]
@@ -11,7 +10,6 @@ $RECYCLE.BIN/
 
 *.log
 log.txt
-
 
 /.sourcemaps
 /.versions
@@ -34,7 +32,7 @@ log.txt
 npm-debug.log
 yarn-error.log
 
-# IDEs and editors
+# IDEs y editores
 .idea/
 .project
 .classpath
@@ -52,12 +50,15 @@ yarn-error.log
 !.vscode/extensions.json
 .history/*
 
+# Archivos de configuración de Angular
+/src/environments/environment.ts
+/src/environments/environment.prod.ts
 
 # Miscellaneous
 /.angular
 /.angular/cache
 .sass-cache/
-/.nx
+.nx
 /.nx/cache
 /connect.lock
 /coverage
@@ -65,6 +66,6 @@ yarn-error.log
 testem.log
 /typings
 
-# System files
+# Archivos del sistema
 .DS_Store
 Thumbs.db
