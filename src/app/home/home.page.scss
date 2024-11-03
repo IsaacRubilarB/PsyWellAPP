@@ -24,6 +24,19 @@ ion-content {
   width: 150px;
 }
 
+/* Estilo para las tarjetas de citas */
+.cita-card {
+  background-color: #174a6a; /* Tono oscuro */
+  color: #ffffff; /* Texto en blanco */
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  padding: 15px;
+  margin: 2% auto; /* Centra las tarjetas y agrega un margen de 2% */
+  max-width: 90%; /* Limita el ancho para mejor visualización en dispositivos móviles */
+  text-align: left;
+}
+
+
 /* Botón de ajustes */
 .settings-button {
   color: #f5f5f5;

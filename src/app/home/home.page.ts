@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AngularFireAuth } from '@angular/fire/compat/auth'; // Asegúrate de importar AngularFireAuth
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { CitasService } from '../services/citasService'; // Asegúrate de que la ruta sea correcta
+import { Cita, ListaCitasResponse } from '../home/cita.model'; // Cambia la ruta al nuevo archivo
 
 @Component({
   selector: 'app-home',
@@ -9,6 +12,8 @@ import { AngularFireAuth } from '@angular/fire/compat/auth'; // Asegúrate de im
 })
 export class HomePage implements OnInit {
   currentSegment: string = 'home';
+  userName: string = ''; // Variable para almacenar el nombre del usuario
+  userEmail: string | null = ''; // Variable para el correo del usuario
 
   // Variables para los datos IoT
   heartRate: number = 0;
@@ -17,50 +22,68 @@ export class HomePage implements OnInit {
   hydration: number = 0;
   sleepQuality: number = 0;
 
-  constructor(private router: Router, private afAuth: AngularFireAuth) {} // Inyecta AngularFireAuth
+  citas: Cita[] = []; 
+
+  constructor(
+    private router: Router,
+    private afAuth: AngularFireAuth,
+    private afs: AngularFirestore,
+    private citasService: CitasService // Inyectar el servicio de citas
+  ) {}
 
   ngOnInit() {
-    this.connectToIoTDevice();
+    this.loadUserName(); // Llama a la función para obtener el nombre del usuario
+    this.loadCitas(); // Cargar las citas al iniciar el componente
   }
 
-  // Simular la conexión y actualización de datos de IoT
-  connectToIoTDevice() {
-    setInterval(() => {
-      this.heartRate = this.getRandomNumber(60, 100);
-      this.bodyTemperature = this.getRandomNumber(36, 37.5);
-      this.activityLevel = this.getRandomNumber(2000, 10000);
-      this.hydration = this.getRandomNumber(1, 10);
-      this.sleepQuality = this.getRandomNumber(4, 9);
-    }, 3000);
+  async loadUserName() {
+    const user = await this.afAuth.currentUser;
+    if (user) {
+      const uid = user.uid; // Obtiene el uid del usuario
+      this.userEmail = user.email || ''; // Asigna el correo del usuario
+
+      // Recupera el documento del usuario usando el uid
+      const userDoc = await this.afs.collection('users').doc(uid).get().toPromise();
+
+      // Verifica que userDoc no sea undefined y que exista
+      if (userDoc && userDoc.exists) {
+        const userData = userDoc.data() as { username?: string }; // Define el tipo de datos
+        this.userName = userData?.username || 'Usuario'; // Asigna el nombre del usuario o un valor por defecto
+      } else {
+        this.userName = 'Usuario'; // Valor por defecto si no se encuentra el documento
+      }
+    }
   }
 
-  // Función para generar un número aleatorio
-  getRandomNumber(min: number, max: number): number {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+  loadCitas() {
+    this.citasService.listarCitas().subscribe(
+      (response: ListaCitasResponse) => {
+        if (response.status === 'success') {
+          this.citas = response.data; // Asigna las citas a la variable
+        } else {
+          console.error('Error al cargar citas:', response.status);
+        }
+      },
+      (error: any) => {
+        console.error('Error al obtener citas:', error);
+      }
+    );
   }
 
-  // Función para convertir la hidratación en vasos de agua
-  getHydrationInGlasses(): string {
-    return `${this.hydration} vasos de agua`;
-  }
-
-  // Función de navegación
   navigateTo(path: string) {
     this.router.navigate([path]);
     this.currentSegment = path.substring(1);
   }
 
-  navigateToAjustes() {
-    this.router.navigate(['/ajustes']);
-  }
-
   async logout() {
     try {
-      await this.afAuth.signOut(); // Cierra sesión
+      await this.afAuth.signOut();
       console.log('Cierre de sesión exitoso');
-      this.router.navigate(['/login']); // Redirige a la página de inicio de sesión
+      this.router.navigate(['/login']);
     } catch (error) {
       console.error('Error al cerrar sesión:', error);
     }
   }
 }
+export { ListaCitasResponse };
+

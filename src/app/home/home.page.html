@@ -11,75 +11,27 @@
     </ion-button>
   </div>
 
-  <!-- Información del perfil -->
-  <div class="profile-info">
-    <ion-avatar>
-      <img src="assets/perfil.png" alt="User Profile">
-    </ion-avatar>
-    <div class="user-details">
-      <h2>Cristina Zapata</h2>
-      <p>Depresión</p>
-      <p>25 Años</p>
-    </div>
+<!-- Información del perfil -->
+<div style="margin-bottom: 5%;" class="profile-info">
+  <ion-avatar>
+    <img src="assets/perfil.png" alt="User Profile">
+  </ion-avatar>
+  <div  class="user-details">
+    <h2>{{ userName }}</h2> <!-- Muestra el nombre del usuario -->
+    <p>{{ userEmail }}</p> <!-- Muestra el correo electrónico del usuario -->
   </div>
+</div>
 
-  <!-- Datos IoT en dos filas de 2 columnas -->
-  <div class="iot-data-container">
-    <!-- Tarjeta de Frecuencia Cardíaca -->
-    <div class="data-card">
-      <div class="data-content">
-        <img src="assets/fisiologico/bpm.svg" alt="Frecuencia Cardíaca">
-        <div class="data-text">
-          <h3>{{ heartRate }} bpm</h3>
-          <h4>Frecuencia Cardíaca</h4>
-        </div>
+<!----------citas--------------->
+      <div style="margin-bottom: 1%;" class="cita-card" *ngFor="let cita of citas">
+      <div class="cita-info">
+          <h3>Paciente ID: {{ cita.idUsuario }}</h3>
+          <p class="cita-fecha">Fecha y Hora cita: {{ cita.fechaHora | date:'short' }}</p>
+          <h4>Ubicación: {{ cita.ubicacion }}</h4>
+          <h4>Comentarios: {{ cita.comentarios }}</h4>
+          <h4>estado: {{ cita.estado }}</h4>
       </div>
     </div>
-
-    <!-- Tarjeta de Temperatura Corporal -->
-    <div class="data-card">
-      <div class="data-content">
-        <img src="assets/fisiologico/temp.svg" alt="Temperatura Corporal">
-        <div class="data-text">
-          <h3>{{ bodyTemperature }} °C</h3>
-          <h4>Temperatura Corporal</h4>
-        </div>
-      </div>
-    </div>
-
-    <!-- Tarjeta de Nivel de Actividad -->
-    <div class="data-card">
-      <div class="data-content">
-        <img src="assets/fisiologico/walk.svg" alt="Nivel de Actividad">
-        <div class="data-text">
-          <h3>{{ activityLevel }} pasos</h3>
-          <h4>Nivel de Actividad</h4>
-        </div>
-      </div>
-    </div>
-
-    <!-- Tarjeta de Hidratación -->
-    <div class="data-card">
-      <div class="data-content">
-        <img src="assets/fisiologico/agua.svg" alt="Hidratación">
-        <div class="data-text">
-          <h3>{{ hydration }} ml</h3>
-          <h4>Hidratación</h4>
-        </div>
-      </div>
-    </div>
-
-    <!-- Tarjeta de Monitoreo del Sueño -->
-    <div class="data-card sleep-card">
-      <div class="data-content">
-        <img src="assets/fisiologico/sueño.svg" alt="Monitoreo del Sueño">
-        <div class="data-text">
-          <h3>{{ sleepQuality }} horas</h3>
-          <h4>Monitoreo del Sueño</h4>
-        </div>
-      </div>
-    </div>
-  </div>
 </ion-content>
 <ion-button (click)="logout()">Cerrar Sesión</ion-button>
 
