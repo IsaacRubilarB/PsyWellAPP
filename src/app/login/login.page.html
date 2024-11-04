@@ -36,7 +36,7 @@
       <!-- Campo para Nombre -->
       <ion-item>
         <ion-label position="floating">Nombre</ion-label>
-        <ion-input type="text" formControlName="nombre" required></ion-input>
+        <ion-input  placeholder="Ingrese nombre o alias" type="text" formControlName="nombre" required></ion-input>
       </ion-item>
       <div *ngIf="registerForm.get('nombre')?.invalid && registerForm.get('nombre')?.touched" class="error-message">
         El nombre es obligatorio.
@@ -45,7 +45,7 @@
       <!-- Campo para Correo Electrónico -->
       <ion-item>
         <ion-label position="floating">Correo Electrónico</ion-label>
-        <ion-input type="email" formControlName="email" required></ion-input>
+        <ion-input placeholder="Ingrese Correo Electrónico" type="email" formControlName="email" required></ion-input>
       </ion-item>
       <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" class="error-message">
         Por favor, introduce un correo electrónico válido.
@@ -54,12 +54,12 @@
       <!-- Campo para Fecha de Nacimiento -->
       <ion-item>
         <ion-label position="floating">Fecha de Nacimiento</ion-label>
-        <ion-datetime
+        <ion-input
           formControlName="fechaNacimiento"
           displayFormat="DD-MM-YYYY"
-          placeholder="Selecciona Fecha"
+          placeholder="Ingrese Fecha de Nacimiento"
           class="minimal-datetime">
-        </ion-datetime>
+        </ion-input>
       </ion-item>
       <div *ngIf="registerForm.get('fechaNacimiento')?.invalid && registerForm.get('fechaNacimiento')?.touched" class="error-message">
         La fecha de nacimiento es obligatoria.
@@ -81,7 +81,7 @@
       <!-- Campo para Contraseña -->
       <ion-item>
         <ion-label position="floating">Contraseña</ion-label>
-        <ion-input type="password" formControlName="password" required></ion-input>
+        <ion-input  placeholder="Ingrese Contraseña" type="password" formControlName="password" required></ion-input>
       </ion-item>
       <div *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched" class="error-message">
         La contraseña es obligatoria.
@@ -90,7 +90,7 @@
       <!-- Campo para Confirmar Contraseña -->
       <ion-item>
         <ion-label position="floating">Confirmar Contraseña</ion-label>
-        <ion-input type="password" formControlName="confirmPassword" required></ion-input>
+        <ion-input  placeholder="Confirme Contraseña" type="password" formControlName="confirmPassword" required></ion-input>
       </ion-item>
       <div *ngIf="registerForm.get('confirmPassword')?.value !== registerForm.get('password')?.value && registerForm.get('confirmPassword')?.touched" class="error-message">
         Las contraseñas no coinciden.

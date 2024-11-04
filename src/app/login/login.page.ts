@@ -11,9 +11,13 @@ import { CitasService } from '../services/userService';
   styleUrls: ['./login.page.scss'],
 })
 export class LoginRegisterComponent implements OnInit {
+validateDateFormat() {
+throw new Error('Method not implemented.');
+}
   loginForm: FormGroup;
   registerForm: FormGroup;
   isRegisterMode: boolean = false;
+dateError: any;
 
   constructor(
     private fb: FormBuilder,
