@@ -36,8 +36,8 @@
 <ion-button (click)="logout()">Cerrar Sesión</ion-button>
 
 <ion-footer>
-  <ion-toolbar>
-    <ion-segment>
+  <ion-toolbar style="width: 100%;">
+    <ion-segment st>
       <ion-segment-button [ngClass]="{'active-segment': currentSegment === 'registrar-emociones'}" (click)="navigateTo('/registrar-emociones')">
         <img src="assets/emotes/calendario.svg" alt="Registrar emociones" class="nav-icon" />
       </ion-segment-button>

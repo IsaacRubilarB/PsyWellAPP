@@ -23,6 +23,7 @@ export class HomePage implements OnInit {
   sleepQuality: number = 0;
 
   citas: Cita[] = []; 
+  idUsuario: any;
 
   constructor(
     private router: Router,
@@ -41,14 +42,17 @@ export class HomePage implements OnInit {
     if (user) {
       const uid = user.uid; // Obtiene el uid del usuario
       this.userEmail = user.email || ''; // Asigna el correo del usuario
-
+  
       // Recupera el documento del usuario usando el uid
       const userDoc = await this.afs.collection('users').doc(uid).get().toPromise();
-
+  
       // Verifica que userDoc no sea undefined y que exista
       if (userDoc && userDoc.exists) {
-        const userData = userDoc.data() as { username?: string }; // Define el tipo de datos
-        this.userName = userData?.username || 'Usuario'; // Asigna el nombre del usuario o un valor por defecto
+        const userData = userDoc.data() as { nombre?: string, idUsuario?: string }; // Asegúrate de tener 'idUsuario' en Firestore
+        this.userName = userData?.nombre || 'Usuario'; // Asigna el nombre del usuario o un valor por defecto
+        
+        // Guarda el idUsuario en una variable para usarlo más adelante
+        this.idUsuario = userData?.idUsuario || ''; // Asigna el ID de usuario de PostgreSQL
       } else {
         this.userName = 'Usuario'; // Valor por defecto si no se encuentra el documento
       }

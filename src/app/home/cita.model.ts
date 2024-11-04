@@ -1,5 +1,3 @@
-// cita.model.ts
-
 export interface Cita {
     idCita: number;       
     idUsuario: number;     

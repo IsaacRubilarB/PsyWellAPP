@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Router } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { CitasService } from '../services/userService';
 
 @Component({
   selector: 'app-login-register',
@@ -18,7 +19,8 @@ export class LoginRegisterComponent implements OnInit {
     private fb: FormBuilder,
     private afAuth: AngularFireAuth,
     private router: Router,
-    private afs: AngularFirestore
+    private afs: AngularFirestore,
+    private citasService: CitasService
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -26,15 +28,17 @@ export class LoginRegisterComponent implements OnInit {
     });
 
     this.registerForm = this.fb.group({
-      username: ['', Validators.required],
+      nombre: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      fechaNacimiento: ['', Validators.required],
+      genero: ['', Validators.required],
+      password: ['', [Validators.required, Validators.minLength(6)]], 
       confirmPassword: ['', Validators.required],
     });
   }
 
   ngOnInit() {
-    this.afAuth.authState.subscribe(user => {
+    this.afAuth.authState.subscribe((user) => {
       if (user) {
         this.router.navigate(['/home']);
       }
@@ -47,6 +51,63 @@ export class LoginRegisterComponent implements OnInit {
       this.registerForm.reset();
     } else {
       this.loginForm.reset();
+    }
+  }
+
+  async register() {
+    if (this.registerForm.invalid) {
+      console.log(this.registerForm.errors);
+      alert('Formulario de registro no válido');
+      return;
+    }
+  
+    const { password, confirmPassword, ...userData } = this.registerForm.value;
+  
+    if (password !== confirmPassword) {
+      alert('Las contraseñas no coinciden');
+      return;
+    }
+  
+    try {
+      const userCredential = await this.afAuth.createUserWithEmailAndPassword(
+        userData.email,
+        password
+      );
+  
+      const uid = userCredential.user?.uid;
+  
+      // Llamar al backend para registrar al usuario en PostgreSQL
+      userData.contrasena = password; // Añadir la contraseña al objeto userData
+      userData.estado = true; // Estado predeterminado
+      userData.perfil = 'paciente'; // Asignar 'paciente' como valor fijo
+  
+      this.citasService.registrarUsuario(userData).subscribe(
+        async (response) => {
+          console.log('Usuario agregado a PostgreSQL:', response);
+          
+          // Asegúrate de que la respuesta contiene el idUsuario
+          if (response && response.idUsuario) {
+            const postgresId = response.idUsuario;
+  
+            // Guardar en Firestore
+            await this.afs.collection('users').doc(uid).set({ 
+              nombre: userData.nombre,
+              email: userData.email,
+              idUsuario: postgresId, // Almacena el ID de PostgreSQL
+            });
+  
+            console.log('ID de usuario guardado en Firestore:', postgresId); // Debug
+            this.router.navigate(['/home']);
+          } else {
+            console.error('No se recibió idUsuario de la respuesta:', response);
+          }
+        },
+        (error) => {
+          console.error('Error al agregar usuario a PostgreSQL:', error);
+        }
+      );
+    } catch (error) {
+      console.error('Error al registrar usuario:', error);
     }
   }
 
@@ -63,29 +124,6 @@ export class LoginRegisterComponent implements OnInit {
       }
     } else {
       alert('Por favor completa todos los campos correctamente.');
-    }
-  }
-
-  async register() {
-    if (this.registerForm.valid) {
-      const { email, password, username, confirmPassword } = this.registerForm.value;
-      if (password !== confirmPassword) {
-        alert('Las contraseñas no coinciden');
-        return;
-      }
-      try {
-        const userCredential = await this.afAuth.createUserWithEmailAndPassword(email, password);
-        await this.afs.collection('users').doc(userCredential.user?.uid).set({
-          username: username,
-          email: email
-        });
-        console.log('Usuario registrado con éxito');
-        this.router.navigate(['/home']);
-      } catch (error) {
-        console.error('Error al registrar usuario:', error);
-      }
-    } else {
-      alert('Formulario de registro no válido');
     }
   }
 
