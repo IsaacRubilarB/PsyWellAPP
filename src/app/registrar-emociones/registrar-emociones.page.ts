@@ -4,6 +4,7 @@ import { RegistroService } from 'src/app/services/registroService';
 import { RegistroEmocionalDTO } from 'src/app/models/registro-emocional-dto';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { ListaCitasResponse } from '../home/cita.model';
 
 @Component({
   selector: 'app-registrar-emociones',
@@ -11,6 +12,8 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
   styleUrls: ['./registrar-emociones.page.scss'],
 })
 export class RegistrarEmocionesPage implements OnInit {
+  citasService: any;
+  citas: any;
   addKeywordToComment(keyword: string) {
     if (this.hiddenComment) {
       // Si ya hay texto en hiddenComment, agrega la palabra clave al inicio con una coma
@@ -106,6 +109,20 @@ saveEmotion() {
   );
 }
 
+  loadCitas() {
+    this.citasService.listarCitas().subscribe(
+      (response: ListaCitasResponse) => {
+        if (response.status === 'success') {
+          this.citas = response.data; // Asigna las citas a la variable
+        } else {
+          console.error('Error al cargar citas:', response.status);
+        }
+      },
+      (error: any) => {
+        console.error('Error al obtener citas:', error);
+      }
+    );
+  }
 
   private resetForm() {
     this.selectedEmotion = '';
