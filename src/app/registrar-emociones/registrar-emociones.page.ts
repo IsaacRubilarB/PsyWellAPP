@@ -109,21 +109,6 @@ saveEmotion() {
   );
 }
 
-  loadCitas() {
-    this.citasService.listarCitas().subscribe(
-      (response: ListaCitasResponse) => {
-        if (response.status === 'success') {
-          this.citas = response.data; // Asigna las citas a la variable
-        } else {
-          console.error('Error al cargar citas:', response.status);
-        }
-      },
-      (error: any) => {
-        console.error('Error al obtener citas:', error);
-      }
-    );
-  }
-
   private resetForm() {
     this.selectedEmotion = '';
     this.comment = '';

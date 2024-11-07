@@ -22,14 +22,14 @@ export class HomePage implements OnInit {
   hydration: number = 0;
   sleepQuality: number = 0;
 
-  citas: Cita[] = []; 
+  citas: ListaCitasResponse['data'] | undefined; 
   idUsuario: any;
 
   constructor(
     private router: Router,
     private afAuth: AngularFireAuth,
     private afs: AngularFirestore,
-    private citasService: CitasService // Inyectar el servicio de citas
+    private citasService: CitasService
   ) {}
 
   ngOnInit() {

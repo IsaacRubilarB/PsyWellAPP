@@ -65,6 +65,10 @@
       <ion-segment-button [ngClass]="{'active-segment': currentSegment === 'tips'}" (click)="navigateTo('/tips')">
         <img src="assets/emotes/tranquilidad.svg" alt="Tips" class="nav-icon" />
       </ion-segment-button>
+      <!-- Botón de reloj -->
+      <ion-segment-button [ngClass]="{'active-segment': currentSegment === 'reloj'}" (click)="navigateTo('/reloj')">
+        <img src="assets/emotes/reloj.webp" alt="Reloj" class="nav-icon" /> <!-- Asegúrate de que este icono exista -->
+      </ion-segment-button>
     </ion-segment>
   </ion-toolbar>
 </ion-footer>
