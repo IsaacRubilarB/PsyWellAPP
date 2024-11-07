@@ -8,19 +8,25 @@
       <ion-item>
         <ion-label position="floating">Correo Electrónico</ion-label>
         <ion-input type="email" formControlName="email" required></ion-input>
-      </ion-item>        
+      </ion-item>
       <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" class="error-message">
         Por favor, introduce un correo electrónico válido.
       </div>
       <ion-item>
         <ion-label position="floating">Contraseña</ion-label>
         <ion-input type="password" formControlName="password" required></ion-input>
-      </ion-item>        
+      </ion-item>
       <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="error-message">
         La contraseña es obligatoria.
       </div>
       <ion-button expand="full" type="submit">Ingresar</ion-button>
     </form>
+
+    <!-- Botón de Inicio de Sesión con Google -->
+    <ion-button expand="full" color="danger" (click)="loginWithGoogle()">
+      <ion-icon name="logo-google"></ion-icon> Iniciar sesión con Google
+    </ion-button>
+
     <div class="register-link" (click)="toggleRegisterMode()">
       Registrar <ion-icon name="arrow-forward-outline"></ion-icon>
     </div>
@@ -36,7 +42,7 @@
       <!-- Campo para Nombre -->
       <ion-item>
         <ion-label position="floating">Nombre</ion-label>
-        <ion-input  placeholder="Ingrese nombre o alias" type="text" formControlName="nombre" required></ion-input>
+        <ion-input placeholder="Ingrese nombre o alias" type="text" formControlName="nombre" required></ion-input>
       </ion-item>
       <div *ngIf="registerForm.get('nombre')?.invalid && registerForm.get('nombre')?.touched" class="error-message">
         El nombre es obligatorio.
@@ -81,7 +87,7 @@
       <!-- Campo para Contraseña -->
       <ion-item>
         <ion-label position="floating">Contraseña</ion-label>
-        <ion-input  placeholder="Ingrese Contraseña" type="password" formControlName="password" required></ion-input>
+        <ion-input placeholder="Ingrese Contraseña" type="password" formControlName="password" required></ion-input>
       </ion-item>
       <div *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched" class="error-message">
         La contraseña es obligatoria.
@@ -90,7 +96,7 @@
       <!-- Campo para Confirmar Contraseña -->
       <ion-item>
         <ion-label position="floating">Confirmar Contraseña</ion-label>
-        <ion-input  placeholder="Confirme Contraseña" type="password" formControlName="confirmPassword" required></ion-input>
+        <ion-input placeholder="Confirme Contraseña" type="password" formControlName="confirmPassword" required></ion-input>
       </ion-item>
       <div *ngIf="registerForm.get('confirmPassword')?.value !== registerForm.get('password')?.value && registerForm.get('confirmPassword')?.touched" class="error-message">
         Las contraseñas no coinciden.
@@ -98,5 +104,10 @@
 
       <ion-button expand="full" type="submit">Crear Cuenta</ion-button>
     </form>
+
+    <!-- Botón de Inicio de Sesión con Google para Registro -->
+    <ion-button expand="full" color="danger" (click)="loginWithGoogle()">
+      <ion-icon name="logo-google"></ion-icon> Iniciar sesión con Google
+    </ion-button>
   </div>
 </ion-content>

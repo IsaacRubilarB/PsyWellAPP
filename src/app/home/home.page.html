@@ -17,12 +17,24 @@
     <img src="assets/perfil.png" alt="User Profile">
   </ion-avatar>
   <div  class="user-details">
-    <h2>{{ userName }}</h2> <!-- Muestra el nombre del usuario -->
-    <p>{{ userEmail }}</p> <!-- Muestra el correo electrónico del usuario -->
+    <h2>{{ userName }}</h2>
+    <p>{{ userEmail }}</p>
   </div>
 </div>
+<!----------datos fisiológicos--------------->
 
+<!----------datos fisiológicosssssssss--------------->
 
+<!----------citas--------------->
+      <div style="margin-bottom: 1%;" class="cita-card" *ngFor="let cita of citas">
+      <div class="cita-info">
+          <h3>Paciente ID: {{ cita.idUsuario }}</h3>
+          <p class="cita-fecha">Fecha y Hora cita: {{ cita.fechaHora | date:'short' }}</p>
+          <h4>Ubicación: {{ cita.ubicacion }}</h4>
+          <h4>Comentarios: {{ cita.comentarios }}</h4>
+          <h4>estado: {{ cita.estado }}</h4>
+      </div>
+    </div>
 </ion-content>
 <ion-button (click)="logout()">Cerrar Sesión</ion-button>
 

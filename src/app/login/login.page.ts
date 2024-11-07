@@ -4,6 +4,8 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Router } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { CitasService } from '../services/userService';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
 
 @Component({
   selector: 'app-login-register',
@@ -11,13 +13,9 @@ import { CitasService } from '../services/userService';
   styleUrls: ['./login.page.scss'],
 })
 export class LoginRegisterComponent implements OnInit {
-validateDateFormat() {
-throw new Error('Method not implemented.');
-}
   loginForm: FormGroup;
   registerForm: FormGroup;
   isRegisterMode: boolean = false;
-dateError: any;
 
   constructor(
     private fb: FormBuilder,
@@ -36,7 +34,7 @@ dateError: any;
       email: ['', [Validators.required, Validators.email]],
       fechaNacimiento: ['', Validators.required],
       genero: ['', Validators.required],
-      password: ['', [Validators.required, Validators.minLength(6)]], 
+      password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', Validators.required],
     });
   }
@@ -60,58 +58,57 @@ dateError: any;
 
   async register() {
     if (this.registerForm.invalid) {
-      console.log(this.registerForm.errors);
       alert('Formulario de registro no válido');
       return;
     }
-  
+
     const { password, confirmPassword, ...userData } = this.registerForm.value;
-  
+
     if (password !== confirmPassword) {
       alert('Las contraseñas no coinciden');
       return;
     }
-  
+
+    if (new Date(userData.fechaNacimiento) > new Date()) {
+      alert('La fecha de nacimiento no es válida');
+      return;
+    }
+
     try {
       const userCredential = await this.afAuth.createUserWithEmailAndPassword(
         userData.email,
         password
       );
-  
+
       const uid = userCredential.user?.uid;
-  
-      // Llamar al backend para registrar al usuario en PostgreSQL
-      userData.contrasena = password; // Añadir la contraseña al objeto userData
-      userData.estado = true; // Estado predeterminado
-      userData.perfil = 'paciente'; // Asignar 'paciente' como valor fijo
-  
+
+      userData.contrasena = password;
+      userData.estado = true;
+      userData.perfil = 'paciente';
       this.citasService.registrarUsuario(userData).subscribe(
         async (response) => {
-          console.log('Usuario agregado a PostgreSQL:', response);
-          
-          // Asegúrate de que la respuesta contiene el idUsuario
           if (response && response.idUsuario) {
             const postgresId = response.idUsuario;
-  
-            // Guardar en Firestore
-            await this.afs.collection('users').doc(uid).set({ 
+
+            await this.afs.collection('users').doc(uid).set({
               nombre: userData.nombre,
               email: userData.email,
-              idUsuario: postgresId, // Almacena el ID de PostgreSQL
+              idUsuario: postgresId,
             });
-  
-            console.log('ID de usuario guardado en Firestore:', postgresId); // Debug
+
             this.router.navigate(['/home']);
           } else {
-            console.error('No se recibió idUsuario de la respuesta:', response);
+            alert('No se pudo agregar el usuario a PostgreSQL');
           }
         },
         (error) => {
           console.error('Error al agregar usuario a PostgreSQL:', error);
+          alert('Hubo un error al registrarse');
         }
       );
     } catch (error) {
       console.error('Error al registrar usuario:', error);
+      alert('Error al registrar usuario');
     }
   }
 
@@ -120,14 +117,29 @@ dateError: any;
       const { email, password } = this.loginForm.value;
       try {
         await this.afAuth.signInWithEmailAndPassword(email, password);
-        console.log('Inicio de sesión exitoso');
         this.router.navigate(['/home']);
       } catch (error) {
         console.error('Error al iniciar sesión:', error);
-        alert('Error al iniciar sesión: ' + error);
       }
     } else {
       alert('Por favor completa todos los campos correctamente.');
+    }
+  }
+
+  async loginWithGoogle() {
+    try {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      const userCredential = await this.afAuth.signInWithPopup(provider);
+
+      const user = userCredential.user;
+      if (user) {
+        this.router.navigate(['/home']);
+      } else {
+        alert('No se pudo obtener el usuario de Google');
+      }
+    } catch (error) {
+      console.error('Error al iniciar sesión con Google:', error);
+      alert('Error al iniciar sesión con Google');
     }
   }
 
@@ -135,9 +147,9 @@ dateError: any;
     try {
       await this.afAuth.signOut();
       this.router.navigate(['/login']);
-      console.log('Cierre de sesión exitoso');
     } catch (error) {
       console.error('Error al cerrar sesión:', error);
+      alert('Error al cerrar sesión');
     }
   }
 }
