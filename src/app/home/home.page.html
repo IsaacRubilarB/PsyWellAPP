@@ -11,53 +11,59 @@
     </ion-button>
   </div>
 
-<!-- Información del perfil -->
-<div style="margin-bottom: 5%;" class="profile-info">
-  <ion-avatar>
-    <img src="assets/perfil.png" alt="User Profile">
-  </ion-avatar>
-  <div  class="user-details">
-    <h2>{{ userName }}</h2>
-    <p>{{ userEmail }}</p>
-  </div>
-</div>
-<!----------datos fisiológicos--------------->
-
-<!----------datos fisiológicosssssssss--------------->
-
-<!----------citas--------------->
-      <div style="margin-bottom: 1%;" class="cita-card" *ngFor="let cita of citas">
-      <div class="cita-info">
-          <h3>Paciente ID: {{ cita.idUsuario }}</h3>
-          <p class="cita-fecha">Fecha y Hora cita: {{ cita.fechaHora | date:'short' }}</p>
-          <h4>Ubicación: {{ cita.ubicacion }}</h4>
-          <h4>Comentarios: {{ cita.comentarios }}</h4>
-          <h4>estado: {{ cita.estado }}</h4>
-      </div>
+  <!-- Información del perfil -->
+  <div style="margin-bottom: 5%;" class="profile-info">
+    <ion-avatar>
+      <img src="assets/perfil.png" alt="User Profile">
+    </ion-avatar>
+    <div class="user-details">
+      <h2>{{ userName }}</h2>
+      <p>{{ userEmail }}</p>
     </div>
+  </div>
+
+  <ion-button (click)="openPsychologistModal()">Seleccionar Psicólogo</ion-button>
+
+  <!-- Mostrar los horarios disponibles si se ha seleccionado un psicólogo -->
+  <div *ngIf="selectedPsychologist">
+    <h3>Horarios disponibles para {{ selectedPsychologist.name }}</h3>
+    <ion-list>
+      <ion-item *ngFor="let time of availableTimes">
+        <ion-label>{{ time }}</ion-label>
+      </ion-item>
+    </ion-list>
+  </div>
+  
+
+  <!-- Mostrar las citas -->
+  <div style="margin-bottom: 1%;" class="cita-card" *ngFor="let cita of citas">
+    <div class="cita-info">
+      <h3>Paciente ID: {{ cita.idUsuario }}</h3>
+      <p class="cita-fecha">Fecha y Hora cita: {{ cita.fechaHora | date:'short' }}</p>
+      <h4>Ubicación: {{ cita.ubicacion }}</h4>
+      <h4>Comentarios: {{ cita.comentarios }}</h4>
+      <h4>Estado: {{ cita.estado }}</h4>
+    </div>
+  </div>
 </ion-content>
+
 <ion-button (click)="logout()">Cerrar Sesión</ion-button>
 
 <ion-footer>
   <ion-toolbar style="width: 100%;">
     <ion-segment>
-      <!-- Botón de registrar emociones -->
       <ion-segment-button [ngClass]="{'active-segment': currentSegment === 'registrar-emociones'}" (click)="navigateTo('/registrar-emociones')">
         <img src="assets/emotes/calendario.svg" alt="Registrar emociones" class="nav-icon" />
       </ion-segment-button>
-      <!-- Botón de home -->
       <ion-segment-button [ngClass]="{'active-segment': currentSegment === 'home'}" (click)="navigateTo('/home')">
         <img src="assets/emotes/home.svg" alt="Home" class="nav-icon" />
       </ion-segment-button>
-      <!-- Botón de tips -->
       <ion-segment-button [ngClass]="{'active-segment': currentSegment === 'tips'}" (click)="navigateTo('/tips')">
         <img src="assets/emotes/tranquilidad.svg" alt="Tips" class="nav-icon" />
       </ion-segment-button>
-      <!-- Botón de reloj -->
       <ion-segment-button [ngClass]="{'active-segment': currentSegment === 'reloj'}" (click)="navigateTo('/reloj')">
-        <img src="assets/emotes/reloj.webp" alt="Reloj" class="nav-icon" /> <!-- Asegúrate de que este icono exista -->
+        <img src="assets/emotes/reloj.webp" alt="Reloj" class="nav-icon" />
       </ion-segment-button>
     </ion-segment>
   </ion-toolbar>
 </ion-footer>
-

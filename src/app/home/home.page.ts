@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ModalController } from '@ionic/angular'; // Asegúrate de que ModalController esté importado
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { CitasService } from '../services/citasService'; // Asegúrate de que la ruta sea correcta
-import { Cita, ListaCitasResponse } from '../home/cita.model'; // Cambia la ruta al nuevo archivo
+import { CitasService } from '../services/citasService';
+import { PsicologoModalComponent } from '../psicologo-modal/psicologo-modal.component'; // Asegúrate de importar el componente del modal
+import { ListaCitasResponse } from './cita.model';
 
 @Component({
   selector: 'app-home',
@@ -11,59 +13,68 @@ import { Cita, ListaCitasResponse } from '../home/cita.model'; // Cambia la ruta
   styleUrls: ['./home.page.scss'],
 })
 export class HomePage implements OnInit {
+navigateTo(arg0: string) {
+throw new Error('Method not implemented.');
+}
   currentSegment: string = 'home';
-  userName: string = ''; // Variable para almacenar el nombre del usuario
-  userEmail: string | null = ''; // Variable para el correo del usuario
+  userName: string = '';
+  userEmail: string | null = '';
 
-  // Variables para los datos IoT
-  heartRate: number = 0;
-  bodyTemperature: number = 0;
-  activityLevel: number = 0;
-  hydration: number = 0;
-  sleepQuality: number = 0;
-
-  citas: ListaCitasResponse['data'] | undefined; 
+  citas: any[] = [];
   idUsuario: any;
+
+  psychologists = [
+    { 
+      name: 'Psicólogo 1', 
+      availableTimes: ['09:00', '10:00', '11:00'] 
+    },
+    { 
+      name: 'Psicólogo 2', 
+      availableTimes: ['12:00', '14:00', '15:00'] 
+    }
+    // otros psicólogos...
+  ];
+
+  selectedPsychologist: any = null;
+  availableTimes: string[] = [];
 
   constructor(
     private router: Router,
     private afAuth: AngularFireAuth,
     private afs: AngularFirestore,
-    private citasService: CitasService
+    private citasService: CitasService,
+    private modalController: ModalController
   ) {}
 
   ngOnInit() {
-    this.loadUserName(); // Llama a la función para obtener el nombre del usuario
-    this.loadCitas(); // Cargar las citas al iniciar el componente
+    this.loadUserName();
+    this.loadCitas();
+    
   }
 
   async loadUserName() {
     const user = await this.afAuth.currentUser;
     if (user) {
-      const uid = user.uid; // Obtiene el uid del usuario
-      this.userEmail = user.email || ''; // Asigna el correo del usuario
-  
-      // Recupera el documento del usuario usando el uid
+      const uid = user.uid;
+      this.userEmail = user.email || '';
+
       const userDoc = await this.afs.collection('users').doc(uid).get().toPromise();
-  
-      // Verifica que userDoc no sea undefined y que exista
+
       if (userDoc && userDoc.exists) {
-        const userData = userDoc.data() as { nombre?: string, idUsuario?: string }; // Asegúrate de tener 'idUsuario' en Firestore
-        this.userName = userData?.nombre || 'Usuario'; // Asigna el nombre del usuario o un valor por defecto
-        
-        // Guarda el idUsuario en una variable para usarlo más adelante
-        this.idUsuario = userData?.idUsuario || ''; // Asigna el ID de usuario de PostgreSQL
+        const userData = userDoc.data() as { nombre?: string, idUsuario?: string };
+        this.userName = userData?.nombre || 'Usuario';
+        this.idUsuario = userData?.idUsuario || '';
       } else {
-        this.userName = 'Usuario'; // Valor por defecto si no se encuentra el documento
+        this.userName = 'Usuario';
       }
     }
   }
 
   loadCitas() {
     this.citasService.listarCitas().subscribe(
-      (response: ListaCitasResponse) => {
+      (response: any) => {
         if (response.status === 'success') {
-          this.citas = response.data; // Asigna las citas a la variable
+          this.citas = response.data;
         } else {
           console.error('Error al cargar citas:', response.status);
         }
@@ -74,9 +85,32 @@ export class HomePage implements OnInit {
     );
   }
 
-  navigateTo(path: string) {
-    this.router.navigate([path]);
-    this.currentSegment = path.substring(1);
+  async openPsychologistModal() {
+    const modal = await this.modalController.create({
+      component: PsicologoModalComponent, // Aquí estamos usando el componente del modal
+      componentProps: {
+        psychologists: this.psychologists // Pasamos la lista de psicólogos
+      }
+    });
+
+    modal.onDidDismiss().then((result) => {
+      if (result.data?.psychologist) {
+        this.selectedPsychologist = result.data.psychologist;
+        this.generateAvailableTimes();
+      }
+    });
+
+    return await modal.present();
+  }
+
+  generateAvailableTimes() {
+    if (this.selectedPsychologist) {
+      const times = [];
+      for (let hour = 9; hour <= 18; hour++) {
+        times.push(`${hour}:00 - ${hour + 1}:00`);
+      }
+      this.availableTimes = times;
+    }
   }
 
   async logout() {

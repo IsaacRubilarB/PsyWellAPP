@@ -69,3 +69,6 @@ testem.log
 # Archivos del sistema
 .DS_Store
 Thumbs.db
+
+#google
+google-services.json

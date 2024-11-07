@@ -1,0 +1,32 @@
+.success-message {
+    text-align: center;
+    margin-top: 20px;
+    color: green;
+    font-weight: bold;
+  }
+  
+.hour-taken {
+background-color: #e0e0e0;  // Fondo gris para la hora seleccionada
+color: #ffffff;  // Texto blanco para la hora seleccionada
+border-radius: 5px;  // Bordes redondeados (opcional)
+}
+
+.hour-taken {
+    background-color: #e0e0e0;  // Fondo gris para la hora seleccionada
+    color: #ffffff;  // Texto blanco para la hora seleccionada
+    border-radius: 5px;  // Bordes redondeados (opcional)
+  }
+  
+  ion-item:hover {
+    background-color: #d1d1d1;  // Fondo más claro al pasar el mouse
+    cursor: pointer;  // Muestra el cursor como puntero para indicar interactividad
+  }
+  
+  ion-item.selected:hover {
+    background-color: #a0a0a0;  // Fondo más oscuro cuando la hora ya está seleccionada
+  }
+  
+  ion-button {
+    margin-top: 20px;
+  }
+  

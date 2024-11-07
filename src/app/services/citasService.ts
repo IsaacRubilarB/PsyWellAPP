@@ -9,6 +9,8 @@ import { ListaCitasResponse } from '../home/home.page';
 export class CitasService {
 
   private listarCitaUrl = 'http://localhost:8084/listarCitas';
+  private registrarCitaUrl = 'http://localhost:8084/registrarCita';
+
 
   constructor(private http: HttpClient) {}
 
@@ -16,5 +18,9 @@ export class CitasService {
     return this.http.get<ListaCitasResponse>(this.listarCitaUrl);
   }
   
+  registrarUsuario(userData: any): Observable<any> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.post<any>(this.registrarCitaUrl, userData, { headers });
+  }
   
 }

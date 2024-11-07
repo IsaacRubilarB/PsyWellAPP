@@ -13,9 +13,14 @@ import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { AuthService } from './services/auth.service';
 import { AuthGuard } from './guards/auth.guard';
 
+// Importa tu componente del modal
+import { PsicologoModalComponent } from './psicologo-modal/psicologo-modal.component';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [
+    AppComponent,
+    PsicologoModalComponent, // Añadir aquí tu componente del modal
+  ],
   imports: [
     BrowserModule,
     IonicModule.forRoot(),
@@ -24,17 +29,15 @@ import { AuthGuard } from './guards/auth.guard';
     FormsModule,
     ReactiveFormsModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
-    AngularFireAuthModule, // Asegúrate de que este módulo está importado
-    RouterModule.forRoot([]), // Tu configuración de rutas
+    AngularFireAuthModule, 
+    RouterModule.forRoot([]),
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     provideHttpClient(withInterceptorsFromDi()),
     AuthService,
     AuthGuard,
-    
   ],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
-

@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Router } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { CitasService } from '../services/userService';
+import { UsersService } from '../services/userService';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 
@@ -22,7 +22,7 @@ export class LoginRegisterComponent implements OnInit {
     private afAuth: AngularFireAuth,
     private router: Router,
     private afs: AngularFirestore,
-    private citasService: CitasService
+    private usersService: UsersService
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -85,7 +85,7 @@ export class LoginRegisterComponent implements OnInit {
       userData.contrasena = password;
       userData.estado = true;
       userData.perfil = 'paciente';
-      this.citasService.registrarUsuario(userData).subscribe(
+      this.usersService.registrarUsuario(userData).subscribe(
         async (response) => {
           if (response && response.idUsuario) {
             const postgresId = response.idUsuario;

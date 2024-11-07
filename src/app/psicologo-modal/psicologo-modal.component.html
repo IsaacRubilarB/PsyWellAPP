@@ -1,0 +1,63 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Selecciona un Psicólogo</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cancel()">Cancelar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Lista de psicólogos -->
+  <ion-list *ngIf="psychologists.length > 0">
+    <ion-item *ngFor="let psychologist of psychologists">
+      <ion-checkbox slot="start" [checked]="selectedPsychologist === psychologist" (ionChange)="selectPsychologist(psychologist)"></ion-checkbox>
+      <ion-label>{{ psychologist.nombre }}</ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ion-label *ngIf="psychologists.length === 0">
+    No se encontraron psicólogos disponibles.
+  </ion-label>
+
+  <!-- Mostrar el botón solo si hay un psicólogo seleccionado -->
+  <ion-button *ngIf="selectedPsychologist" expand="full" (click)="showAvailableTimes()">
+    Seleccionar Psicólogo
+  </ion-button>
+
+<!-- Mostrar un selector de fecha para la cita -->
+<ion-item *ngIf="showTimes">
+  <ion-label position="floating">Selecciona la fecha de la cita</ion-label>
+  <ion-datetime 
+    [(ngModel)]="selectedDate" 
+    displayFormat="DD/MM/YYYY" 
+    min="2024-01-01" 
+    max="2024-12-31" 
+    presentation="date">
+  </ion-datetime>
+</ion-item>
+
+  <!-- Mostrar horarios disponibles solo si hay un psicólogo seleccionado y se presionó el botón -->
+  <ion-list *ngIf="showTimes">
+    <ion-item *ngFor="let time of selectedPsychologist?.availableTimes">
+      <!-- Usamos ion-checkbox pero nos aseguramos que solo un horario pueda estar marcado -->
+      <ion-checkbox 
+        slot="start" 
+        [checked]="selectedTime === time" 
+        (ionChange)="selectTime(time)">
+      </ion-checkbox>
+      <ion-label>{{ time }}</ion-label>
+      <ion-icon *ngIf="selectedTime === time" name="checkmark-circle" slot="end"></ion-icon>
+    </ion-item>
+  </ion-list>
+
+  <!-- Botón para aceptar la cita (solo se muestra cuando se selecciona una hora y fecha) -->
+  <ion-button *ngIf="selectedPsychologist && selectedTime && selectedDate" expand="full" (click)="acceptAppointment()">
+    Aceptar Cita
+  </ion-button>
+
+  <!-- Mostrar mensaje de éxito -->
+  <div *ngIf="successMessage" class="success-message">
+    <ion-label>{{ successMessage }}</ion-label>
+  </div>
+</ion-content>
