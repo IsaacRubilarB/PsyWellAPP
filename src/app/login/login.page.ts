@@ -129,17 +129,17 @@ export class LoginRegisterComponent implements OnInit {
   async loginWithGoogle() {
     try {
       const provider = new firebase.auth.GoogleAuthProvider();
-      const userCredential = await this.afAuth.signInWithPopup(provider);
+      const result = await this.afAuth.signInWithPopup(provider);
 
-      const user = userCredential.user;
-      console.log('User info:', user); // Agrega un log detallado
+      const user = result.user;
+      console.log('User info:', user);  // Log detallado para depurar
       if (user) {
         this.router.navigate(['/home']);
       } else {
         alert('No se pudo obtener el usuario de Google');
       }
     } catch (error) {
-      console.error('Error al iniciar sesión con Google:', error);
+      console.error('Error al iniciar sesión con Google:', error);  // Log del error detallado
       alert('Error al iniciar sesión con Google');
     }
   }

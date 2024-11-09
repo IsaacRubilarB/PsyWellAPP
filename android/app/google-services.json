@@ -14,20 +14,28 @@
       },
       "oauth_client": [
         {
-          "client_id": "647122589425-i7q2o0pvtdqatgsei0co4mjut7fcefk1.apps.googleusercontent.com",
+          "client_id": "471287872717-5llav9vu8sqakh057lt0e2d26qvt4t4f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.psywell.app",
+            "certificate_hash": "6d51e93b5f20bc82aef7e6a1058ef09277ffc9a8"
+          }
+        },
+        {
+          "client_id": "471287872717-uonv4m9k2h6llpf0r7md4l9tca5rvk7t.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAFJUcrBDDLPM2SscMvi1x_jUv6Wlqnukg"
+          "current_key": "AIzaSyCbBaKkxOE6OQcK8jm3yS6bsF2oz4BlmxU"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "647122589425-i7q2o0pvtdqatgsei0co4mjut7fcefk1.apps.googleusercontent.com",
+              "client_id": "471287872717-uonv4m9k2h6llpf0r7md4l9tca5rvk7t.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
