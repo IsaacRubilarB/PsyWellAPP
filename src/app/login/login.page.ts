@@ -132,6 +132,7 @@ export class LoginRegisterComponent implements OnInit {
       const userCredential = await this.afAuth.signInWithPopup(provider);
 
       const user = userCredential.user;
+      console.log('User info:', user); // Agrega un log detallado
       if (user) {
         this.router.navigate(['/home']);
       } else {

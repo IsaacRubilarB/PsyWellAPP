@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.huawei.agconnect'
+apply plugin: 'com.google.gms.google-services'
 
 android {
     namespace "com.psywell.app"

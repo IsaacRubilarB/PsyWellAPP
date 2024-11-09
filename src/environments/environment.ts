@@ -10,10 +10,10 @@ export const environment = {
       projectId: "psywell-ab0ee",
       storageBucket: "psywell-ab0ee.appspot.com",
       messagingSenderId: "471287872717",
-      appId: "1:471287872717:web:588c0acfc84728c7057d84",
+      appId: "1:471287872717:android:e8d0d37da2ea3304057d84",
       measurementId: "G-TG8E6CBF8D"
     }
-    
+
   };
 
 /*

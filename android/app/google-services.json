@@ -7,27 +7,27 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:471287872717:android:5a8312c27ec91f72057d84",
+        "mobilesdk_app_id": "1:471287872717:android:e8d0d37da2ea3304057d84",
         "android_client_info": {
-          "package_name": "com.company"
+          "package_name": "com.psywell.app"
         }
       },
       "oauth_client": [
         {
-          "client_id": "471287872717-uonv4m9k2h6llpf0r7md4l9tca5rvk7t.apps.googleusercontent.com",
+          "client_id": "647122589425-i7q2o0pvtdqatgsei0co4mjut7fcefk1.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCbBaKkxOE6OQcK8jm3yS6bsF2oz4BlmxU"
+          "current_key": "AIzaSyAFJUcrBDDLPM2SscMvi1x_jUv6Wlqnukg"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "471287872717-uonv4m9k2h6llpf0r7md4l9tca5rvk7t.apps.googleusercontent.com",
+              "client_id": "647122589425-i7q2o0pvtdqatgsei0co4mjut7fcefk1.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
