@@ -20,10 +20,11 @@
     No se encontraron psicólogos disponibles.
   </ion-label>
 
-  <!-- Mostrar el botón solo si hay un psicólogo seleccionado -->
-  <ion-button *ngIf="selectedPsychologist" expand="full" (click)="showAvailableTimes()">
-    Seleccionar Psicólogo
-  </ion-button>
+<!-- Mostrar el botón solo si hay un psicólogo seleccionado -->
+<ion-button *ngIf="selectedPsychologist" expand="full" (click)="showAvailableTimes()">
+  Seleccionar Psicólogo
+</ion-button>
+
 
 <!-- Mostrar un selector de fecha para la cita -->
 <ion-item *ngIf="showTimes">

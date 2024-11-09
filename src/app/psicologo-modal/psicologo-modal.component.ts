@@ -16,6 +16,7 @@ export class PsicologoModalComponent implements OnInit {
   selectedDate: string = ''; // Fecha seleccionada
   successMessage: string = ''; // Mensaje de éxito
   showTimes: boolean = false; // Mostrar u ocultar los horarios
+  selectedPsychologistId: number | null = null; // Aquí guardamos el id del psicólogo seleccionado
 
   constructor(
     private modalController: ModalController,
@@ -42,8 +43,11 @@ export class PsicologoModalComponent implements OnInit {
   selectPsychologist(psychologist: any) {
     if (this.selectedPsychologist === psychologist) {
       this.selectedPsychologist = null; // Desmarcar psicólogo si ya estaba seleccionado
+      this.selectedPsychologistId = null; // Limpiar id cuando se desmarca el psicólogo
     } else {
       this.selectedPsychologist = psychologist;
+      // Capturar el id del psicólogo cuando es seleccionado
+      this.selectedPsychologistId = psychologist.idUsuario;
     }
     this.selectedTime = ''; // Limpiar la hora seleccionada al cambiar psicólogo
     this.selectedDate = ''; // Limpiar la fecha seleccionada
@@ -52,9 +56,14 @@ export class PsicologoModalComponent implements OnInit {
 
   showAvailableTimes() {
     if (this.selectedPsychologist) {
+      // Log del psicólogo seleccionado
+      console.log('Psicólogo seleccionado:', this.selectedPsychologist);
+      
+      // Establecer la variable showTimes en true para mostrar los horarios
       this.showTimes = true;
     }
   }
+  
 
   selectTime(time: string) {
     this.selectedTime = time;
@@ -70,7 +79,7 @@ export class PsicologoModalComponent implements OnInit {
       await alert.present();
       return;
     }
-
+  
     if (!this.selectedTime) {
       const alert = await this.alertController.create({
         header: 'Selección de Hora',
@@ -80,7 +89,7 @@ export class PsicologoModalComponent implements OnInit {
       await alert.present();
       return;
     }
-
+  
     if (!this.selectedDate) {
       const alert = await this.alertController.create({
         header: 'Selección de Fecha',
@@ -90,9 +99,12 @@ export class PsicologoModalComponent implements OnInit {
       await alert.present();
       return;
     }
-
+  
+    // Mostrar el id del psicólogo seleccionado
+    console.log('ID del Psicólogo seleccionado:', this.selectedPsychologistId);
+  
     this.successMessage = `¡Cita con ${this.selectedPsychologist.nombre} el ${this.selectedDate} a las ${this.selectedTime} tomada exitosamente!`;
-
+  
     setTimeout(() => {
       this.modalController.dismiss();
       this.router.navigate(['/home']);

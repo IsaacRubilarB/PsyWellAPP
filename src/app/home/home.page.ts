@@ -13,9 +13,11 @@ import { ListaCitasResponse } from './cita.model';
   styleUrls: ['./home.page.scss'],
 })
 export class HomePage implements OnInit {
-navigateTo(arg0: string) {
-throw new Error('Method not implemented.');
-}
+  
+  navigateTo(route: string) {
+    this.router.navigate([route]);
+  }
+  
   currentSegment: string = 'home';
   userName: string = '';
   userEmail: string | null = '';
@@ -23,17 +25,7 @@ throw new Error('Method not implemented.');
   citas: any[] = [];
   idUsuario: any;
 
-  psychologists = [
-    { 
-      name: 'Psicólogo 1', 
-      availableTimes: ['09:00', '10:00', '11:00'] 
-    },
-    { 
-      name: 'Psicólogo 2', 
-      availableTimes: ['12:00', '14:00', '15:00'] 
-    }
-    // otros psicólogos...
-  ];
+  psychologists = [];
 
   selectedPsychologist: any = null;
   availableTimes: string[] = [];
