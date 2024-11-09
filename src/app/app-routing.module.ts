@@ -9,7 +9,8 @@ const routes: Routes = [
   { path: 'registrar-emociones', loadChildren: () => import('./registrar-emociones/registrar-emociones.module').then(m => m.RegistrarEmocionesPageModule), canActivate: [AuthGuard] },
   { path: 'tips', loadChildren: () => import('./tips/tips.module').then(m => m.TipsPageModule), canActivate: [AuthGuard] },
   { path: 'reloj', loadChildren: () => import('./reloj/reloj.module').then(m => m.RelojModule), canActivate: [AuthGuard] }, // Nueva ruta para el módulo Reloj
-  { path: '**', redirectTo: 'login' }
+  { path: '**', redirectTo: 'login' },
+  
 ];
 
 @NgModule({

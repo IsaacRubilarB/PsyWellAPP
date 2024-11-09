@@ -41,6 +41,7 @@
     "swiper": "^11.1.14",
     "tslib": "^2.3.0",
     "tsparticles": "^3.5.0",
+    "wavesurfer.js": "^7.8.8",
     "zone.js": "~0.14.2"
   },
   "devDependencies": {
