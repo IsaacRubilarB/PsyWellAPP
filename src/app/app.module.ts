@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy, RouterModule } from '@angular/router';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
@@ -13,13 +13,15 @@ import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { AuthService } from './services/auth.service';
 import { AuthGuard } from './guards/auth.guard';
 
-// Importa tu componente del modal
+import { SafePipe } from './pipes/safe.pipe';
+
 import { PsicologoModalComponent } from './psicologo-modal/psicologo-modal.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    PsicologoModalComponent, // Añadir aquí tu componente del modal
+    PsicologoModalComponent,
+    SafePipe // Declara el SafePipe aquí
   ],
   imports: [
     BrowserModule,
@@ -38,6 +40,7 @@ import { PsicologoModalComponent } from './psicologo-modal/psicologo-modal.compo
     AuthService,
     AuthGuard,
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA] // Asegura el uso de componentes de Ionic
 })
 export class AppModule {}
