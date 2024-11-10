@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.huawei.agconnect'
 apply plugin: 'com.google.gms.google-services'
 
 android {
@@ -36,17 +35,10 @@ dependencies {
     androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
     implementation project(':capacitor-cordova-android-plugins')
-
-    implementation "com.huawei.agconnect:agconnect-core:1.9.1.300"
+    implementation 'com.huawei.hms:health:6.11.0.303'
+    implementation 'com.huawei.hms:hwid:6.12.0.300'
+    implementation 'com.google.firebase:firebase-auth:21.0.5'
+    implementation 'com.google.android.gms:play-services-auth:20.4.1'
 }
 
-apply from: 'capacitor.build.gradle'
-
-try {
-    def servicesJSON = file('google-services.json')
-    if (servicesJSON.text) {
-        apply plugin: 'com.google.gms.google-services'
-    }
-} catch (Exception e) {
-    logger.info("google-services.json not found, google-services plugin not applied. Push Notifications won't work")
-}
+apply plugin: 'com.google.gms.google-services'

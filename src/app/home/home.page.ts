@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ModalController } from '@ionic/angular'; // Asegúrate de que ModalController esté importado
+import { ModalController } from '@ionic/angular'; 
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { CitasService } from '../services/citasService';
-import { PsicologoModalComponent } from '../psicologo-modal/psicologo-modal.component'; // Asegúrate de importar el componente del modal
+import { PsicologoModalComponent } from '../psicologo-modal/psicologo-modal.component'; 
 import { ListaCitasResponse } from './cita.model';
 
 @Component({
@@ -79,9 +79,9 @@ export class HomePage implements OnInit {
 
   async openPsychologistModal() {
     const modal = await this.modalController.create({
-      component: PsicologoModalComponent, // Aquí estamos usando el componente del modal
+      component: PsicologoModalComponent, 
       componentProps: {
-        psychologists: this.psychologists // Pasamos la lista de psicólogos
+        psychologists: this.psychologists 
       }
     });
 

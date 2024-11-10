@@ -11,6 +11,7 @@ const routes: Routes = [
   { path: 'reloj', loadChildren: () => import('./reloj/reloj.module').then(m => m.RelojModule), canActivate: [AuthGuard] }, 
   { path: 'ajustes', loadChildren: () => import('./ajustes/ajustes.module').then(m => m.AjustesPageModule), canActivate: [AuthGuard] }, 
   { path: '**', redirectTo: 'login' }
+
 ];
 
 @NgModule({
