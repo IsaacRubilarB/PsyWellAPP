@@ -26,6 +26,11 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        jcenter()
+        maven { url 'https://dl.google.com/dl/android/maven2' }
+        maven { url 'https://repo.maven.apache.org/maven2' }
+        maven { url 'https://huawei.bintray.com/gms' }
+        maven {url 'https://developer.huawei.com/repo/'}
     }
 }
 
