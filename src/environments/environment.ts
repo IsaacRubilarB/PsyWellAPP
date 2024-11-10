@@ -11,7 +11,8 @@ export const environment = {
       storageBucket: "psywell-ab0ee.appspot.com",
       messagingSenderId: "471287872717",
       appId: "1:471287872717:android:e8d0d37da2ea3304057d84",
-      measurementId: "G-TG8E6CBF8D"
+      measurementId: "G-TG8E6CBF8D",
+      googleClientId: '471287872717-uonv4m9k2h6llpf0r7md4l9tca5rvk7t.apps.googleusercontent.com'
     }
 
   };

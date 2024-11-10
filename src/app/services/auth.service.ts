@@ -1,28 +1,38 @@
 import { Injectable } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
-import firebase from 'firebase/compat/app';
 import { BehaviorSubject } from 'rxjs';
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signOut } from 'firebase/auth';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  user = new BehaviorSubject<firebase.User | null>(null);
+  user = new BehaviorSubject<any>(null);
 
-  constructor(private afAuth: AngularFireAuth) {
-    this.afAuth.onAuthStateChanged(user => {
-      this.user.next(user);
+  constructor() {
+    const auth = getAuth();  // Obtenemos la instancia de Auth de Firebase
+    onAuthStateChanged(auth, (user) => {
+      this.user.next(user);  // Actualizamos el estado del usuario
     });
   }
 
+  // Método de login con correo y contraseña
   async login(email: string, password: string) {
-    return await this.afAuth.signInWithEmailAndPassword(email, password);
+    const auth = getAuth();
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      return userCredential;
+    } catch (error) {
+      console.error("Error al iniciar sesión con correo y contraseña", error);
+      throw error;
+    }
   }
 
+  // Método de login con Google
   async loginWithGoogle() {
-    const provider = new firebase.auth.GoogleAuthProvider();
+    const provider = new GoogleAuthProvider();
+    const auth = getAuth();
     try {
-      const result = await this.afAuth.signInWithPopup(provider);
+      const result = await signInWithPopup(auth, provider);
       return result;
     } catch (error) {
       console.error("Error al iniciar sesión con Google", error);
@@ -30,15 +40,21 @@ export class AuthService {
     }
   }
 
+  // Método de logout
   async logout() {
-    return await this.afAuth.signOut();
+    const auth = getAuth();
+    await signOut(auth);
   }
 
+  // Obtener el usuario actual
   getCurrentUser() {
-    return this.afAuth.currentUser;
+    const auth = getAuth();
+    return auth.currentUser;
   }
 
+  // Verificar si el usuario está autenticado
   isAuthenticated() {
-    return this.afAuth.authState;
+    const auth = getAuth();
+    return onAuthStateChanged(auth, (user) => user !== null);
   }
 }
