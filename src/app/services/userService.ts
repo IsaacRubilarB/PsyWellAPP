@@ -6,6 +6,7 @@ import { Observable, tap } from 'rxjs';
   providedIn: 'root'
 })
 export class UsersService {
+
   private RegistrarUSerUrl = 'http://localhost:8081/agregarUsuario';
   private ListarUserUrl = 'http://localhost:8081/ListarUsuarios';
 
@@ -15,6 +16,7 @@ export class UsersService {
   registrarUsuario(userData: any): Observable<any> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.post<any>(this.RegistrarUSerUrl, userData, { headers });
+    
   }
 
   obtenerUsuarios(): Observable<any> {

@@ -3,6 +3,10 @@ import { ModalController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { UsersService } from '../services/userService';
 import { AlertController } from '@ionic/angular';
+import { CitasService } from '../services/citasService';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+
 
 @Component({
   selector: 'app-psicologo-modal',
@@ -10,29 +14,36 @@ import { AlertController } from '@ionic/angular';
   styleUrls: ['./psicologo-modal.component.scss'],
 })
 export class PsicologoModalComponent implements OnInit {
-  psychologists: any[] = []; // Lista de psicólogos
-  selectedPsychologist: any = null; // Solo puede haber un psicólogo seleccionado
-  selectedTime: string = ''; // Hora seleccionada
-  selectedDate: string = ''; // Fecha seleccionada
-  successMessage: string = ''; // Mensaje de éxito
-  showTimes: boolean = false; // Mostrar u ocultar los horarios
-  selectedPsychologistId: number | null = null; // Aquí guardamos el id del psicólogo seleccionado
+  psychologists: any[] = [];
+  selectedPsychologist: any = null;
+  selectedTime: string = '';
+  selectedDate: string = '';
+  successMessage: string = '';
+  showTimes: boolean = false;
+  selectedPsychologistId: number | null = null;
+  comentarios: any;
+  ubicacion: any;
+  userId: any;
+  estado: any;
 
   constructor(
+    private citasService: CitasService,
     private modalController: ModalController,
     private router: Router,
     private usersService: UsersService,
-    private alertController: AlertController // Inyectar AlertController
+    private alertController: AlertController,
+    private afAuth: AngularFireAuth, // Inyectamos Firebase Auth
+    private afs: AngularFirestore // Inyectamos Firestore
   ) {}
 
   ngOnInit() {
+    this.loadUserId(); // Cargar el ID de usuario autenticado
     this.usersService.obtenerUsuarios().subscribe((usuarios: any) => {
       if (Array.isArray(usuarios.data)) {
+        // Filtrar solo psicólogos
         this.psychologists = usuarios.data.filter((usuario: { perfil: string }) => usuario.perfil === 'psicologo');
-        
-        // Añadir tiempos disponibles a los psicólogos
         this.psychologists.forEach(psychologist => {
-          psychologist.availableTimes = ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00'];
+          psychologist.availableTimes = ['09:00 - 9:59', '10:00 - 10:59', '11:00 - 11:59',  '14:00 - 14:59'];
         });
       } else {
         console.error('La propiedad "data" no es un array:', usuarios.data);
@@ -40,76 +51,101 @@ export class PsicologoModalComponent implements OnInit {
     });
   }
 
+  async loadUserId() {
+    const user = await this.afAuth.currentUser;
+    if (user) {
+      const userDocRef = this.afs.collection('users').doc(user.uid);
+      const userDoc = await userDocRef.get().toPromise();
+  
+      if (userDoc && userDoc.exists) {
+        const userData = userDoc.data() as { idUsuario?: string, perfil?: string };
+        this.userId = userData?.idUsuario || '';
+        console.log('ID de usuario obtenido:', this.userId);
+      } else {
+        console.error('No se encontró el documento del usuario en Firestore');
+      }
+    } else {
+      console.error('No se encontró un usuario autenticado');
+    }
+  }
+  
+
   selectPsychologist(psychologist: any) {
     if (this.selectedPsychologist === psychologist) {
-      this.selectedPsychologist = null; // Desmarcar psicólogo si ya estaba seleccionado
-      this.selectedPsychologistId = null; // Limpiar id cuando se desmarca el psicólogo
+      this.selectedPsychologist = null;
+      this.selectedPsychologistId = null;
     } else {
       this.selectedPsychologist = psychologist;
-      // Capturar el id del psicólogo cuando es seleccionado
       this.selectedPsychologistId = psychologist.idUsuario;
     }
-    this.selectedTime = ''; // Limpiar la hora seleccionada al cambiar psicólogo
-    this.selectedDate = ''; // Limpiar la fecha seleccionada
+    this.selectedTime = '';
+    this.selectedDate = '';
     this.showTimes = false;
   }
 
   showAvailableTimes() {
     if (this.selectedPsychologist) {
-      // Log del psicólogo seleccionado
-      console.log('Psicólogo seleccionado:', this.selectedPsychologist);
-      
-      // Establecer la variable showTimes en true para mostrar los horarios
       this.showTimes = true;
     }
   }
-  
 
   selectTime(time: string) {
     this.selectedTime = time;
   }
 
   async acceptAppointment() {
-    if (!this.selectedPsychologist) {
+    if (!this.selectedPsychologist || !this.selectedTime || !this.selectedDate || !this.userId) {
       const alert = await this.alertController.create({
-        header: 'Selección de Psicólogo',
-        message: 'Por favor, selecciona un psicólogo antes de continuar.',
+        header: 'Error',
+        message: 'Por favor selecciona un psicólogo, fecha y hora para continuar.',
         buttons: ['OK'],
       });
       await alert.present();
       return;
     }
   
-    if (!this.selectedTime) {
-      const alert = await this.alertController.create({
-        header: 'Selección de Hora',
-        message: 'Por favor, selecciona una hora antes de continuar.',
-        buttons: ['OK'],
-      });
-      await alert.present();
-      return;
-    }
+    // Verifica que el ID del paciente y psicólogo estén bien
+    console.log('ID del paciente:', this.userId);  // Verifica que el userId esté bien
+    console.log('ID del psicólogo:', this.selectedPsychologist.idUsuario);  // Verifica que el psicólogo seleccionado tenga el ID correcto
+    
+    const [horaInicio, horaFin] = this.selectedTime.split(' - ');
   
-    if (!this.selectedDate) {
-      const alert = await this.alertController.create({
-        header: 'Selección de Fecha',
-        message: 'Por favor, selecciona una fecha antes de continuar.',
-        buttons: ['OK'],
-      });
-      await alert.present();
-      return;
-    }
+    const appointmentData = {
+      idPaciente: this.userId,
+      idPsicologo: this.selectedPsychologist.idUsuario,
+      ubicacion: this.ubicacion,
+      estado: "Pendiente",
+      fecha: this.selectedDate,
+      horaInicio: horaInicio,
+      horaFin: horaFin,
+      comentarios:"Primera Cita - "+this.comentarios
+    };
+    
   
-    // Mostrar el id del psicólogo seleccionado
-    console.log('ID del Psicólogo seleccionado:', this.selectedPsychologistId);
+    console.log('Datos de cita a enviar:', appointmentData);  // Verifica que los datos sean correctos
   
-    this.successMessage = `¡Cita con ${this.selectedPsychologist.nombre} el ${this.selectedDate} a las ${this.selectedTime} tomada exitosamente!`;
-  
-    setTimeout(() => {
-      this.modalController.dismiss();
-      this.router.navigate(['/home']);
-    }, 2000);
+    this.citasService.registrarCita(appointmentData).subscribe(
+      async () => {
+        this.successMessage = `¡Cita con ${this.selectedPsychologist.nombre} tomada exitosamente!`;
+        setTimeout(() => {
+          this.modalController.dismiss();
+          this.router.navigate(['/home']);
+        }, 2000);
+      },
+      async (error: any) => {
+        const alert = await this.alertController.create({
+          header: 'Error',
+          message: 'Hubo un error al registrar la cita. Intenta nuevamente.',
+          buttons: ['OK'],
+        });
+        await alert.present();
+        console.error('Error al registrar cita:', error);
+      }
+    );
   }
+  
+  
+  
 
   cancel() {
     this.modalController.dismiss();

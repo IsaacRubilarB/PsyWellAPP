@@ -52,6 +52,18 @@
     </ion-item>
   </ion-list>
 
+  <!-- Campo de Ubicación -->
+<ion-item *ngIf="showTimes">
+  <ion-label position="floating">Ubicación</ion-label>
+  <ion-input [(ngModel)]="ubicacion" placeholder="Consultorio, Sala, etc."></ion-input>
+</ion-item>
+
+<!-- Campo de Comentarios -->
+<ion-item *ngIf="showTimes">
+  <ion-label position="floating">Comentarios</ion-label>
+  <ion-textarea [(ngModel)]="comentarios" placeholder="Paciente requiere seguimiento mensual, etc."></ion-textarea>
+</ion-item>
+
   <!-- Botón para aceptar la cita (solo se muestra cuando se selecciona una hora y fecha) -->
   <ion-button *ngIf="selectedPsychologist && selectedTime && selectedDate" expand="full" (click)="acceptAppointment()">
     Aceptar Cita
