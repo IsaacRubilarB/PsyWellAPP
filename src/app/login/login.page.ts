@@ -138,7 +138,7 @@ export class LoginRegisterComponent implements OnInit {
       // Cargar y inicializar gapi
       await gapi.load('auth2', async () => {
         const auth2 = gapi.auth2.init({
-          client_id: '471287872717-uonv4m9k2h6llpf0r7md4l9tca5rvk7t.apps.googleusercontent.com', // Reemplaza con tu client_id
+          client_id: '', // Reemplaza con tu client_id
         });
 
         // Inicia sesión con Google
