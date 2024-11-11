@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { catchError, map, Observable } from 'rxjs';
 import { ListaCitasResponse } from '../home/home.page';
 
 export interface DisponibilidadInput {
-  disponible: unknown;
+  disponible: any;
   idCita: number;
   idPsicologo: number;
   fecha: string; // Fecha en formato 'YYYY-MM-DD'
@@ -28,12 +28,24 @@ export class CitasService {
   }
   
   registrarCita(appointmentData: any) {
-    return this.http.post(this.registrarCitaUrl, appointmentData);
+    return this.http.post(this.registrarCitaUrl, appointmentData).pipe(
+      catchError(error => {
+        console.error('Error al registrar la cita', error);
+        throw error;  // Lanzar el error para manejarlo en el frontend
+      })
+    );
   }
+  
 
-obtenerDisponibilidad(idPsicologo: number, fecha: string): Observable<DisponibilidadInput[]> {
-  const url = `http://localhost:8084/disponibilidad/${idPsicologo}/${fecha}`;
-  return this.http.get<DisponibilidadInput[]>(url);
+  obtenerDisponibilidad(idPsicologo: number, fecha: string): Observable<DisponibilidadInput[]> {
+    const url = `${this.disponibilidadUrl}/${idPsicologo}/${fecha}`;
+    return this.http.get<DisponibilidadInput[]>(url).pipe(
+      map((disponibilidad: any) => {
+        // Filtra las horas disponibles
+        return disponibilidad.filter((cita: DisponibilidadInput) => cita.disponible && cita.horaInicio).map((cita: DisponibilidadInput) => cita.horaInicio);
+      })
+    );
 }
 
+  
 }
