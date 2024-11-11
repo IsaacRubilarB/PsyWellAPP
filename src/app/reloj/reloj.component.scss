@@ -1,170 +1,257 @@
-/* Fondo azul oscuro */
+/* Fondo de contenido */
 ion-content {
-    --background: #105685;
-  }
-  
-  /* Contenedor del encabezado */
-  .header-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-  }
-  
-  /* Centrado del logo */
-  .logo-container {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 10px;
-  }
-  
-  .small-logo {
-    width: 150px;
-  }
-  
-  /* Estilo para las tarjetas de citas */
-  .cita-card {
-    background-color: #174a6a; /* Tono oscuro */
-    color: #ffffff; /* Texto en blanco */
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    padding: 15px;
-    margin: 2% auto; /* Centra las tarjetas y agrega un margen de 2% */
-    max-width: 90%; /* Limita el ancho para mejor visualización en dispositivos móviles */
-    text-align: left;
-  }
-  
-  
-  /* Botón de ajustes */
-  .settings-button {
-    color: #f5f5f5;
-    font-size: 24px;
-    position: absolute;
-    top: 60px;
-    right: 10px;
-  }
-  
-  /* Información del perfil */
-  .profile-info {
-    display: flex;
-    align-items: center;
-    padding: 15px 20px;
-    background-color: #bb9f25;
-    border-radius: 10px;
-    margin: 0 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  ion-avatar {
-    margin-right: 15px;
-    width: 100px;
-    height: 100px;
-    flex-shrink: 0;
-    border: 3px solid #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-  
-  .user-details {
-    flex: 1;
-    text-align: left;
-  }
-  
-  .user-details h2 {
+  --background: #105685;
+}
+
+/* Contenedor del encabezado */
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+}
+
+/* Logo */
+.logo-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.small-logo {
+  width: 150px;
+}
+
+/* Estilo para las tarjetas de citas */
+.cita-card {
+  background-color: #174a6a;
+  color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  padding: 15px;
+  margin: 2% auto;
+  max-width: 90%;
+  text-align: left;
+}
+
+/* Botón de ajustes */
+.settings-button {
+  color: #f5f5f5;
+  font-size: 24px;
+  position: absolute;
+  top: 60px;
+  right: 10px;
+}
+
+/* Información del perfil */
+.profile-info {
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: #bb9f25;
+  border-radius: 10px;
+  margin: 0 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+ion-avatar {
+  margin-right: 15px;
+  width: 100px;
+  height: 100px;
+  flex-shrink: 0;
+  border: 3px solid #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.user-details {
+  flex: 1;
+  text-align: left;
+
+  h2 {
     margin: 0;
     font-size: 22px;
     color: #fff;
   }
-  
-  .user-details p {
+
+  p {
     margin: 2px 0;
     color: #f9f9f9;
   }
-  
-  /* Contenedor de datos IoT */
-  .iot-data-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;  /* Se ajusta a 2 columnas */
-    grid-gap: 15px;
-    padding: 20px;
-  }
-  
-  /* Estilo para las tarjetas de los datos IoT */
-  .data-card {
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    padding: 15px;
-    color: #000;
-    display: flex;
-    align-items: center;  /* Alineación vertical */
-    justify-content: space-between;  /* Alineación horizontal */
-    text-align: left;  /* Texto alineado a la izquierda */
-    height: 100px;  /* Ajuste de altura */
-    max-width: 350px;  /* Ancho */
-    gap: 15px;  /* Espacio entre icono y texto */
-  }
-  
-  /* Ajustes del contenido dentro de cada tarjeta */
-  .data-content {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 15px;
-  }
-  
-  .data-card img {
+}
+
+/* Contenedor de datos IoT */
+.iot-data-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 15px;
+  padding: 20px;
+}
+
+/* Tarjetas de datos IoT */
+.data-card {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: left;
+  height: 100px;
+  max-width: 350px;
+  gap: 15px;
+
+  img {
     width: 40px;
   }
-  
-  .data-text h3 {
-    font-size: 20px;
-    font-weight: bold;
-    margin: 0;
+
+  .data-text {
+    h3 {
+      font-size: 20px;
+      font-weight: bold;
+      margin: 0;
+    }
+
+    h4 {
+      font-size: 14px;
+      color: #666;
+      margin: 0;
+    }
   }
-  
-  .data-text h4 {
-    font-size: 14px;
-    color: #666;
-    margin: 0;
-  }
-  
-  /* Estilo especial para la tarjeta de monitoreo del sueño */
-  .data-card.sleep-card {
-    grid-column: span 2;  /* Ocupa todo el ancho disponible en la fila */
-    height: 100px;  /* Ajuste de altura */
-    max-width: calc(120% - 40px);  /* Ancho para ocupar más espacio */
-  }
-  
-  /* Barra de navegación */
-  ion-footer {
-    --background: #083d5d;
-  }
-  
-  ion-segment {
-    display: flex;
-    justify-content: space-around;
-    background-color: #083d5d;
-    padding: 5px 0;
-    border-top: 1px solid #ccc;
-  }
-  
-  .nav-icon {
-    width: 30px;
-    height: 30px;
-    cursor: pointer;
-    transition: transform 0.3s ease;
-  }
-  
-  .nav-icon:active {
+}
+
+/* Tarjeta especial para monitoreo del sueño */
+.data-card.sleep-card {
+  grid-column: span 2;
+  height: 100px;
+  max-width: calc(120% - 40px);
+}
+
+/* Barra de navegación */
+ion-footer {
+  --background: #083d5d;
+}
+
+ion-segment {
+  display: flex;
+  justify-content: space-around;
+  background-color: #083d5d;
+  padding: 5px 0;
+  border-top: 1px solid #ccc;
+}
+
+.nav-icon {
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+
+  &:active {
     transform: scale(1.2);
   }
-  
-  /* Resaltar el botón activo en la navbar */
-  .active-segment {
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
-    background-color: #ffffff20;
-    border-radius: 8px;
+}
+
+/* Resaltar botón activo en la barra de navegación */
+.active-segment {
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+  background-color: #ffffff20;
+  border-radius: 8px;
+}
+
+/* Contenedor para tarjetas de datos de actividad */
+.scroll-container {
+  max-height: 70vh;
+  overflow-y: auto;
+  padding: 1rem;
+}
+
+.card-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+
+  h3 {
+    margin-top: 0;
+    color: #333;
   }
-  
+
+  h4 {
+    margin: 0.5rem 0 0.2rem;
+    color: #666;
+  }
+
+  .card-content p {
+    margin: 0.2rem 0;
+    color: #555;
+  }
+}
+
+/* Estilo general para encabezados */
+h2 {
+  text-align: center;
+  color: #333;
+}
+
+.auth-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.google-login-button, .google-logout-button {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  margin-top: 10px;
+}
+
+.google-login-button {
+  background-color: #4285f4;
+  color: white;
+}
+
+.google-login-button:hover {
+  background-color: #357ae8;
+}
+
+.google-login-button:active {
+  background-color: #2a65c7;
+}
+
+.google-logout-button {
+  background-color: #db4437;
+  color: white;
+}
+
+.google-logout-button:hover {
+  background-color: #c33c2d;
+}
+
+.google-logout-button:active {
+  background-color: #a32e23;
+}
+
+.google-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}

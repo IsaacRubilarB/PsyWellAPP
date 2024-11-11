@@ -6,9 +6,14 @@ const config: CapacitorConfig = {
   webDir: 'www',
   bundledWebRuntime: true,
   server: {
-    url: 'http://192.168.56.1:3000',
-    cleartext: true
-  }
+    url: 'http://localhost:4200',
+    cleartext: true,
+  },
+  plugins: {
+    GoogleAuth: {
+      clientId: '471287872717-uonv4m9k2h6llpf0r7md4l9tca5rvk7t.apps.googleusercontent.com',
+    },
+  },
 };
 
 export default config;

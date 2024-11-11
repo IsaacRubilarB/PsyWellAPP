@@ -6,6 +6,11 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { UsersService } from '../services/userService';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
+import { getAuth, signOut } from 'firebase/auth';
+import { getFirestore, collection, doc, setDoc } from 'firebase/firestore';
+import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
+
+declare var gapi: any;
 
 @Component({
   selector: 'app-login-register',
@@ -90,7 +95,9 @@ export class LoginRegisterComponent implements OnInit {
           if (response && response.idUsuario) {
             const postgresId = response.idUsuario;
 
-            await this.afs.collection('users').doc(uid).set({
+            // Uso de la nueva API de Firestore
+            const db = getFirestore();
+            await setDoc(doc(collection(db, 'users'), uid), {
               nombre: userData.nombre,
               email: userData.email,
               idUsuario: postgresId,
@@ -128,38 +135,33 @@ export class LoginRegisterComponent implements OnInit {
 
   async loginWithGoogle() {
     try {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      const result = await this.afAuth.signInWithPopup(provider);
-      const user = result.user;
+      // Cargar y inicializar gapi
+      await gapi.load('auth2', async () => {
+        const auth2 = gapi.auth2.init({
+          client_id: '', // Reemplaza con tu client_id
+        });
 
-      if (user) {
-        // Obtener el documento del usuario en Firestore y verificar si existe
-        const userDoc = await this.afs.collection('users').doc(user.uid).get().toPromise();
+        // Inicia sesión con Google
+        const googleUser = await auth2.signIn();
+        const idToken = googleUser.getAuthResponse().id_token;
 
-        if (userDoc && !userDoc.exists) {
-          // Si el documento no existe, crea uno nuevo
-          await this.afs.collection('users').doc(user.uid).set({
-            nombre: user.displayName,
-            email: user.email,
-            idUsuario: user.uid,
-            perfil: 'paciente',
-          });
-        }
+        // Usar el idToken con Firebase para la autenticación
+        const credential = firebase.auth.GoogleAuthProvider.credential(idToken);
+        await this.afAuth.signInWithCredential(credential);
 
-        // Redirigir al home después de iniciar sesión
+        console.log('Usuario autenticado con Google');
         this.router.navigate(['/home']);
-      } else {
-        alert('No se pudo obtener el usuario de Google');
-      }
+      });
     } catch (error) {
       console.error('Error al iniciar sesión con Google:', error);
-      alert('Error al iniciar sesión con Google');
+      alert('Hubo un error al autenticar con Google');
     }
   }
 
   async logout() {
     try {
-      await this.afAuth.signOut();
+      const auth = getAuth();
+      await signOut(auth);
       this.router.navigate(['/login']);
     } catch (error) {
       console.error('Error al cerrar sesión:', error);

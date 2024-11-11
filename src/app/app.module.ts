@@ -30,8 +30,8 @@ import { PsicologoModalComponent } from './psicologo-modal/psicologo-modal.compo
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    AngularFireModule.initializeApp(environment.firebaseConfig),
-    AngularFireAuthModule, 
+    AngularFireModule.initializeApp(environment.firebaseConfig),  // Configuración de Firebase
+    AngularFireAuthModule,
     RouterModule.forRoot([]),
   ],
   providers: [
@@ -41,6 +41,6 @@ import { PsicologoModalComponent } from './psicologo-modal/psicologo-modal.compo
     AuthGuard,
   ],
   bootstrap: [AppComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA] // Asegura el uso de componentes de Ionic
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppModule {}
