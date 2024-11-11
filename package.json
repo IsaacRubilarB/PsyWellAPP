@@ -33,6 +33,7 @@
     "@ionic/angular": "^8.3.2",
     "@react-oauth/google": "^0.12.1",
     "@types/firebase": "^2.4.32",
+    "@types/gapi": "^0.0.47",
     "animate.css": "^4.1.1",
     "capacitor-google-fit": "^0.2.4",
     "chart.js": "^4.4.4",

@@ -3,5 +3,11 @@
   "integrations": {
     "capacitor": {}
   },
-  "type": "angular"
+  "type": "angular",
+  "server": {
+    "headers": {
+      "Cross-Origin-Opener-Policy": "unsafe-none",
+      "Cross-Origin-Embedder-Policy": "unsafe-none"
+    }
+  }
 }
