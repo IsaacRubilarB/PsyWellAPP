@@ -33,16 +33,18 @@
       </ion-item>
     </ion-list>
   </div>
-  
 
   <!-- Mostrar las citas -->
   <div style="margin-bottom: 1%;" class="cita-card" *ngFor="let cita of citas">
     <div class="cita-info">
-      <h3>Paciente ID: {{ cita.idUsuario }}</h3>
-      <p class="cita-fecha">Fecha y Hora cita: {{ cita.fechaHora | date:'short' }}</p>
-      <h4>Ubicación: {{ cita.ubicacion }}</h4>
-      <h4>Comentarios: {{ cita.comentarios }}</h4>
-      <h4>Estado: {{ cita.estado }}</h4>
+      <p><strong>Psicólogo:</strong> {{ cita.nombrePsicologo }}</p>
+      <p><strong>Paciente:</strong> {{ cita.nombrePaciente }}</p>
+      <p><strong>Fecha:</strong> {{ cita.fecha | date:'yyyy/MM/dd' }}</p>
+      <p><strong>Hora de Inicio:</strong> {{ cita.horaInicio }}</p>
+      <p><strong>Hora de Fin:</strong> {{ cita.horaFin }}</p>          
+      <h4><strong>Ubicación:</strong> {{ cita.ubicacion }}</h4>
+      <h4><strong>Comentarios:</strong> {{ cita.comentarios }}</h4>
+      <h4><strong>Estado:</strong> {{ cita.estado }}</h4>
     </div>
   </div>
 </ion-content>
@@ -66,7 +68,7 @@
       </ion-segment-button>
       <!-- Botón de reloj -->
       <ion-segment-button [ngClass]="{'active-segment': currentSegment === 'reloj'}" (click)="navigateTo('/reloj')">
-        <img src="assets/emotes/reloj.webp" alt="Reloj" class="nav-icon" /> <!-- Asegúrate de que este icono exista -->
+        <img src="assets/emotes/reloj.webp" alt="Reloj" class="nav-icon" />
       </ion-segment-button>
     </ion-segment>
   </ion-toolbar>

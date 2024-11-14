@@ -40,7 +40,7 @@ export class PsicologoModalComponent implements OnInit {
 
   ngOnInit() {
     this.loadUserId();
-    this.usersService.obtenerUsuarios().subscribe((usuarios: any) => {
+    this.usersService.listarUsuarios().subscribe((usuarios: any) => {
       if (Array.isArray(usuarios.data)) {
         this.psychologists = usuarios.data.filter((usuario: { perfil: string }) => usuario.perfil === 'psicologo');
       } else {
@@ -207,7 +207,7 @@ export class PsicologoModalComponent implements OnInit {
   async refreshPsychologists() {
     // Recargar la lista de psicólogos después de registrar la cita
     try {
-      const usuarios = await this.usersService.obtenerUsuarios().toPromise();
+      const usuarios = await this.usersService.listarUsuarios().toPromise();
       if (Array.isArray(usuarios.data)) {
         this.psychologists = usuarios.data.filter((usuario: { perfil: string }) => usuario.perfil === 'psicologo');
         this.selectedPsychologist = null;  // Resetear la selección del psicólogo
@@ -220,7 +220,7 @@ export class PsicologoModalComponent implements OnInit {
   }
   
   async loadPsychologists() {
-    this.usersService.obtenerUsuarios().subscribe((usuarios: any) => {
+    this.usersService.listarUsuarios().subscribe((usuarios: any) => {
       if (Array.isArray(usuarios.data)) {
         this.psychologists = usuarios.data.filter((usuario: { perfil: string }) => usuario.perfil === 'psicologo');
       } else {
