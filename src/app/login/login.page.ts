@@ -8,7 +8,6 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import { getAuth, signOut } from 'firebase/auth';
 import { getFirestore, collection, doc, setDoc } from 'firebase/firestore';
-import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
 
 declare var gapi: any;
 

@@ -255,3 +255,67 @@ h2 {
   height: 20px;
   margin-right: 10px;
 }
+
+.header-logo {
+  width: 150px;
+  margin: auto;
+  display: block;
+}
+
+.auth-buttons {
+  margin: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.profile-card {
+  margin: 20px;
+}
+
+.main-container {
+  padding: 20px;
+}
+
+ion-card {
+  margin-bottom: 20px;
+}
+
+ion-segment-button {
+  --indicator-color: #3880ff;
+  --background-hover: #f4f5f8;
+}
+
+ion-segment-button.active-segment {
+  color: #3880ff;
+  font-weight: bold;
+}
+
+.outlier {
+  color: red;
+  font-weight: bold;
+}
+
+.weekly-details-scroll {
+  max-height: 200px; /* Limita la altura para habilitar scroll */
+  overflow-y: auto;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+
+/* Personalización opcional del scrollbar */
+.weekly-details-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.weekly-details-scroll::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+
+.weekly-details-scroll::-webkit-scrollbar-thumb:hover {
+  background: #aaa;
+}

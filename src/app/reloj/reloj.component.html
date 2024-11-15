@@ -1,14 +1,10 @@
 <ion-content>
-  <!-- Contenedor del encabezado -->
   <div class="header-container">
-    <!-- Logo centrado -->
     <div class="logo-container">
       <img src="assets/logo1.png" alt="PsyWell Logo" class="small-logo" />
     </div>
-
   </div>
 
-  <!-- Información del perfil -->
   <div class="profile-info" *ngIf="accessToken">
     <ion-avatar>
       <img src="assets/perfil.png" alt="User Profile" />
@@ -26,31 +22,40 @@
     </button>
   </div>
 
-  <!-- Contenedor de tarjetas de datos -->
   <div *ngIf="accessToken" class="scroll-container">
     <div class="card-container">
-      <!-- Tarjeta para los datos de hoy -->
-      <div class="card" *ngIf="todayData">
+      <div class="card">
         <h3>Resumen de Hoy</h3>
         <div class="card-content">
-          <p>Pasos: {{ todayData.steps }} pasos</p>
-          <p>Frecuencia Cardíaca Promedio: {{ todayData.heartRate }} bpm</p>
-          <p>Horas de Sueño: {{ todayData.sleep }} horas</p>
-          <p>Saturación de Oxígeno: {{ todayData.oxygenSaturation }} %</p>
-          <p>Energía Gastada: {{ todayData.energyExpended }} kcal</p>
+          <p><strong>Pasos:</strong> {{ todayData.steps }} pasos</p>
+          <p><strong>Frecuencia Cardíaca Promedio:</strong> {{ todayData.heartRate }} bpm</p>
+          <p><strong>Horas de Sueño:</strong> {{ todayData.sleep }} horas</p>
+          <p><strong>Saturación de Oxígeno:</strong> {{ todayData.oxygenSaturation }} %</p>
+          <p><strong>Energía Gastada:</strong> {{ todayData.energyExpended }} kcal</p>
         </div>
       </div>
 
-      <!-- Tarjeta para el resumen semanal -->
-      <div class="card" *ngIf="weeklyData">
+      <div class="card">
         <h3>Resumen Semanal</h3>
-        <div class="card-content" *ngFor="let day of weeklyData.steps; let i = index">
-          <h4>{{ day.date }}</h4>
-          <p>Pasos: {{ day.steps }} pasos</p>
-          <p>Frecuencia Cardíaca Promedio: {{ weeklyData.heartRate[i]?.heartRate || 0 }} bpm</p>
-          <p>Horas de Sueño: {{ weeklyData.sleep[i]?.sleep || 0 }} horas</p>
-          <p>Saturación de Oxígeno: {{ weeklyData.oxygenSaturation[i]?.oxygenSaturation || 0 }} %</p>
-          <p>Energía Gastada: {{ weeklyData.energyExpended[i]?.energyExpended || 0 }} kcal</p>
+        <div class="card-content">
+          <ion-button expand="block" fill="outline" (click)="toggleDetails()">
+            {{ showDetails ? 'Ocultar Detalles' : 'Ver Detalles' }}
+          </ion-button>
+
+          <div *ngIf="showDetails" class="weekly-details-scroll">
+            <ion-list>
+              <ion-item *ngFor="let day of prepareWeeklyDetails()">
+                <ion-label>
+                  <h4>{{ day.date }}</h4>
+                  <p><strong>Pasos:</strong> {{ day.steps }} pasos</p>
+                  <p><strong>Frecuencia Cardíaca:</strong> {{ day.heartRate }} bpm</p>
+                  <p><strong>Horas de Sueño:</strong> {{ day.sleep }} horas</p>
+                  <p><strong>Saturación de Oxígeno:</strong> {{ day.oxygenSaturation }} %</p>
+                  <p><strong>Energía Gastada:</strong> {{ day.energyExpended }} kcal</p>
+                </ion-label>
+              </ion-item>
+            </ion-list>
+          </div>
         </div>
       </div>
     </div>
