@@ -20,57 +20,33 @@
     No se encontraron psicólogos disponibles.
   </ion-label>
 
-<!-- Mostrar el botón solo si hay un psicólogo seleccionado -->
-<ion-button *ngIf="selectedPsychologist" expand="full" (click)="showAvailableTimes()">
-  Seleccionar Psicólogo
-</ion-button>
+  <!-- Selector de fecha -->
+  <ion-item *ngIf="showDateSelector">
+    <ion-label position="floating">Selecciona la fecha de la cita</ion-label>
+    <ion-datetime 
+      [(ngModel)]="selectedDate" 
+      displayFormat="DD/MM/YYYY" 
+      min="2024-01-01" 
+      max="2024-12-31" 
+      presentation="date" 
+      (ionChange)="showAvailableTimes()">
+    </ion-datetime>
+  </ion-item>
 
-
-<!-- Mostrar un selector de fecha para la cita -->
-<ion-item *ngIf="showTimes">
-  <ion-label position="floating">Selecciona la fecha de la cita</ion-label>
-  <ion-datetime 
-    [(ngModel)]="selectedDate" 
-    displayFormat="DD/MM/YYYY" 
-    min="2024-01-01" 
-    max="2024-12-31" 
-    presentation="date">
-  </ion-datetime>
-</ion-item>
-
-  <!-- Mostrar horarios disponibles solo si hay un psicólogo seleccionado y se presionó el botón -->
-  <ion-list *ngIf="showTimes">
-    <ion-item *ngFor="let time of selectedPsychologist?.availableTimes">
-      <!-- Usamos ion-checkbox pero nos aseguramos que solo un horario pueda estar marcado -->
-      <ion-checkbox 
-        slot="start" 
-        [checked]="selectedTime === time" 
-        (ionChange)="selectTime(time)">
-      </ion-checkbox>
+  <!-- Mostrar horarios disponibles después de seleccionar la fecha -->
+  <ion-list *ngIf="showTimes && selectedDate">
+    <ion-item *ngFor="let time of availableTimes">
       <ion-label>{{ time }}</ion-label>
-      <ion-icon *ngIf="selectedTime === time" name="checkmark-circle" slot="end"></ion-icon>
+      <ion-button slot="end" (click)="selectTime(time)">Seleccionar</ion-button>
     </ion-item>
   </ion-list>
 
-  <!-- Campo de Ubicación -->
-<ion-item *ngIf="showTimes">
-  <ion-label position="floating">Ubicación</ion-label>
-  <ion-input [(ngModel)]="ubicacion" placeholder="Consultorio, Sala, etc."></ion-input>
-</ion-item>
+  <!-- Campos de ubicación y comentarios -->
+  <ion-input *ngIf="selectedTime" [(ngModel)]="ubicacion" placeholder="Ubicación"></ion-input>
+  <ion-input *ngIf="selectedTime" [(ngModel)]="comentarios" placeholder="Comentarios"></ion-input>
 
-<!-- Campo de Comentarios -->
-<ion-item *ngIf="showTimes">
-  <ion-label position="floating">Comentarios</ion-label>
-  <ion-textarea [(ngModel)]="comentarios" placeholder="Paciente requiere seguimiento mensual, etc."></ion-textarea>
-</ion-item>
+  <!-- Botón de aceptar cita -->
+  <ion-button *ngIf="selectedTime" expand="full" (click)="acceptAppointment()">Aceptar Cita</ion-button>
 
-  <!-- Botón para aceptar la cita (solo se muestra cuando se selecciona una hora y fecha) -->
-  <ion-button *ngIf="selectedPsychologist && selectedTime && selectedDate" expand="full" (click)="acceptAppointment()">
-    Aceptar Cita
-  </ion-button>
-
-  <!-- Mostrar mensaje de éxito -->
-  <div *ngIf="successMessage" class="success-message">
-    <ion-label>{{ successMessage }}</ion-label>
-  </div>
+  <p>{{ successMessage }}</p>
 </ion-content>

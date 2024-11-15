@@ -12,7 +12,6 @@ import { IonicModule } from '@ionic/angular';
     CommonModule,
     RelojRoutingModule,
     IonicModule,
-    RelojRoutingModule
   ],
 })
 export class RelojModule { }

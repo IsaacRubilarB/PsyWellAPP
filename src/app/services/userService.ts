@@ -19,10 +19,9 @@ export class UsersService {
     
   }
 
-  obtenerUsuarios(): Observable<any> {
-    return this.http.get<any>(this.ListarUserUrl).pipe(
-      tap((response) => console.log('Respuesta del servidor:', response))
-    );
+  // Método para listar todos los usuarios
+  listarUsuarios(): Observable<any> {
+    return this.http.get(this.ListarUserUrl);
   }
   
 }
