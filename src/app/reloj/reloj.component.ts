@@ -15,6 +15,7 @@ export class RelojComponent implements OnInit, OnDestroy {
   public currentSegment: string = 'home';
   private tokenClient: any;
   private refreshInterval: any;
+  private isWeeklyDataLoaded: boolean = false;
 
   todayData: any = {
     steps: 0,
@@ -32,16 +33,29 @@ export class RelojComponent implements OnInit, OnDestroy {
     energyExpended: []
   };
 
+  weeklyTotals: any = {
+    steps: 0,
+    heartRate: 0,
+    sleep: 0,
+    oxygenSaturation: 0,
+    energyExpended: 0
+  };
+
   showDetails: boolean = false;
 
   constructor(private http: HttpClient, private router: Router, private cdRef: ChangeDetectorRef) {}
 
-  ngOnInit() {
-    this.tokenClient = google.accounts.oauth2.initTokenClient({
-      client_id: '546817145485-9gut154rg11ernn0qnd116c7nob1rpna.apps.googleusercontent.com',
-      scope: 'https://www.googleapis.com/auth/fitness.activity.read https://www.googleapis.com/auth/fitness.heart_rate.read https://www.googleapis.com/auth/fitness.sleep.read https://www.googleapis.com/auth/fitness.oxygen_saturation.read',
-      callback: (response: any) => this.handleAuthResponse(response)
-    });
+  async ngOnInit() {
+    try {
+      await this.loadGoogleScript();
+      this.tokenClient = google.accounts.oauth2.initTokenClient({
+        client_id: '546817145485-9gut154rg11ernn0qnd116c7nob1rpna.apps.googleusercontent.com',
+        scope: 'https://www.googleapis.com/auth/fitness.activity.read https://www.googleapis.com/auth/fitness.heart_rate.read https://www.googleapis.com/auth/fitness.sleep.read https://www.googleapis.com/auth/fitness.oxygen_saturation.read',
+        callback: (response: any) => this.handleAuthResponse(response)
+      });
+    } catch (error) {
+      console.error('Error al inicializar tokenClient:', error);
+    }
   }
 
   ngOnDestroy() {
@@ -50,81 +64,31 @@ export class RelojComponent implements OnInit, OnDestroy {
     }
   }
 
-  calculateWeeklyAverage(metric: string): number {
-    const values = this.weeklyData[metric]?.map((data: any) => parseFloat(data[metric]) || 0) || [];
-    if (values.length === 0) return 0;
-    const sum = values.reduce((acc: number, val: number) => acc + val, 0);
-    return parseFloat((sum / values.length).toFixed(2));
-  }
-
-  prepareWeeklyDetails(): any[] {
-    const daysCount = Math.max(
-      this.weeklyData.steps.length,
-      this.weeklyData.heartRate.length,
-      this.weeklyData.sleep.length,
-      this.weeklyData.oxygenSaturation.length,
-      this.weeklyData.energyExpended.length
-    );
-
-    const weeklyDetails = [];
-
-    for (let i = 0; i < daysCount; i++) {
-      weeklyDetails.push({
-        date: this.weeklyData.steps[i]?.date ||
-              this.weeklyData.heartRate[i]?.date ||
-              this.weeklyData.sleep[i]?.date ||
-              this.weeklyData.oxygenSaturation[i]?.date ||
-              this.weeklyData.energyExpended[i]?.date || 'Sin fecha',
-        steps: this.weeklyData.steps[i]?.steps || 0,
-        heartRate: this.weeklyData.heartRate[i]?.heartRate || 0,
-        sleep: this.weeklyData.sleep[i]?.sleep || '0.00',
-        oxygenSaturation: this.weeklyData.oxygenSaturation[i]?.oxygenSaturation || '0.0',
-        energyExpended: this.weeklyData.energyExpended[i]?.energyExpended || 0
-      });
-    }
-
-    return weeklyDetails;
-  }
-
-  toggleDetails(): void {
-    this.showDetails = !this.showDetails;
-  }
-
-  handleAuthResponse(response: any) {
-    if (response?.access_token) {
-      this.accessToken = response.access_token;
-      console.log('Usuario autenticado con Google, token:', this.accessToken);
-
-      this.refreshInterval = setInterval(() => this.updateTodayData(), 5000);
-      this.loadWeeklyData();
-    } else {
-      console.error('Error al autenticar con Google.');
-    }
-  }
-
-  updateTodayData() {
-    this.getTodayStepsData();
-    this.getTodayHeartRateData();
-    this.getTodaySleepData();
-    this.getTodayOxygenSaturationData();
-    this.getTodayEnergyExpendedData();
-    this.cdRef.detectChanges(); // Actualiza los datos sin reposicionar la vista
-  }
-
-  loadWeeklyData() {
-    this.getWeeklyStepsData();
-    this.getWeeklyHeartRateData();
-    this.getWeeklySleepData();
-    this.getWeeklyOxygenSaturationData();
-    this.getWeeklyEnergyExpendedData();
+  private loadGoogleScript(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if ((window as any).google && (window as any).google.accounts) {
+        resolve();
+      } else {
+        const script = document.createElement('script');
+        script.src = 'https://accounts.google.com/gsi/client';
+        script.async = true;
+        script.defer = true;
+        script.onload = () => resolve();
+        script.onerror = (error) => reject(error);
+        document.head.appendChild(script);
+      }
+    });
   }
 
   loginWithGoogle() {
+    if (!this.tokenClient) {
+      console.error('tokenClient no está inicializado.');
+      return;
+    }
     this.tokenClient.requestAccessToken();
   }
 
   logout() {
-    console.log('Sesión cerrada');
     this.accessToken = '';
     clearInterval(this.refreshInterval);
   }
@@ -132,6 +96,87 @@ export class RelojComponent implements OnInit, OnDestroy {
   navigateTo(route: string) {
     this.currentSegment = route.split('/')[1];
     this.router.navigate([route]);
+  }
+
+  toggleDetails() {
+    this.showDetails = !this.showDetails;
+  }
+
+  handleAuthResponse(response: any) {
+    if (response?.access_token) {
+      this.accessToken = response.access_token;
+      this.refreshInterval = setInterval(() => this.updateTodayData(), 5000);
+      if (!this.isWeeklyDataLoaded) {
+        this.loadWeeklyData();
+        this.isWeeklyDataLoaded = true; // Marca los datos semanales como cargados
+      }
+    }
+  }
+
+  updateTodayData() {
+    this.getTodayStepsData();
+    this.getTodayHeartRateData();
+    this.getTodayOxygenSaturationData();
+    this.getTodayEnergyExpendedData();
+    this.cdRef.detectChanges();
+  }
+
+  loadWeeklyData() {
+    this.weeklyData = {
+      steps: [],
+      heartRate: [],
+      sleep: [],
+      oxygenSaturation: [],
+      energyExpended: []
+    };
+    this.getWeeklyStepsData();
+    this.getWeeklyHeartRateData();
+    this.getWeeklyOxygenSaturationData();
+    this.getWeeklyEnergyExpendedData();
+  }
+
+  prepareWeeklyDetails() {
+    const daysCount = Math.max(
+      this.weeklyData.steps.length,
+      this.weeklyData.heartRate.length,
+      this.weeklyData.oxygenSaturation.length,
+      this.weeklyData.energyExpended.length
+    );
+
+    const weeklyDetails = [];
+    for (let i = 0; i < daysCount; i++) {
+      weeklyDetails.push({
+        date: this.weeklyData.steps[i]?.date || 'Sin fecha',
+        steps: this.weeklyData.steps[i]?.steps?.toLocaleString() || '0', // Formato de miles
+        heartRate: Math.round(this.weeklyData.heartRate[i]?.heartRate || 0), // Sin decimales
+        oxygenSaturation: this.weeklyData.oxygenSaturation[i]?.oxygenSaturation || '0.0',
+        energyExpended: this.weeklyData.energyExpended[i]?.energyExpended?.toLocaleString() || '0' // Formato de miles
+      });
+    }
+
+    return weeklyDetails;
+  }
+
+  calculateWeeklyTotals() {
+    this.weeklyTotals.steps = this.weeklyData.steps
+      .reduce((sum: number, day: { steps: number }) => sum + day.steps, 0)
+      .toLocaleString(); // Formato de miles para los pasos
+
+    this.weeklyTotals.heartRate = Math.round(
+      this.weeklyData.heartRate.reduce((sum: number, day: { heartRate: number }) => sum + day.heartRate, 0) /
+        this.weeklyData.heartRate.length || 0
+    ).toString(); // Quitar decimales y convertir a cadena para formato consistente
+
+    this.weeklyTotals.energyExpended = this.weeklyData.energyExpended
+      .reduce((sum: number, day: { energyExpended: number }) => sum + day.energyExpended, 0)
+      .toLocaleString(); // Formato de miles para energía gastada
+
+    this.weeklyTotals.oxygenSaturation = (
+      this.weeklyData.oxygenSaturation.reduce(
+        (sum: number, day: { oxygenSaturation: string }) => sum + parseFloat(day.oxygenSaturation),
+        0
+      ) / this.weeklyData.oxygenSaturation.length || 0
+    ).toFixed(1); // Promedio de saturación con un decimal
   }
 
   private createRequestHeaders(): HttpHeaders {
@@ -149,204 +194,155 @@ export class RelojComponent implements OnInit, OnDestroy {
     };
   }
 
-  isOutlier(value: number, values: number[]): boolean {
-    const mean = values.reduce((sum, v) => sum + v, 0) / values.length;
-    const deviation = Math.sqrt(values.map(v => Math.pow(v - mean, 2)).reduce((sum, v) => sum + v, 0) / values.length);
-    return value > mean + 2 * deviation || value < mean - 2 * deviation;
-  }
 
+  // Datos diarios
   getTodayStepsData() {
     const headers = this.createRequestHeaders();
-    const body = this.createAggregateBody("com.google.step_count.delta", 86400000);
+    const body = this.createAggregateBody('com.google.step_count.delta', 86400000);
 
-    this.http.post('https://fitness.googleapis.com/fitness/v1/users/me/dataset:aggregate', body, { headers })
-      .subscribe({
-        next: (data: any) => {
-          const steps = data?.bucket[0]?.dataset[0]?.point[0]?.value[0]?.intVal || 0;
-          this.todayData.steps = steps;
-          console.log(`Pasos de hoy: ${steps}`);
-        },
-        error: (error) => console.error("Error al obtener pasos:", error)
-      });
+    this.http.post('https://fitness.googleapis.com/fitness/v1/users/me/dataset:aggregate', body, { headers }).subscribe({
+      next: (data: any) => {
+        this.todayData.steps = data?.bucket[0]?.dataset[0]?.point[0]?.value[0]?.intVal || 0;
+        console.log(`Pasos de hoy: ${this.todayData.steps}`);
+      },
+      error: (error) => console.error('Error al obtener pasos:', error)
+    });
   }
 
   getTodayHeartRateData() {
     const headers = this.createRequestHeaders();
-    const body = this.createAggregateBody("com.google.heart_rate.bpm", 86400000);
+    const body = this.createAggregateBody('com.google.heart_rate.bpm', 86400000);
 
-    this.http.post('https://fitness.googleapis.com/fitness/v1/users/me/dataset:aggregate', body, { headers })
-      .subscribe({
-        next: (data: any) => {
-          const heartRate = Math.round(data?.bucket[0]?.dataset[0]?.point[0]?.value[0]?.fpVal || 0);
-          this.todayData.heartRate = heartRate;
-          console.log(`Frecuencia cardíaca de hoy: ${heartRate}`);
-        },
-        error: (error) => console.error("Error al obtener frecuencia cardíaca:", error)
-      });
-  }
-
-  getTodaySleepData() {
-    const headers = this.createRequestHeaders();
-    const body = {
-      aggregateBy: [{ dataTypeName: "com.google.sleep.segment" }],
-      bucketByTime: { durationMillis: 86400000 },
-      startTimeMillis: Date.now() - 86400000 * 3, // Últimos 3 días
-      endTimeMillis: Date.now()
-    };
-
-    this.http.post('https://fitness.googleapis.com/fitness/v1/users/me/dataset:aggregate', body, { headers })
-      .subscribe({
-        next: (data: any) => {
-          console.log("Datos de sueño recibidos:", data);
-          const sleepBucket = data.bucket?.find((bucket: any) => bucket.dataset[0]?.point?.length > 0);
-          if (sleepBucket) {
-            const totalSleepHours = sleepBucket.dataset[0].point.reduce((total: number, point: any) => {
-              const duration = (point.endTimeNanos - point.startTimeNanos) / (1e9 * 60 * 60);
-              return total + duration;
-            }, 0);
-            this.todayData.sleep = totalSleepHours.toFixed(2);
-          } else {
-            console.log("No se encontraron datos de sueño.");
-            this.todayData.sleep = "0";
-          }
-        },
-        error: (error) => console.error("Error al obtener datos de sueño:", error)
-      });
+    this.http.post('https://fitness.googleapis.com/fitness/v1/users/me/dataset:aggregate', body, { headers }).subscribe({
+      next: (data: any) => {
+        this.todayData.heartRate = Math.round(data?.bucket[0]?.dataset[0]?.point[0]?.value[0]?.fpVal || 0);
+        console.log(`Frecuencia cardíaca de hoy: ${this.todayData.heartRate}`);
+      },
+      error: (error) => console.error('Error al obtener frecuencia cardíaca:', error)
+    });
   }
 
   getTodayOxygenSaturationData() {
     const headers = this.createRequestHeaders();
-    const body = {
-      aggregateBy: [{ dataTypeName: "com.google.oxygen_saturation" }],
-      bucketByTime: { durationMillis: 86400000 },
-      startTimeMillis: Date.now() - 86400000,
-      endTimeMillis: Date.now()
-    };
+    const body = this.createAggregateBody('com.google.oxygen_saturation', 86400000);
 
-    this.http.post('https://fitness.googleapis.com/fitness/v1/users/me/dataset:aggregate', body, { headers })
-      .subscribe({
-        next: (data: any) => {
-          console.log("Datos de saturación de oxígeno recibidos:", data);
-          const oxygenPoint = data?.bucket[0]?.dataset[0]?.point?.find((point: any) => point.value);
-          if (oxygenPoint) {
-            this.todayData.oxygenSaturation = oxygenPoint.value[0]?.fpVal.toFixed(1) || "0";
-          } else {
-            console.log("No se encontraron datos de saturación de oxígeno.");
-            this.todayData.oxygenSaturation = "0";
-          }
-        },
-        error: (error) => console.error("Error al obtener saturación de oxígeno:", error)
-      });
+    this.http.post('https://fitness.googleapis.com/fitness/v1/users/me/dataset:aggregate', body, { headers }).subscribe({
+      next: (data: any) => {
+        const oxygenPoint = data?.bucket[0]?.dataset[0]?.point?.find((point: any) => point.value);
+        this.todayData.oxygenSaturation = oxygenPoint?.value[0]?.fpVal.toFixed(1) || '0';
+        console.log(`Saturación de oxígeno de hoy: ${this.todayData.oxygenSaturation}`);
+      },
+      error: (error) => console.error('Error al obtener saturación de oxígeno:', error)
+    });
   }
 
   getTodayEnergyExpendedData() {
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${this.accessToken}`);
-    const body = {
-      aggregateBy: [{ dataTypeName: "com.google.calories.expended" }],
-      bucketByTime: { durationMillis: 86400000 },
-      startTimeMillis: Date.now() - 86400000,
-      endTimeMillis: Date.now()
-    };
+    const headers = this.createRequestHeaders();
+    const body = this.createAggregateBody('com.google.calories.expended', 86400000);
 
-    this.http.post('https://fitness.googleapis.com/fitness/v1/users/me/dataset:aggregate', body, { headers })
-      .subscribe({
-        next: (data: any) => {
-          const energyPoint = data?.bucket[0]?.dataset[0]?.point[0]?.value[0]?.fpVal || 0;
-          this.todayData.energyExpended = Math.round(energyPoint);
-          console.log(`Energía gastada de hoy: ${this.todayData.energyExpended} kcal`);
-        },
-        error: (error) => {
-          console.error("Error al obtener energía gastada:", error);
-          this.todayData.energyExpended = 0;
-        }
-      });
+    this.http.post('https://fitness.googleapis.com/fitness/v1/users/me/dataset:aggregate', body, { headers }).subscribe({
+      next: (data: any) => {
+        const energyPoint = data?.bucket[0]?.dataset[0]?.point[0]?.value[0]?.fpVal || 0;
+        this.todayData.energyExpended = Math.round(energyPoint);
+        console.log(`Energía gastada de hoy: ${this.todayData.energyExpended} kcal`);
+      },
+      error: (error) => console.error('Error al obtener energía gastada:', error)
+    });
   }
 
   getWeeklyStepsData() {
     const headers = this.createRequestHeaders();
-    const body = this.createAggregateBody("com.google.step_count.delta", 86400000 * 7);
+    const body = this.createAggregateBody('com.google.step_count.delta', 86400000 * 7);
 
     this.http.post('https://fitness.googleapis.com/fitness/v1/users/me/dataset:aggregate', body, { headers })
       .subscribe({
         next: (data: any) => {
-          const allSteps = data.bucket.map((bucket: any) => bucket.dataset[0]?.point[0]?.value[0]?.intVal || 0);
-          this.weeklyData.steps = data.bucket.map((bucket: any, index: number) => ({
-            date: new Date(parseInt(bucket.startTimeMillis)).toLocaleDateString(),
-            steps: allSteps[index],
-            outlier: this.isOutlier(allSteps[index], allSteps)
-          }));
+          if (data?.bucket?.length > 0) {
+            this.weeklyData.steps = data.bucket.map((bucket: any) => {
+              const steps = bucket?.dataset[0]?.point[0]?.value[0]?.intVal || 0;
+              const date = new Date(parseInt(bucket.startTimeMillis)).toLocaleDateString();
+              return { date, steps }; // Datos diarios
+            });
+
+            this.calculateWeeklyTotals(); // Calcula totales después de obtener los datos
+          } else {
+            console.warn('No se encontraron datos de pasos semanales.');
+            this.weeklyData.steps = [];
+          }
         },
-        error: (error) => console.error("Error al obtener pasos semanales:", error)
+        error: (error) => console.error('Error al obtener pasos semanales:', error)
       });
   }
 
   getWeeklyHeartRateData() {
     const headers = this.createRequestHeaders();
-    const body = this.createAggregateBody("com.google.heart_rate.bpm", 86400000 * 7);
+    const body = this.createAggregateBody('com.google.heart_rate.bpm', 86400000 * 7);
 
     this.http.post('https://fitness.googleapis.com/fitness/v1/users/me/dataset:aggregate', body, { headers })
       .subscribe({
         next: (data: any) => {
-          this.weeklyData.heartRate = data.bucket.map((bucket: any) => ({
-            date: new Date(parseInt(bucket.startTimeMillis)).toLocaleDateString(),
-            heartRate: Math.round(bucket.dataset[0]?.point[0]?.value[0]?.fpVal || 0)
-          }));
-        },
-        error: (error) => console.error("Error al obtener frecuencia cardíaca semanal:", error)
-      });
-  }
+          if (data?.bucket?.length > 0) {
+            this.weeklyData.heartRate = data.bucket.map((bucket: any) => {
+              const heartRate = Math.round(bucket?.dataset[0]?.point[0]?.value[0]?.fpVal || 0);
+              const date = new Date(parseInt(bucket.startTimeMillis)).toLocaleDateString();
+              return { date, heartRate };
+            });
 
-  getWeeklySleepData() {
-    const headers = this.createRequestHeaders();
-    const body = this.createAggregateBody("com.google.sleep.segment", 86400000 * 7);
-
-    this.http.post('https://fitness.googleapis.com/fitness/v1/users/me/dataset:aggregate', body, { headers })
-      .subscribe({
-        next: (data: any) => {
-          this.weeklyData.sleep = data.bucket.map((bucket: any) => {
-            const totalSleepHours = bucket.dataset[0]?.point?.reduce((total: number, point: any) => {
-              const duration = (point.endTimeNanos - point.startTimeNanos) / (1e9 * 60 * 60);
-              return total + duration;
-            }, 0) || 0;
-            return {
-              date: new Date(parseInt(bucket.startTimeMillis)).toLocaleDateString(),
-              sleep: totalSleepHours.toFixed(2)
-            };
-          });
+            this.calculateWeeklyTotals(); // Actualiza totales
+          } else {
+            console.warn('No se encontraron datos de frecuencia cardíaca semanal.');
+            this.weeklyData.heartRate = [];
+          }
         },
-        error: (error) => console.error("Error al obtener los datos de sueño de la semana:", error)
+        error: (error) => console.error('Error al obtener frecuencia cardíaca semanal:', error)
       });
   }
 
   getWeeklyOxygenSaturationData() {
     const headers = this.createRequestHeaders();
-    const body = this.createAggregateBody("com.google.oxygen_saturation", 86400000 * 7);
+    const body = this.createAggregateBody('com.google.oxygen_saturation', 86400000 * 7);
 
     this.http.post('https://fitness.googleapis.com/fitness/v1/users/me/dataset:aggregate', body, { headers })
       .subscribe({
         next: (data: any) => {
-          this.weeklyData.oxygenSaturation = data.bucket.map((bucket: any) => ({
-            date: new Date(parseInt(bucket.startTimeMillis)).toLocaleDateString(),
-            oxygenSaturation: parseFloat(bucket.dataset[0]?.point[0]?.value[0]?.fpVal || 0).toFixed(1)
-          }));
+          if (data?.bucket?.length > 0) {
+            this.weeklyData.oxygenSaturation = data.bucket.map((bucket: any) => {
+              const oxygenSaturation = parseFloat(bucket?.dataset[0]?.point[0]?.value[0]?.fpVal || 0).toFixed(1);
+              const date = new Date(parseInt(bucket.startTimeMillis)).toLocaleDateString();
+              return { date, oxygenSaturation };
+            });
+
+            this.calculateWeeklyTotals(); // Actualiza totales
+          } else {
+            console.warn('No se encontraron datos de saturación de oxígeno semanal.');
+            this.weeklyData.oxygenSaturation = [];
+          }
         },
-        error: (error) => console.error("Error al obtener saturación de oxígeno semanal:", error)
+        error: (error) => console.error('Error al obtener saturación de oxígeno semanal:', error)
       });
   }
 
   getWeeklyEnergyExpendedData() {
     const headers = this.createRequestHeaders();
-    const body = this.createAggregateBody("com.google.calories.expended", 86400000 * 7);
+    const body = this.createAggregateBody('com.google.calories.expended', 86400000 * 7);
 
     this.http.post('https://fitness.googleapis.com/fitness/v1/users/me/dataset:aggregate', body, { headers })
       .subscribe({
         next: (data: any) => {
-          this.weeklyData.energyExpended = data.bucket.map((bucket: any) => ({
-            date: new Date(parseInt(bucket.startTimeMillis)).toLocaleDateString(),
-            energyExpended: Math.round(bucket.dataset[0]?.point[0]?.value[0]?.fpVal || 0)
-          }));
+          if (data?.bucket?.length > 0) {
+            this.weeklyData.energyExpended = data.bucket.map((bucket: any) => {
+              const energyExpended = Math.round(bucket?.dataset[0]?.point[0]?.value[0]?.fpVal || 0);
+              const date = new Date(parseInt(bucket.startTimeMillis)).toLocaleDateString();
+              return { date, energyExpended };
+            });
+
+            this.calculateWeeklyTotals(); // Actualiza totales
+          } else {
+            console.warn('No se encontraron datos de energía gastada semanal.');
+            this.weeklyData.energyExpended = [];
+          }
         },
-        error: (error) => console.error("Error al obtener energía gastada semanal:", error)
+        error: (error) => console.error('Error al obtener energía gastada semanal:', error)
       });
   }
 }

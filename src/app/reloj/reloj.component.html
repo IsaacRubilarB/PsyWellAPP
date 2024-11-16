@@ -24,37 +24,27 @@
 
   <div *ngIf="accessToken" class="scroll-container">
     <div class="card-container">
+      <!-- Resumen Diario -->
       <div class="card">
         <h3>Resumen de Hoy</h3>
         <div class="card-content">
           <p><strong>Pasos:</strong> {{ todayData.steps }} pasos</p>
           <p><strong>Frecuencia Cardíaca Promedio:</strong> {{ todayData.heartRate }} bpm</p>
-          <p><strong>Horas de Sueño:</strong> {{ todayData.sleep }} horas</p>
           <p><strong>Saturación de Oxígeno:</strong> {{ todayData.oxygenSaturation }} %</p>
           <p><strong>Energía Gastada:</strong> {{ todayData.energyExpended }} kcal</p>
         </div>
       </div>
 
+      <!-- Resumen Semanal -->
       <div class="card">
         <h3>Resumen Semanal</h3>
         <div class="card-content">
-          <ion-button expand="block" fill="outline" (click)="toggleDetails()">
-            {{ showDetails ? 'Ocultar Detalles' : 'Ver Detalles' }}
-          </ion-button>
-
-          <div *ngIf="showDetails" class="weekly-details-scroll">
-            <ion-list>
-              <ion-item *ngFor="let day of prepareWeeklyDetails()">
-                <ion-label>
-                  <h4>{{ day.date }}</h4>
-                  <p><strong>Pasos:</strong> {{ day.steps }} pasos</p>
-                  <p><strong>Frecuencia Cardíaca:</strong> {{ day.heartRate }} bpm</p>
-                  <p><strong>Horas de Sueño:</strong> {{ day.sleep }} horas</p>
-                  <p><strong>Saturación de Oxígeno:</strong> {{ day.oxygenSaturation }} %</p>
-                  <p><strong>Energía Gastada:</strong> {{ day.energyExpended }} kcal</p>
-                </ion-label>
-              </ion-item>
-            </ion-list>
+          <!-- Resumen Total Semanal -->
+          <div class="weekly-summary">
+            <p><strong>Total Pasos:</strong> {{ weeklyTotals.steps }} pasos</p>
+            <p><strong>Promedio Frecuencia Cardíaca:</strong> {{ weeklyTotals.heartRate }} bpm</p>
+            <p><strong>Promedio Saturación de Oxígeno:</strong> {{ weeklyTotals.oxygenSaturation }} %</p>
+            <p><strong>Total Energía Gastada:</strong> {{ weeklyTotals.energyExpended }} kcal</p>
           </div>
         </div>
       </div>
