@@ -19,6 +19,7 @@ import interact from 'interactjs';
   styleUrls: ['./home.page.scss'],
 })
 export class HomePage implements OnInit {
+email: any;
   
   navigateTo(route: string) {
     this.router.navigate([route]);
