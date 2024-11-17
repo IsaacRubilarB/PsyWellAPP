@@ -1,50 +1,105 @@
 <ion-content>
+  <!-- Header -->
   <div class="header-container">
     <div class="logo-container">
       <img src="assets/logo1.png" alt="PsyWell Logo" class="small-logo" />
     </div>
   </div>
 
+  <!-- Perfil -->
   <div class="profile-info" *ngIf="accessToken">
     <ion-avatar>
       <img src="assets/perfil.png" alt="User Profile" />
     </ion-avatar>
   </div>
 
+  <!-- Botones de autenticación -->
   <div class="auth-buttons">
     <button *ngIf="!accessToken" class="google-login-button" (click)="loginWithGoogle()">
       <img src="assets/google.png" alt="Google Icon" class="google-icon" />
       Iniciar sesión con Google
     </button>
     <button *ngIf="accessToken" class="google-logout-button" (click)="logout()">
-      <img src="assets/google.png" alt="Logout Icon" class="google-icon" />
+      <img src="assets/google.png" alt="Google Logout Icon" class="google-icon" />
       Cerrar sesión
     </button>
   </div>
 
+  <!-- Contenedor de datos -->
   <div *ngIf="accessToken" class="scroll-container">
     <div class="card-container">
-      <!-- Resumen Diario -->
-      <div class="card">
-        <h3>Resumen de Hoy</h3>
-        <div class="card-content">
-          <p><strong>Pasos:</strong> {{ todayData.steps }} pasos</p>
-          <p><strong>Frecuencia Cardíaca Promedio:</strong> {{ todayData.heartRate }} bpm</p>
-          <p><strong>Saturación de Oxígeno:</strong> {{ todayData.oxygenSaturation }} %</p>
-          <p><strong>Energía Gastada:</strong> {{ todayData.energyExpended }} kcal</p>
+      <!-- Datos en tiempo real -->
+      <div class="real-time-data">
+        <h3>Datos en Tiempo Real</h3>
+
+        <!-- Tarjeta de Pasos -->
+        <div class="card">
+          <div #stepsAnimation class="lottie-animation"></div>
+          <div class="card-content">
+            <p><strong>Pasos:</strong> {{ todayData.steps | number }} pasos</p>
+          </div>
+        </div>
+
+        <!-- Tarjeta de Frecuencia Cardíaca -->
+        <div class="card">
+          <div #heartAnimation class="lottie-animation"></div>
+          <div class="card-content">
+            <p><strong>Frecuencia Cardíaca:</strong> {{ todayData.heartRate }} bpm</p>
+          </div>
+        </div>
+
+        <!-- Tarjeta de Saturación de Oxígeno -->
+        <div class="card">
+          <div #oxygenAnimation class="lottie-animation"></div>
+          <div class="card-content">
+            <p><strong>Saturación de Oxígeno:</strong> {{ todayData.oxygenSaturation }} %</p>
+          </div>
+        </div>
+
+        <!-- Tarjeta de Energía Gastada -->
+        <div class="card">
+          <div #caloriesAnimation class="lottie-animation"></div>
+          <div class="card-content">
+            <p><strong>Energía Gastada:</strong> {{ todayData.energyExpended | number }} kcal</p>
+          </div>
         </div>
       </div>
 
       <!-- Resumen Semanal -->
-      <div class="card">
+      <div class="weekly-summary">
         <h3>Resumen Semanal</h3>
-        <div class="card-content">
-          <!-- Resumen Total Semanal -->
-          <div class="weekly-summary">
-            <p><strong>Total Pasos:</strong> {{ weeklyTotals.steps }} pasos</p>
-            <p><strong>Promedio Frecuencia Cardíaca:</strong> {{ weeklyTotals.heartRate }} bpm</p>
-            <p><strong>Promedio Saturación de Oxígeno:</strong> {{ weeklyTotals.oxygenSaturation }} %</p>
-            <p><strong>Total Energía Gastada:</strong> {{ weeklyTotals.energyExpended }} kcal</p>
+
+        <div class="weekly-data">
+          <!-- Total Pasos -->
+          <div class="card">
+            <div #stepsAnimationWeekly class="lottie-animation"></div>
+            <div class="card-content">
+              <p><strong>Total Pasos:</strong> {{ weeklyTotals.steps | number }} pasos</p>
+            </div>
+          </div>
+
+          <!-- Promedio Frecuencia Cardíaca -->
+          <div class="card">
+            <div #heartAnimationWeekly class="lottie-animation"></div>
+            <div class="card-content">
+              <p><strong>Promedio Frecuencia Cardíaca:</strong> {{ weeklyTotals.heartRate }} bpm</p>
+            </div>
+          </div>
+
+          <!-- Promedio Saturación de Oxígeno -->
+          <div class="card">
+            <div #oxygenAnimationWeekly class="lottie-animation"></div>
+            <div class="card-content">
+              <p><strong>Promedio Saturación de Oxígeno:</strong> {{ weeklyTotals.oxygenSaturation }} %</p>
+            </div>
+          </div>
+
+          <!-- Total Energía Gastada -->
+          <div class="card">
+            <div #caloriesAnimationWeekly class="lottie-animation"></div>
+            <div class="card-content">
+              <p><strong>Total Energía Gastada:</strong> {{ weeklyTotals.energyExpended | number }} kcal</p>
+            </div>
           </div>
         </div>
       </div>

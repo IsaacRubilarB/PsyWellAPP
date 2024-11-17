@@ -194,7 +194,6 @@ export class RelojComponent implements OnInit, OnDestroy {
     };
   }
 
-
   // Datos diarios
   getTodayStepsData() {
     const headers = this.createRequestHeaders();
@@ -202,7 +201,8 @@ export class RelojComponent implements OnInit, OnDestroy {
 
     this.http.post('https://fitness.googleapis.com/fitness/v1/users/me/dataset:aggregate', body, { headers }).subscribe({
       next: (data: any) => {
-        this.todayData.steps = data?.bucket[0]?.dataset[0]?.point[0]?.value[0]?.intVal || 0;
+        const steps = data?.bucket[0]?.dataset[0]?.point[0]?.value[0]?.intVal || 0;
+        this.todayData.steps = steps.toLocaleString(); // Formato de miles
         console.log(`Pasos de hoy: ${this.todayData.steps}`);
       },
       error: (error) => console.error('Error al obtener pasos:', error)
@@ -215,7 +215,8 @@ export class RelojComponent implements OnInit, OnDestroy {
 
     this.http.post('https://fitness.googleapis.com/fitness/v1/users/me/dataset:aggregate', body, { headers }).subscribe({
       next: (data: any) => {
-        this.todayData.heartRate = Math.round(data?.bucket[0]?.dataset[0]?.point[0]?.value[0]?.fpVal || 0);
+        const heartRate = Math.round(data?.bucket[0]?.dataset[0]?.point[0]?.value[0]?.fpVal || 0);
+        this.todayData.heartRate = heartRate; // Mantener como número (sin formato de miles)
         console.log(`Frecuencia cardíaca de hoy: ${this.todayData.heartRate}`);
       },
       error: (error) => console.error('Error al obtener frecuencia cardíaca:', error)
@@ -242,8 +243,8 @@ export class RelojComponent implements OnInit, OnDestroy {
 
     this.http.post('https://fitness.googleapis.com/fitness/v1/users/me/dataset:aggregate', body, { headers }).subscribe({
       next: (data: any) => {
-        const energyPoint = data?.bucket[0]?.dataset[0]?.point[0]?.value[0]?.fpVal || 0;
-        this.todayData.energyExpended = Math.round(energyPoint);
+        const energyExpended = Math.round(data?.bucket[0]?.dataset[0]?.point[0]?.value[0]?.fpVal || 0);
+        this.todayData.energyExpended = energyExpended.toLocaleString(); // Formato de miles
         console.log(`Energía gastada de hoy: ${this.todayData.energyExpended} kcal`);
       },
       error: (error) => console.error('Error al obtener energía gastada:', error)
