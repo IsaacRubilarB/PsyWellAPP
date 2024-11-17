@@ -1,86 +1,171 @@
-/* Fondo suave /
-ion-content {
-  --background: #E3F2FD;
+@import "~animate.css/animate.css";
+
+:host {
+  --ion-background-color: #f5f8ff;
 }
 
-/ Logo centrado /
-.login-logo {
+.page-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  animation: fadeIn 1.5s;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 16px;
+  background-color: transparent;
+}
+
+.logo-container {
+  margin-bottom: -100px; /* Reduce la separación entre el logo y la tarjeta */
+  animation: bounceInDown 1.5s;
+}
+
+.app-logo {
+  width: 300px; 
+  margin-top: -30px;/* Aumenta el tamaño del logo */
+  height: auto;
+}
+
+.form-container {
+  background: #ffffff;
+  border-radius: 15px;
+  padding: 30px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+  animation: fadeInUp 1s;
+}
+
+ion-card {
+  --background: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+ion-card-title {
   text-align: center;
-  margin-top: 30px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 10px; /* Reduce el margen inferior del título */
+  color: #333;
 }
 
-/ Botón de Ingresar /
-ion-button {
-  margin-top: 20px;
-  --background: #90A4AE;
-  --background-activated: #B0BEC5;
-  color: #FFFFFF;
-}
-
-/ Estilos de los ítems de input /
 ion-item {
-  --background: #CFD8DC;
-  --color: #37474F;
-  --border-color: #90A4AE;
+  --background: transparent;
+  margin-bottom: 12px;
 }
 
 ion-label {
-  --color-focused: #546E7A;
-  --color: #37474F;
+  color: #333;
 }
 
 ion-input {
-  color: #37474F;
+  --padding-start: 10px;
 }
 
-/ Contenedor del login y registro con efecto flip /
-.login-register-container {
+.input-group {
   display: flex;
-  perspective: 1000px;
+  justify-content: space-between;
 }
 
-.login-card, .register-card {
+.input-group ion-input {
+  width: 30%;
+}
+
+ion-select {
+  --padding-start: 10px;
+}
+
+ion-button {
   width: 100%;
-  backface-visibility: hidden;
-  transition: transform 0.6s;
+  height: 50px;
+  font-size: 1rem;
+  --border-radius: 25px;
+  margin-top: 15px;
 }
 
-.login-card {
-  transform: rotateY(0deg);
+.register-button,
+.login-button {
+  --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --color: white;
+  animation: pulse 2s infinite;
 }
 
-.register-card {
-  position: absolute;
-  top: 0;
-  transform: rotateY(180deg);
-}
-
-.login-register-container.flip .login-card {
-  transform: rotateY(-180deg);
-}
-
-.login-register-container.flip .register-card {
-  transform: rotateY(0deg);
-}
-
-/ Enlace de registro /
-.register-link {
-  margin-top: 20px;
+.google-button {
+  --background: #ffffff;
+  --border-width: 1px;
+  --border-color: #764ba2;
+  --color: #764ba2;
   text-align: center;
-  color: #546E7A;
-  font-weight: bold;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
-/ Flecha de retroceso en la vista de registro */
-.back-arrow {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  color: #546E7A;
-  font-size: 24px;
-  cursor: pointer;
+.switch-mode {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #667eea;
+}
+
+.switch-mode a {
+  color: #667eea;
+  text-decoration: underline;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounceInDown {
+  0%, 20%, 40%, 60%, 80%, 100% {
+    animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+  }
+  0% {
+    opacity: 0;
+    transform: translateY(-2000px);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(30px);
+  }
+  80% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(118, 75, 162, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 30px rgba(118, 75, 162, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(118, 75, 162, 0);
+  }
 }

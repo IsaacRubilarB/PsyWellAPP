@@ -36,7 +36,9 @@ export class LoginRegisterComponent implements OnInit {
     this.registerForm = this.fb.group({
       nombre: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      fechaNacimiento: ['', Validators.required],
+      diaNacimiento: ['', Validators.required], // Añadir este control
+      mesNacimiento: ['', Validators.required], // Añadir este control
+      anoNacimiento: ['', Validators.required], // Añadir este control
       genero: ['', Validators.required],
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', Validators.required],
@@ -65,35 +67,37 @@ export class LoginRegisterComponent implements OnInit {
       alert('Formulario de registro no válido');
       return;
     }
-
+  
     const { password, confirmPassword, ...userData } = this.registerForm.value;
-
+  
     if (password !== confirmPassword) {
       alert('Las contraseñas no coinciden');
       return;
     }
-
+  
     if (new Date(userData.fechaNacimiento) > new Date()) {
       alert('La fecha de nacimiento no es válida');
       return;
     }
-
+  
     try {
       const userCredential = await this.afAuth.createUserWithEmailAndPassword(
         userData.email,
         password
       );
-
+  
       const uid = userCredential.user?.uid;
-
+  
       userData.contrasena = password;
       userData.estado = true;
       userData.perfil = 'paciente';
+  
+      // Guardar los datos del usuario en PostgreSQL y establecer el estado del usuario
       this.usersService.registrarUsuario(userData).subscribe(
         async (response) => {
           if (response && response.idUsuario) {
             const postgresId = response.idUsuario;
-
+  
             // Uso de la nueva API de Firestore
             const db = getFirestore();
             await setDoc(doc(collection(db, 'users'), uid), {
@@ -101,7 +105,14 @@ export class LoginRegisterComponent implements OnInit {
               email: userData.email,
               idUsuario: postgresId,
             });
-
+  
+            // Establecer los datos del usuario en el servicio
+            this.usersService.setUserData({
+              nombre: userData.nombre,
+              email: userData.email,
+              idUsuario: postgresId,
+            });
+  
             this.router.navigate(['/home']);
           } else {
             alert('No se pudo agregar el usuario a PostgreSQL');
@@ -117,6 +128,7 @@ export class LoginRegisterComponent implements OnInit {
       alert('Error al registrar usuario');
     }
   }
+  
 
   async login() {
     if (this.loginForm.valid) {

@@ -1,113 +1,106 @@
-<ion-content class="ion-padding">
-  <!-- Vista de Inicio de Sesión -->
-  <div *ngIf="!isRegisterMode" class="login-card">
-    <div class="login-logo">
-      <img src="assets/logo.png" alt="PsyWell Logo" />
+<ion-content>
+  <div class="container">
+
+    <!-- Logo de la aplicación -->
+    <div class="logo-container ion-text-center ion-padding">
+      <img src="assets/logo.png" alt="Logo PsyWell" class="app-logo">
     </div>
-    <form [formGroup]="loginForm" (ngSubmit)="login()">
-      <ion-item>
-        <ion-label position="floating">Correo Electrónico</ion-label>
-        <ion-input type="email" formControlName="email" required></ion-input>
-      </ion-item>
-      <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" class="error-message">
-        Por favor, introduce un correo electrónico válido.
-      </div>
-      <ion-item>
-        <ion-label position="floating">Contraseña</ion-label>
-        <ion-input type="password" formControlName="password" required></ion-input>
-      </ion-item>
-      <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="error-message">
-        La contraseña es obligatoria.
-      </div>
-      <ion-button expand="full" type="submit">Ingresar</ion-button>
-    </form>
 
-    <!-- Botón de Inicio de Sesión con Google -->
-    <ion-button expand="full" color="danger" (click)="loginWithGoogle()">
-      <ion-icon name="logo-google"></ion-icon> Iniciar sesión con Google
-    </ion-button>
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title *ngIf="!isRegisterMode">Iniciar Sesión</ion-card-title>
+        <ion-card-title *ngIf="isRegisterMode">Registrar Cuenta</ion-card-title>
+      </ion-card-header>
 
-    <div class="register-link" (click)="toggleRegisterMode()">
-      Registrar <ion-icon name="arrow-forward-outline"></ion-icon>
-    </div>
-  </div>
+      <ion-card-content>
+        <!-- Formulario de inicio de sesión -->
+        <form *ngIf="!isRegisterMode" [formGroup]="loginForm" (ngSubmit)="login()">
+          <ion-item>
+            <ion-label position="floating">Correo Electrónico</ion-label>
+            <ion-input type="email" formControlName="email"></ion-input>
+          </ion-item>
 
-  <!-- Vista de Registro -->
-  <div *ngIf="isRegisterMode" class="register-card">
-    <ion-icon name="arrow-back-outline" class="back-arrow" (click)="toggleRegisterMode()"></ion-icon>
-    <div class="login-logo">
-      <img src="assets/logo.png" alt="PsyWell Logo" />
-    </div>
-    <form [formGroup]="registerForm" (ngSubmit)="register()">
-      <!-- Campo para Nombre -->
-      <ion-item>
-        <ion-label position="floating">Nombre</ion-label>
-        <ion-input placeholder="Ingrese nombre o alias" type="text" formControlName="nombre" required></ion-input>
-      </ion-item>
-      <div *ngIf="registerForm.get('nombre')?.invalid && registerForm.get('nombre')?.touched" class="error-message">
-        El nombre es obligatorio.
-      </div>
+          <ion-item>
+            <ion-label position="floating">Contraseña</ion-label>
+            <ion-input type="password" formControlName="password"></ion-input>
+          </ion-item>
 
-      <!-- Campo para Correo Electrónico -->
-      <ion-item>
-        <ion-label position="floating">Correo Electrónico</ion-label>
-        <ion-input placeholder="Ingrese Correo Electrónico" type="email" formControlName="email" required></ion-input>
-      </ion-item>
-      <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" class="error-message">
-        Por favor, introduce un correo electrónico válido.
-      </div>
+          <div class="ion-padding-top">
+            <ion-button expand="block" type="submit" [disabled]="loginForm.invalid">Iniciar Sesión</ion-button>
+          </div>
+          <ion-button expand="block" fill="outline" (click)="loginWithGoogle()">Iniciar Sesión con Google</ion-button>
 
-      <!-- Campo para Fecha de Nacimiento -->
-      <ion-item>
-        <ion-label position="floating">Fecha de Nacimiento</ion-label>
-        <ion-input
-          formControlName="fechaNacimiento"
-          displayFormat="DD-MM-YYYY"
-          placeholder="Ingrese Fecha de Nacimiento"
-          class="minimal-datetime">
-        </ion-input>
-      </ion-item>
-      <div *ngIf="registerForm.get('fechaNacimiento')?.invalid && registerForm.get('fechaNacimiento')?.touched" class="error-message">
-        La fecha de nacimiento es obligatoria.
-      </div>
+          <div class="ion-text-center ion-padding">
+            <ion-button fill="clear" (click)="toggleRegisterMode()">¿No tienes una cuenta? Regístrate</ion-button>
+          </div>
+        </form>
 
-      <!-- Campo para Género -->
-      <ion-item>
-        <ion-label position="floating">Género</ion-label>
-        <ion-select formControlName="genero" required>
-          <ion-select-option value="masculino">Masculino</ion-select-option>
-          <ion-select-option value="femenino">Femenino</ion-select-option>
-          <ion-select-option value="otro">Otro</ion-select-option>
-        </ion-select>
-      </ion-item>
-      <div *ngIf="registerForm.get('genero')?.invalid && registerForm.get('genero')?.touched" class="error-message">
-        El género es obligatorio.
-      </div>
+        <!-- Formulario de registro -->
+        <form *ngIf="isRegisterMode" [formGroup]="registerForm" (ngSubmit)="register()">
+          <ion-item>
+            <ion-label position="floating">Nombre Completo</ion-label>
+            <ion-input type="text" formControlName="nombre"></ion-input>
+          </ion-item>
 
-      <!-- Campo para Contraseña -->
-      <ion-item>
-        <ion-label position="floating">Contraseña</ion-label>
-        <ion-input placeholder="Ingrese Contraseña" type="password" formControlName="password" required></ion-input>
-      </ion-item>
-      <div *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched" class="error-message">
-        La contraseña es obligatoria.
-      </div>
+          <ion-item>
+            <ion-label position="floating">Correo Electrónico</ion-label>
+            <ion-input type="email" formControlName="email"></ion-input>
+          </ion-item>
 
-      <!-- Campo para Confirmar Contraseña -->
-      <ion-item>
-        <ion-label position="floating">Confirmar Contraseña</ion-label>
-        <ion-input placeholder="Confirme Contraseña" type="password" formControlName="confirmPassword" required></ion-input>
-      </ion-item>
-      <div *ngIf="registerForm.get('confirmPassword')?.value !== registerForm.get('password')?.value && registerForm.get('confirmPassword')?.touched" class="error-message">
-        Las contraseñas no coinciden.
-      </div>
+          <!-- Apartados para la fecha de nacimiento -->
+          <div class="ion-padding-vertical">
+            <ion-grid>
+              <ion-row>
+                <ion-col size="4">
+                  <ion-item>
+                    <ion-label position="floating">Día</ion-label>
+                    <ion-input type="text" formControlName="diaNacimiento"></ion-input>
+                  </ion-item>
+                </ion-col>
+                <ion-col size="4">
+                  <ion-item>
+                    <ion-label position="floating">Mes</ion-label>
+                    <ion-input type="text" formControlName="mesNacimiento"></ion-input>
+                  </ion-item>
+                </ion-col>
+                <ion-col size="4">
+                  <ion-item>
+                    <ion-label position="floating">Año</ion-label>
+                    <ion-input type="text" formControlName="anoNacimiento"></ion-input>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </div>
 
-      <ion-button expand="full" type="submit">Crear Cuenta</ion-button>
-    </form>
+          <ion-item>
+            <ion-label>Género</ion-label>
+            <ion-select formControlName="genero">
+              <ion-select-option value="masculino">Masculino</ion-select-option>
+              <ion-select-option value="femenino">Femenino</ion-select-option>
+              <ion-select-option value="otro">Otro</ion-select-option>
+            </ion-select>
+          </ion-item>
 
-    <!-- Botón de Inicio de Sesión con Google para Registro -->
-    <ion-button expand="full" color="danger" (click)="loginWithGoogle()">
-      <ion-icon name="logo-google"></ion-icon> Iniciar sesión con Google
-    </ion-button>
+          <ion-item>
+            <ion-label position="floating">Contraseña</ion-label>
+            <ion-input type="password" formControlName="password"></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="floating">Confirmar Contraseña</ion-label>
+            <ion-input type="password" formControlName="confirmPassword"></ion-input>
+          </ion-item>
+
+          <div class="ion-padding-top">
+            <ion-button expand="block" type="submit" [disabled]="registerForm.invalid">Registrarse</ion-button>
+          </div>
+
+          <div class="ion-text-center ion-padding">
+            <ion-button fill="clear" (click)="toggleRegisterMode()">¿Ya tienes una cuenta? Inicia Sesión</ion-button>
+          </div>
+        </form>
+      </ion-card-content>
+    </ion-card>
   </div>
 </ion-content>

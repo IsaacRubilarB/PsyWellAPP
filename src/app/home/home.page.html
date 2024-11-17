@@ -41,35 +41,39 @@
     </div>
   </div>
 
-  <!-- Sección de citas -->
-  <div class="citas-container">
-    <h2>Tus Próximas Citas</h2>
-    <ion-grid>
-      <ion-row>
-        <ion-col size="12" *ngFor="let cita of citas">
-          <div class="cita-card">
-            <div class="cita-header">
-              <ion-avatar>
-                <img [src]="cita.fotoPsicologo || 'assets/default-psicologo.png'" alt="Psicólogo" />
-              </ion-avatar>
-              <div class="cita-header-details">
-                <h3>{{ cita.nombrePsicologo }}</h3>
-                <p>Especialista en Salud Mental</p>
-              </div>
+ <!-- Sección de citas -->
+<div class="citas-container">
+  <h2>Tus Próximas Citas</h2>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12" *ngFor="let cita of citas">
+        <div class="cita-card">
+          <div class="cita-header">
+            <ion-avatar>
+              <img [src]="cita.fotoPsicologo || 'assets/default-psicologo.png'" alt="Psicólogo" />
+            </ion-avatar>
+            <div class="cita-header-details">
+              <h3>{{ cita.nombrePsicologo }}</h3>
+              <p>Especialista en Salud Mental</p>
             </div>
-            <div class="cita-body">
-              <p><strong>Paciente:</strong> {{ cita.nombrePaciente }}</p>
-              <p><strong>Fecha:</strong> {{ cita.fecha | date: 'fullDate' }}</p>
-              <p><strong>Hora:</strong> {{ cita.horaInicio }} - {{ cita.horaFin }}</p>
-              <p><strong>Ubicación:</strong> {{ cita.ubicacion }}</p>
-              <p><strong>Comentarios:</strong> {{ cita.comentarios }}</p>
-            </div>
+            <!-- Botón para activar/desactivar la alarma -->
+            <ion-button fill="clear" (click)="toggleAlarm(cita)">
+              <ion-icon [name]="cita.alarmActive ? 'notifications' : 'notifications-off'"></ion-icon>
+            </ion-button>
           </div>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-  </div>
-</ion-content>
+          <div class="cita-body">
+            <p><strong>Paciente:</strong> {{ cita.nombrePaciente }}</p>
+            <p><strong>Fecha:</strong> {{ cita.fecha | date: 'fullDate' }}</p>
+            <p><strong>Hora:</strong> {{ cita.horaInicio }} - {{ cita.horaFin }}</p>
+            <p><strong>Ubicación:</strong> {{ cita.ubicacion }}</p>
+            <p><strong>Comentarios:</strong> {{ cita.comentarios }}</p>
+          </div>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</div>
+
 
 <ion-footer>
   <ion-toolbar>
