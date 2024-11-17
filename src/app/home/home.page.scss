@@ -6,135 +6,204 @@ ion-content {
 /* Contenedor del encabezado */
 .header-container {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 20px;
-}
-
-/* Centrado del logo */
-.logo-container {
-  flex: 1;
-  display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 10px;
+  padding: 15px;
+  position: relative;
 }
 
 .small-logo {
-  width: 150px;
+  width: 200px;
+  height: auto;
 }
 
-/* Estilo para las tarjetas de citas */
-.cita-card {
-  background-color: #174a6a; /* Tono oscuro */
-  color: #ffffff; /* Texto en blanco */
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  padding: 15px;
-  margin: 2% auto; /* Centra las tarjetas y agrega un margen de 2% */
-  max-width: 90%; /* Limita el ancho para mejor visualización en dispositivos móviles */
-  text-align: left;
-}
-
-
-/* Botón de ajustes */
-.settings-button {
-  color: #f5f5f5;
-  font-size: 24px;
+.logout-button {
   position: absolute;
-  top: 60px;
-  right: 10px;
+  top: 10px;
+  left: 10px;
+  font-size: 18px;
+  color: #ffffff;
+  background: #105685;
+  border-radius: 50%;
+  padding: 8px;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
 }
 
-/* Información del perfil */
+.logout-button:hover {
+  transform: scale(1.1);
+  background: #062d46;
+}
+
+.settings-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 18px;
+  color: #ffffff;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.settings-button:hover {
+  transform: scale(1.1);
+  background: #062d46;
+}
+
+/* Contenedor del perfil */
+.profile-info-container {
+  margin-top: -20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .profile-info {
+  width: 90%;
+  height: 220px;
+  border-radius: 15px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.profile-image-container {
+  position: absolute;
+  top: -65px;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid #ffffff;
+  border-radius: 50%;
+  width: 130px;
+  height: 130px;
+  background-color: #030202;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   display: flex;
   align-items: center;
-  padding: 15px 20px;
-  background-color: #bb9f25;
-  border-radius: 10px;
-  margin: 0 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  justify-content: center;
 }
 
-ion-avatar {
-  margin-right: 15px;
-  width: 100px;
-  height: 100px;
-  flex-shrink: 0;
-  border: 3px solid #fff;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+.profile-image-container ion-avatar {
+  width: 120px;
+  height: 120px;
+}
+
+.edit-icon {
+  position: absolute;
+  top: 10px; 
+  right: 10px;
+  background: #105685;
+  color: #ffffff;
+  border-radius: 50%;
+  padding: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.edit-icon:hover {
+  transform: scale(1.2);
 }
 
 .user-details {
-  flex: 1;
-  text-align: left;
+  position: absolute;
+  top: 50%; 
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  background-color: rgba(16, 86, 133, 0.8);
+  padding: 10px 15px;
+  border-radius: 10px;
+  color: #ffffff;
+  width: 85%;
 }
 
 .user-details h2 {
   margin: 0;
-  font-size: 22px;
-  color: #fff;
+  font-size: 18px;
+  font-weight: bold;
 }
 
 .user-details p {
-  margin: 2px 0;
-  color: #f9f9f9;
+  margin: 0;
+  font-size: 14px;
+  color: #cce7ff;
 }
 
-/* Contenedor de datos IoT */
-.iot-data-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;  /* Se ajusta a 2 columnas */
-  grid-gap: 15px;
-  padding: 20px;
+/* Estilo para las tarjetas de citas */
+.citas-container {
+  margin-top: 30px;
+  padding: 15px;
 }
 
-/* Estilo para las tarjetas de los datos IoT */
-.data-card {
-  background-color: #ffffff;
-  border-radius: 10px;
+.citas-container h2 {
+  text-align: center;
+  color: #ffffff;
+  font-size: 1.8rem;
+  margin-top: -30px;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.cita-card {
+  display: flex;
+  align-items: flex-start;
+  background: #ffffff;
+  border-radius: 15px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   padding: 15px;
-  color: #000;
-  display: flex;
-  align-items: center;  /* Alineación vertical */
-  justify-content: space-between;  /* Alineación horizontal */
-  text-align: left;  /* Texto alineado a la izquierda */
-  height: 100px;  /* Ajuste de altura */
-  max-width: 350px;  /* Ancho */
-  gap: 15px;  /* Espacio entre icono y texto */
+  margin-bottom: 20px;
+  transition: transform 0.3s ease;
 }
 
-/* Ajustes del contenido dentro de cada tarjeta */
-.data-content {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 15px;
+.cita-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
-.data-card img {
-  width: 40px;
+.cita-card ion-avatar {
+  flex-shrink: 0;
+  margin-right: 15px;
+  width: 90px;
+  height: 90px;
 }
 
-.data-text h3 {
-  font-size: 20px;
+.cita-card ion-avatar img {
+  border-radius: 50%;
+  border: 3px solid #105685;
+}
+
+.cita-header-details {
+  flex-grow: 1;
+}
+
+.cita-header-details h3 {
+  margin: 0;
+  font-size: 1.4rem;
+  color: #105685;
   font-weight: bold;
-  margin: 0;
 }
 
-.data-text h4 {
-  font-size: 14px;
-  color: #666;
+.cita-header-details p {
   margin: 0;
+  font-size: 1rem;
+  color: #6c757d;
 }
 
-/* Estilo especial para la tarjeta de monitoreo del sueño */
-.data-card.sleep-card {
-  grid-column: span 2;  /* Ocupa todo el ancho disponible en la fila */
-  height: 100px;  /* Ajuste de altura */
-  max-width: calc(120% - 40px);  /* Ancho para ocupar más espacio */
+.cita-body {
+  padding-top: 10px;
+}
+
+.cita-body p {
+  margin: 5px 0;
+  font-size: 1rem;
+  color: #495057;
+  line-height: 1.4;
+}
+
+.cita-body p strong {
+  color: #105685;
 }
 
 /* Barra de navegación */
@@ -146,8 +215,7 @@ ion-segment {
   display: flex;
   justify-content: space-around;
   background-color: #083d5d;
-  padding: 5px 0;
-  border-top: 1px solid #ccc;
+  padding: 10px 0;
 }
 
 .nav-icon {
@@ -157,13 +225,10 @@ ion-segment {
   transition: transform 0.3s ease;
 }
 
-.nav-icon:active {
+.nav-icon:hover {
   transform: scale(1.2);
 }
 
-/* Resaltar el botón activo en la navbar */
-.active-segment {
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
-  background-color: #ffffff20;
-  border-radius: 8px;
+.nav-icon:active {
+  transform: scale(1.3);
 }

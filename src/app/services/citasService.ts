@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, map, Observable } from 'rxjs';
-import { ListaCitasResponse } from '../home/home.page';
+import { ListaCitasResponse } from '../home/cita.model';
 
 export interface DisponibilidadInput {
   disponible: any;

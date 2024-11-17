@@ -1,0 +1,41 @@
+<ion-footer>
+  <ion-toolbar>
+    <ion-segment class="footer-segment">
+      <!-- Botón de registrar emociones -->
+      <ion-segment-button
+        class="footer-segment-button"
+        [ngClass]="{'active-segment': currentSegment === 'registrar-emociones'}"
+        (click)="navigateTo('/registrar-emociones')"
+      >
+        <ion-icon src="assets/emotes/calendario.svg" alt="Registrar emociones" class="footer-icon"></ion-icon>
+      </ion-segment-button>
+      
+      <!-- Botón de home -->
+      <ion-segment-button
+        class="footer-segment-button"
+        [ngClass]="{'active-segment': currentSegment === 'home'}"
+        (click)="navigateTo('/home')"
+      >
+        <ion-icon src="assets/emotes/home.svg" alt="Home" class="footer-icon"></ion-icon>
+      </ion-segment-button>
+      
+      <!-- Botón de tips -->
+      <ion-segment-button
+        class="footer-segment-button"
+        [ngClass]="{'active-segment': currentSegment === 'tips'}"
+        (click)="navigateTo('/tips')"
+      >
+        <ion-icon src="assets/emotes/tranquilidad.svg" alt="Tips" class="footer-icon"></ion-icon>
+      </ion-segment-button>
+      
+      <!-- Botón de reloj -->
+      <ion-segment-button
+        class="footer-segment-button"
+        [ngClass]="{'active-segment': currentSegment === 'reloj'}"
+        (click)="navigateTo('/reloj')"
+      >
+        <ion-icon src="assets/emotes/reloj.webp" alt="Reloj" class="footer-icon"></ion-icon>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-footer>

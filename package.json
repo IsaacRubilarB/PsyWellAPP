@@ -38,7 +38,7 @@
     "capacitor-google-fit": "^0.2.4",
     "chart.js": "^4.4.4",
     "date-fns": "^4.1.0",
-    "firebase": "^11.0.1",
+    "firebase": "^11.0.2",
     "gapi": "^0.0.3",
     "interactjs": "^1.10.27",
     "ionicons": "^7.0.0",

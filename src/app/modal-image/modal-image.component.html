@@ -1,0 +1,54 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ title }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cancel()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Grid de imágenes predeterminadas -->
+  <div class="image-grid">
+    <div 
+      class="image-item" 
+      *ngFor="let image of options" 
+      [class.selected]="selectedImage === image"
+      (click)="selectImage(image)">
+      <img [src]="image" alt="Imagen" />
+    </div>
+  </div>
+
+  <!-- Botón para cargar imagen desde la galería -->
+  <div class="upload-container">
+    <input 
+      type="file" 
+      accept="image/*" 
+      [id]="tipo === 'profile' ? 'uploadInputPerfil' : 'uploadInputPortada'" 
+      (change)="onFileSelected($event)"  
+      hidden 
+    />
+    <ion-button expand="block" color="primary" (click)="triggerFileInput()">
+      <ion-icon slot="start" name="cloud-upload"></ion-icon>
+      {{ getUploadButtonText() }}
+    </ion-button>
+  </div>
+
+  <!-- Indicador de carga -->
+  <div *ngIf="isUploading" class="loading-indicator">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Subiendo imagen, por favor espera...</p>
+  </div>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-buttons slot="end">
+      <ion-button (click)="confirmSelection()" [disabled]="!selectedImage">
+        Confirmar
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

@@ -12,6 +12,7 @@ import { environment } from 'src/environments/environment';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { AuthService } from './services/auth.service';
 import { AuthGuard } from './guards/auth.guard';
+import { ModalImageComponent } from './modal-image/modal-image.component';  // Importar el componente
 
 import { SafePipe } from './pipes/safe.pipe';
 
@@ -21,7 +22,8 @@ import { PsicologoModalComponent } from './psicologo-modal/psicologo-modal.compo
   declarations: [
     AppComponent,
     PsicologoModalComponent,
-    SafePipe // Declara el SafePipe aquí
+    SafePipe ,
+    ModalImageComponent// Declara el SafePipe aquí
   ],
   imports: [
     BrowserModule,
