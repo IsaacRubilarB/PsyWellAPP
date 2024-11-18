@@ -26,8 +26,8 @@ export class HomePage implements OnInit {
   currentSegment: string = 'home';
   userName: string = '';
   userEmail: string | null = '';
-  profileImage: string = 'assets/avatares/avatar4.png'; // Imagen predeterminada de perfil
-  bannerImage: string = 'assets/banners/banner6.jpg'; // Imagen predeterminada del banner
+  profileImage: string = 'assets/avatares/avatar4.png'; 
+  bannerImage: string = 'assets/banners/banner6.jpg'; 
 
   citas: any[] = [];
   idUsuario: any;
@@ -74,34 +74,30 @@ export class HomePage implements OnInit {
   ) {}
 
   ngOnInit() {
-    // Suscribirse al estado del usuario para detectar cualquier cambio en el inicio de sesión
     this.afAuth.authState.subscribe(user => {
       if (user) {
         this.userEmail = user.email || '';
         if (this.userEmail) {
-          // Llama a los métodos que dependen del email solo cuando el email está disponible
           this.cargarPaciente(this.userEmail);
           this.loadUserImages(this.userEmail);
         } else {
           console.error('El correo del usuario aún no está disponible.');
         }
       } else {
-        this.resetUserData(); // Limpiar los datos del usuario al cerrar sesión
+        this.resetUserData(); 
       }
     });
   
-    this.obtenerUsuarios(); // Cargar la lista de usuarios para poder identificar psicólogos y pacientes
+    this.obtenerUsuarios(); 
     setTimeout(() => {
-      this.initializeDrag(); // Inicializar la funcionalidad de arrastrar
+      this.initializeDrag(); 
     });
   }
   
   private loadUserImages(email: string): void {
     if (email) {
-      // Reemplazar caracteres no permitidos en el correo electrónico para usarlo como ID del documento
       const sanitizedEmail = email.replace('@', '_').replace('.', '_');
   
-      // Obtener la URL del perfil y del banner desde Firebase Storage
       this.profileImage = this.getFirebaseImageUrl(sanitizedEmail, 'profile');
       this.bannerImage = this.getFirebaseImageUrl(sanitizedEmail, 'banner');
     } else {
@@ -113,8 +109,8 @@ export class HomePage implements OnInit {
     this.userName = '';
     this.userEmail = '';
     this.userId = null;
-    this.profileImage = 'assets/avatares/avatar4.png'; // Imagen predeterminada
-    this.bannerImage = 'assets/banners/banner6.jpg'; // Imagen predeterminada
+    this.profileImage = 'assets/avatares/avatar4.png'; 
+    this.bannerImage = 'assets/banners/banner6.jpg'; 
   }
   navigateTo(route: string) {
     this.router.navigate([route]);
@@ -147,31 +143,27 @@ export class HomePage implements OnInit {
     const options = type === 'profile' ? this.defaultAvatars : this.defaultBanners;
     const title = type === 'profile' ? 'Selecciona un Avatar' : 'Selecciona un Banner';
   
-    // Crear el modal y pasar los componentes necesarios
     const modal = await this.modalController.create({
       component: ModalImageComponent,
       componentProps: {
         options: options,
         title: title,
-        tipo: type // Pasar el tipo ('profile' o 'banner') como 'tipo'
+        tipo: type 
       }
     });
   
-    // Presentar el modal
     await modal.present();
   
-    // Manejar la selección de la imagen al cerrar el modal
     modal.onDidDismiss().then((result) => {
       if (result.data?.selectedImage) {
         const selectedImage = result.data.selectedImage;
   
-        // Dependiendo del tipo, asignar la imagen seleccionada
         if (type === 'profile') {
-          this.profileImage = selectedImage; // Actualizar la imagen de perfil en la vista
-          this.saveImageUrlToFirestore('profile', selectedImage); // Guarda en Firestore
+          this.profileImage = selectedImage; 
+          this.saveImageUrlToFirestore('profile', selectedImage); 
         } else if (type === 'banner') {
-          this.bannerImage = selectedImage; // Actualizar la imagen de banner en la vista
-          this.saveImageUrlToFirestore('banner', selectedImage); // Guarda en Firestore
+          this.bannerImage = selectedImage; 
+          this.saveImageUrlToFirestore('banner', selectedImage); 
         }
       }
     });
@@ -182,7 +174,6 @@ export class HomePage implements OnInit {
       const user = await this.afAuth.currentUser;
   
       if (user && user.email) {
-        // Sanitiza el correo del usuario
         const sanitizedEmail = user.email.replace(/[@.]/g, '_');
         const userDoc = this.afs.collection('users').doc(sanitizedEmail);
         const field = type === 'profile' ? 'profileImage' : 'bannerImage';
@@ -241,7 +232,7 @@ export class HomePage implements OnInit {
           this.profileImage = this.getFirebaseImageUrl(user.email, 'profile');
           this.bannerImage = this.getFirebaseImageUrl(user.email, 'banner');
           console.log('Usuario cargado:', user);
-          this.obtenerCitas(); // Asegúrate de llamar a obtenerCitas después de cargar el usuario
+          this.obtenerCitas(); 
         } else {
           console.warn('Usuario no encontrado, usando datos predeterminados');
         }
@@ -265,7 +256,6 @@ export class HomePage implements OnInit {
         if (response && response.status === 'success' && Array.isArray(response.data)) {
           console.log('Citas obtenidas:', response.data);
   
-          // Filtrar las citas relacionadas con el usuario actual
           this.citas = response.data.filter(
             (cita: Cita) => `${cita.idPaciente}` === `${this.userId}` || `${cita.idPsicologo}` === `${this.userId}`
           );
@@ -334,7 +324,7 @@ export class HomePage implements OnInit {
 
   async openAvatarSelectionModal() {
     const modal = await this.modalController.create({
-      component: PsicologoModalComponent, // Cambiar por el componente de selección de imagen
+      component: PsicologoModalComponent, 
       componentProps: {
         options: this.defaultAvatars,
       },
@@ -352,7 +342,7 @@ export class HomePage implements OnInit {
 
   async openBannerSelectionModal() {
     const modal = await this.modalController.create({
-      component: PsicologoModalComponent, // Cambiar por el componente de selección de imagen
+      component: PsicologoModalComponent, 
       componentProps: {
         options: this.defaultBanners,
       },
@@ -413,7 +403,6 @@ export class HomePage implements OnInit {
       await this.afAuth.signOut();
       console.log('Cierre de sesión exitoso');
   
-      // Limpiar los datos del usuario al cerrar sesión
       this.userName = '';
       this.userEmail = '';
       this.profileImage = 'assets/avatares/avatar4.png';
@@ -426,16 +415,12 @@ export class HomePage implements OnInit {
     }
   }
   async toggleAlarm(cita: any) {
-    // Verificar si la alarma ya está activa
     if (cita.alarmActive) {
-      // Desactivar la alarma
       cita.alarmActive = false;
       this.showAlert('Alarma Desactivada', 'La alarma para esta cita ha sido desactivada.');
     } else {
-      // Activar la alarma
       cita.alarmActive = true;
       this.showAlert('Alarma Activada', 'La alarma para esta cita ha sido activada.');
-      // Aquí podrías agregar lógica adicional para programar la alarma, usando plugins nativos si es necesario
     }
   }
 
@@ -448,6 +433,23 @@ export class HomePage implements OnInit {
 
     await alert.present();
   }
+
+  async openPsychologistModal() {
+    const modal = await this.modalController.create({
+      component: PsicologoModalComponent, 
+      cssClass: 'modal-psychologist-class' 
+    });
+  
+    await modal.present();
+  
+    modal.onDidDismiss().then((result) => {
+      if (result.data) {
+        console.log('Resultado del modal:', result.data);
+        this.obtenerCitas(); 
+      }
+    });
+  }
+  
 }
 
 

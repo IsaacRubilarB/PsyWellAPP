@@ -1,32 +1,229 @@
-.success-message {
-    text-align: center;
-    margin-top: 20px;
-    color: green;
-    font-weight: bold;
-  }
-  
-.hour-taken {
-background-color: #e0e0e0;  // Fondo gris para la hora seleccionada
-color: #ffffff;  // Texto blanco para la hora seleccionada
-border-radius: 5px;  // Bordes redondeados (opcional)
+/* Base Styles */
+ion-content {
+  --background: #105685;
+  padding: 16px;
+  font-family: 'Roboto', sans-serif;
 }
 
-.hour-taken {
-    background-color: #e0e0e0;  // Fondo gris para la hora seleccionada
-    color: #ffffff;  // Texto blanco para la hora seleccionada
-    border-radius: 5px;  // Bordes redondeados (opcional)
-  }
-  
-  ion-item:hover {
-    background-color: #d1d1d1;  // Fondo más claro al pasar el mouse
-    cursor: pointer;  // Muestra el cursor como puntero para indicar interactividad
-  }
-  
-  ion-item.selected:hover {
-    background-color: #a0a0a0;  // Fondo más oscuro cuando la hora ya está seleccionada
-  }
-  
+/* Psychologist List Styles */
+.psychologist-list {
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  margin: 24px auto;
+  padding: 0;
+  max-width: 600px;
+}
+
+.psychologist-card {
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  cursor: pointer;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 16px;
+  background: #ffffff;
+}
+
+.psychologist-card:hover {
+  background-color: #eaf5e5;
+  transform: translateY(-4px);
+}
+
+.psychologist-card.selected {
+  background-color: #c8e6c9;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.avatar-container {
+  border-radius: 50%;
+  overflow: hidden;
+  width: 80px;
+  height: 80px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.psychologist-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.psychologist-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  flex-grow: 1;
+}
+
+.psychologist-details h2 {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #0a4c75;
+  line-height: 1.2;
+}
+
+.availability {
+  font-size: 1rem;
+  margin: 0;
+  font-weight: 500;
+}
+
+.availability.available {
+  color: #4caf50;
+  font-weight: bold;
+}
+
+.availability.not-available {
+  color: #f44336;
+  font-weight: bold;
+}
+
+/* Selected Psychologist Section */
+.selected-psychologist-container {
+  background: #ffffffcc;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+  margin-top: 24px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.psychologist-details-card {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.calendar-item {
+  margin-top: 16px;
+}
+
+/* Available Times */
+.available-times {
+  margin-top: 16px;
+}
+
+.available-times ion-item {
+  transition: background-color 0.2s ease;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.available-times ion-item:hover {
+  background-color: #e3f2fd;
+}
+
+.selected-time {
+  background-color: #dce6ff !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+/* Appointment Button */
+.appointment-button {
+  margin-top: 16px;
+  font-weight: bold;
+  background-color: #105685;
+  color: #ffffff;
+  text-transform: uppercase;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.appointment-button:hover {
+  background-color: #0a3f5c;
+}
+
+/* Success Message */
+.success-message {
+  color: #4caf50;
+  text-align: center;
+  margin-top: 24px;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+/* Back Button */
+.back-button {
+  margin-top: 24px;
+  font-weight: bold;
+  background-color: #757575;
+  color: #ffffff;
+  text-transform: uppercase;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.back-button:hover {
+  background-color: #5a5a5a;
+}
+
+/* Title Style */
+ion-toolbar {
+  --background: #105685;
+  --ion-color-primary: #ffffff;
+}
+
+ion-title {
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 1.6rem;
+  text-align: center;
+}
+
+ion-buttons {
   ion-button {
-    margin-top: 20px;
+    color: #ffffff;
+    font-weight: bold;
   }
-  
+}
+
+/* Checkbox Styles */
+ion-checkbox {
+  margin-left: 8px;
+  --background: #ffffff;
+  --checkmark-color: #105685;
+  --border-color: #105685;
+  --size: 24px;
+}
+
+.psychologist-card.selected ion-checkbox {
+  --checkmark-color: #ffffff;
+  --background: #105685;
+}
+
+/* Responsive Adjustments */
+@media screen and (max-width: 600px) {
+  .psychologist-list,
+  .selected-psychologist-container {
+    padding: 8px;
+  }
+
+  .psychologist-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .avatar-container {
+    width: 60px;
+    height: 60px;
+  }
+
+  .psychologist-details {
+    align-items: flex-start;
+    padding-left: 0;
+  }
+
+  .back-button,
+  .appointment-button {
+    width: 100%;
+  }
+}

@@ -39,15 +39,38 @@ export class PsicologoModalComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.loadUserId();
+    // Cargar usuarios desde el servicio y filtrar los psicólogos
     this.usersService.listarUsuarios().subscribe((usuarios: any) => {
       if (Array.isArray(usuarios.data)) {
-        this.psychologists = usuarios.data.filter((usuario: { perfil: string }) => usuario.perfil === 'psicologo');
+        // Filtrar solo los psicólogos y agregar la URL de la imagen con el token
+        this.psychologists = usuarios.data
+          .filter((usuario: { perfil: string }) => usuario.perfil === 'psicologo')
+          .map((psychologist: any) => {
+            // Generar la URL de la imagen desde Firebase Storage utilizando el correo electrónico del psicólogo
+            psychologist.fotoUrl = this.getPsychologistImageUrl(psychologist.email);
+  
+            // Definir si tienen citas disponibles (esto es solo un ejemplo, debes implementar la lógica correcta)
+            psychologist.citasDisponibles = Math.random() > 0.5;
+  
+            return psychologist;
+          });
       } else {
         console.error('La propiedad "data" no es un array:', usuarios.data);
       }
     });
   }
+
+  // Método para obtener la URL de la imagen del psicólogo
+getPsychologistImageUrl(email: string): string {
+  // Utilizar el correo electrónico tal cual para construir la URL
+  const sanitizedEmail = email;
+
+  // Construir la URL de la imagen desde Firebase Storage con el token
+  const imageUrl = `https://firebasestorage.googleapis.com/v0/b/psywell-ab0ee.firebasestorage.app/o/fotoPerfil%2F${encodeURIComponent(sanitizedEmail)}?alt=media&token=c5469faf-f49d-4f4c-b927-e4f502a27914`;
+
+  console.log('URL generada para la foto del psicólogo:', imageUrl);
+  return imageUrl;
+}
 
   async loadUserId() {
     const user = await this.afAuth.currentUser;
@@ -147,10 +170,26 @@ export class PsicologoModalComponent implements OnInit {
   }
 
   async acceptAppointment() {
-    if (!this.selectedPsychologist || !this.selectedTime || !this.selectedDate || !this.userId) {
+    // Mostrar mensajes para verificar los valores actuales
+    console.log('ID del paciente:', this.userId);
+    console.log('ID del psicólogo:', this.selectedPsychologist?.idUsuario);
+    console.log('Fecha seleccionada:', this.selectedDate);
+    console.log('Hora seleccionada:', this.selectedTime);
+    console.log('Ubicación:', this.ubicacion);
+    console.log('Comentarios:', this.comentarios);
+  
+    // Validaciones de campos obligatorios
+    if (
+      !this.selectedPsychologist ||
+      !this.selectedTime ||
+      !this.selectedDate ||
+      !this.userId ||
+      !this.ubicacion ||
+      !this.comentarios
+    ) {
       const alert = await this.alertController.create({
         header: 'Error',
-        message: 'Por favor selecciona un psicólogo, fecha y hora para continuar.',
+        message: 'Por favor selecciona un psicólogo, fecha, hora, ubicación y agrega comentarios para continuar.',
         buttons: ['OK'],
       });
       await alert.present();
@@ -159,7 +198,7 @@ export class PsicologoModalComponent implements OnInit {
   
     console.log('ID del paciente:', this.userId);
     console.log('ID del psicólogo:', this.selectedPsychologist.idUsuario);
-    
+  
     // Calculamos la hora de fin automáticamente sumando una hora a la hora de inicio seleccionada
     const [horaInicio] = this.selectedTime.split(' - ');
     const horaFin = this.calculateEndTime(horaInicio);
@@ -242,6 +281,28 @@ export class PsicologoModalComponent implements OnInit {
     this.comentarios = '';
     this.showTimes = false;
     this.successMessage = '';
+  }
+  
+  resetSelection(): void {
+    // Restablecer todos los valores de selección
+    this.selectedPsychologist = null;
+    this.selectedPsychologistId = null;
+    this.selectedDate = '';
+    this.selectedTime = '';
+    this.availableTimes = [];
+    this.showTimes = false;
+    this.showDateSelector = false;
+    this.ubicacion = ''; // Limpiar ubicación
+    this.comentarios = ''; // Limpiar comentarios
+  
+    // Desmarcar la tarjeta del psicólogo seleccionado
+    this.psychologists = this.psychologists.map(psychologist => {
+      psychologist.selected = false; // Desmarcar cualquier psicólogo previamente seleccionado
+      return psychologist;
+    });
+  
+    // Confirmar que se ha reiniciado la selección
+    console.log('Selección restablecida. Todos los valores han sido reiniciados.');
   }
   
 }
