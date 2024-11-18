@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signOut, Auth } from 'firebase/auth';
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signOut, Auth, User } from 'firebase/auth';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private auth: Auth;
-  user = new BehaviorSubject<any>(null);
+  user = new BehaviorSubject<User | null>(null);
 
   constructor() {
     this.auth = getAuth(); // Obtenemos la instancia de Auth de Firebase una vez en el constructor
@@ -22,6 +22,7 @@ export class AuthService {
   async login(email: string, password: string) {
     try {
       const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
+      this.user.next(userCredential.user); // Actualizamos el usuario en el BehaviorSubject
       return userCredential;
     } catch (error) {
       console.error("Error al iniciar sesión con correo y contraseña", error);
@@ -34,6 +35,7 @@ export class AuthService {
     const provider = new GoogleAuthProvider();
     try {
       const result = await signInWithPopup(this.auth, provider);
+      this.user.next(result.user); // Actualizamos el usuario en el BehaviorSubject
       return result;
     } catch (error) {
       console.error("Error al iniciar sesión con Google", error);
@@ -45,6 +47,7 @@ export class AuthService {
   async logout() {
     try {
       await signOut(this.auth);
+      this.user.next(null); // Limpiamos el usuario en el BehaviorSubject al cerrar sesión
     } catch (error) {
       console.error("Error al cerrar sesión", error);
     }
@@ -52,11 +55,11 @@ export class AuthService {
 
   // Obtener el usuario actual
   getCurrentUser() {
-    return this.auth.currentUser;
+    return this.user.value;
   }
 
   // Verificar si el usuario está autenticado
   isAuthenticated(): boolean {
-    return this.auth.currentUser !== null;
+    return this.user.value !== null;
   }
 }
