@@ -34,7 +34,7 @@
 }
 
 .form-container {
-  background: #ffffff;
+  background: hwb(197 42% 11%);
   border-radius: 15px;
   padding: 30px;
   width: 90%;
@@ -42,9 +42,8 @@
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
   animation: fadeInUp 1s;
 }
-
 ion-card {
-  --background: #ffffff;
+  --background: hwb(197 42% 11%);
   border-radius: 15px;
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
 }

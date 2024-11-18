@@ -17,7 +17,7 @@ export class UsersService {
   constructor(private http: HttpClient) {}
 
   registrarUsuario(userData: any): Observable<any> {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+  /*  const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.post<any>(this.RegistrarUserUrl, userData, { headers }).pipe(
       tap((response) => {
         if (response && response.idUsuario) {
@@ -25,7 +25,21 @@ export class UsersService {
           this.setUserData(userData);
         }
       })
-    );
+    );*/
+
+
+    return new Observable((observer) => {
+      const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+      this.http.post<any>(this.RegistrarUserUrl, userData, { headers }).subscribe(
+        (response) => {
+          observer.next(response); // Emitir la respuesta
+          observer.complete();     // Completar la observación
+        },
+        (error) => {
+          observer.error(error); // Emitir un error si ocurre
+        }
+      );
+    });
   }
 
   // Método para listar todos los usuarios

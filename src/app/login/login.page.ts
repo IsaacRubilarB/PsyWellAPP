@@ -8,6 +8,7 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import { getAuth, signOut } from 'firebase/auth';
 import { getFirestore, collection, doc, setDoc } from 'firebase/firestore';
+import { initializeApp } from 'firebase/app';
 
 declare var gapi: any;
 
@@ -36,9 +37,7 @@ export class LoginRegisterComponent implements OnInit {
     this.registerForm = this.fb.group({
       nombre: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      diaNacimiento: ['', Validators.required], // Añadir este control
-      mesNacimiento: ['', Validators.required], // Añadir este control
-      anoNacimiento: ['', Validators.required], // Añadir este control
+      fechaNacimiento: ['', Validators.required], // Añadir este control
       genero: ['', Validators.required],
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', Validators.required],
@@ -63,10 +62,10 @@ export class LoginRegisterComponent implements OnInit {
   }
 
   async register() {
-    if (this.registerForm.invalid) {
+    /*if (this.registerForm.invalid) {
       alert('Formulario de registro no válido');
       return;
-    }
+    }*/
   
     const { password, confirmPassword, ...userData } = this.registerForm.value;
   
@@ -75,10 +74,10 @@ export class LoginRegisterComponent implements OnInit {
       return;
     }
   
-    if (new Date(userData.fechaNacimiento) > new Date()) {
+   /* if (new Date(userData.fechaNacimiento) > new Date()) {
       alert('La fecha de nacimiento no es válida');
       return;
-    }
+    }*/
   
     try {
       const userCredential = await this.afAuth.createUserWithEmailAndPassword(
@@ -91,38 +90,55 @@ export class LoginRegisterComponent implements OnInit {
       userData.contrasena = password;
       userData.estado = true;
       userData.perfil = 'paciente';
+      
   
       // Guardar los datos del usuario en PostgreSQL y establecer el estado del usuario
-      this.usersService.registrarUsuario(userData).subscribe(
-        async (response) => {
-          if (response && response.idUsuario) {
-            const postgresId = response.idUsuario;
-  
-            // Uso de la nueva API de Firestore
-            const db = getFirestore();
-            await setDoc(doc(collection(db, 'users'), uid), {
-              nombre: userData.nombre,
-              email: userData.email,
-              idUsuario: postgresId,
-            });
-  
-            // Establecer los datos del usuario en el servicio
-            this.usersService.setUserData({
-              nombre: userData.nombre,
-              email: userData.email,
-              idUsuario: postgresId,
-            });
-  
-            this.router.navigate(['/home']);
-          } else {
-            alert('No se pudo agregar el usuario a PostgreSQL');
-          }
-        },
+      this.usersService.registrarUsuario(userData).subscribe(async res=>{
+
+      if (res && res.data.idUsuario) {
+        const postgresId = res.data.idUsuario;
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyAFJUcrBDDLPM2SscMvi1x_jUv6Wlqnukg",
+          authDomain: "psywell-ab0ee.firebaseapp.com",
+          projectId: "psywell-ab0ee",
+          storageBucket: "psywell-ab0ee.appspot.com",
+          messagingSenderId: "471287872717",
+          appId: "1:471287872717:web:588c0acfcb84728c7657d84",
+          measurementId: "G-TG8E6CBF8D",
+        };
+
+        initializeApp(firebaseConfig);
+        // Uso de la nueva API de Firestore
+        const db = getFirestore();
+        await setDoc(doc(collection(db, 'users'), uid), {
+          nombre: userData.nombre,
+          email: userData.email,
+          idUsuario: postgresId,
+        });
+
+        // Establecer los datos del usuario en el servicio
+        this.usersService.setUserData({
+          nombre: userData.nombre,
+          email: userData.email,
+          idUsuario: postgresId,
+        });
+
+        //this.router.navigate(['/home']);
+      } else {
+        alert('No se pudo agregar el usuario a PostgreSQL');
+      }
+  })
+     
+
+      
+
+        /*
         (error) => {
           console.error('Error al agregar usuario a PostgreSQL:', error);
           alert('Hubo un error al registrarse');
         }
-      );
+      );*/
     } catch (error) {
       console.error('Error al registrar usuario:', error);
       alert('Error al registrar usuario');
