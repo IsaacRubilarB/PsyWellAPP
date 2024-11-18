@@ -38,8 +38,10 @@ export class PsicologoModalComponent implements OnInit {
     private cdRef: ChangeDetectorRef // Inyecta ChangeDetectorRef
   ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
     // Cargar usuarios desde el servicio y filtrar los psicólogos
+    await this.loadUserName();
+
     this.usersService.listarUsuarios().subscribe((usuarios: any) => {
       if (Array.isArray(usuarios.data)) {
         // Filtrar solo los psicólogos y agregar la URL de la imagen con el token
@@ -48,7 +50,7 @@ export class PsicologoModalComponent implements OnInit {
           .map((psychologist: any) => {
             // Generar la URL de la imagen desde Firebase Storage utilizando el correo electrónico del psicólogo
             psychologist.fotoUrl = this.getPsychologistImageUrl(psychologist.email);
-  
+            //psychologist.idUsuario =psychologist.idUsuario;
             // Definir si tienen citas disponibles (esto es solo un ejemplo, debes implementar la lógica correcta)
             psychologist.citasDisponibles = Math.random() > 0.5;
   
@@ -220,8 +222,9 @@ getPsychologistImageUrl(email: string): string {
       await this.citasService.registrarCita(appointmentData).toPromise();
       this.successMessage = 'Cita registrada correctamente!';
       // Llamar a un método para refrescar la lista de psicólogos
-      this.refreshPsychologists();
+      //this.refreshPsychologists();
       this.resetForm();
+      this.router.navigate(['/home']);
     } catch (error) {
       console.error('Error al registrar la cita:', error);
       this.successMessage = 'Hubo un error al registrar la cita.';
@@ -303,6 +306,27 @@ getPsychologistImageUrl(email: string): string {
   
     // Confirmar que se ha reiniciado la selección
     console.log('Selección restablecida. Todos los valores han sido reiniciados.');
+  }
+
+  async loadUserName(): Promise<void> {
+    const user = await this.afAuth.currentUser;
+    if (user) {
+      const uid = user.uid;
+      
+      if (uid) {
+        const userDoc = await this.afs.collection('users').doc(uid).get().toPromise();
+        
+        if (userDoc && userDoc.exists) {
+          const userData = userDoc.data() as { nombre?: string; idUsuario?: string };
+          this.userId = userData?.idUsuario || '';
+        } else {
+          this.userId = null;
+
+        }
+      } else {
+        console.error('No se pudo obtener el UID del usuario.');
+      }
+    }
   }
   
 }

@@ -408,6 +408,14 @@ export class HomePage implements OnInit {
       this.profileImage = 'assets/avatares/avatar4.png';
       this.bannerImage = 'assets/banners/banner6.jpg';
       this.userId = null;
+
+      this.citas = [];
+      this.idUsuario= null;    
+      this.psicologos= [];
+      this.pacientes= [];
+      this.psychologists = [];
+      this.selectedPsychologist = null;
+      this.availableTimes= [];
   
       this.router.navigate(['/login']);
     } catch (error) {
