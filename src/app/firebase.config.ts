@@ -1,6 +1,7 @@
 // Importa solo los módulos necesarios de Firebase
 import { initializeApp } from 'firebase/app';
 import { getAnalytics } from 'firebase/analytics';
+import {getFirestore} from 'firebase/firestore'
 
 const firebaseConfig = {
   apiKey: "AIzaSyAFJUcrBDDLPM2SscMvi1x_jUv6Wlqnukg",
@@ -17,5 +18,6 @@ const app = initializeApp(firebaseConfig);
 
 // Inicializa Analytics (opcional)
 const analytics = getAnalytics(app);
+const storage = getFirestore(app);
 
-export { app, analytics };
+export { app, analytics,storage };
