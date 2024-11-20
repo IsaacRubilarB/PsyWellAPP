@@ -5,129 +5,151 @@
       <img src="assets/logo1.png" alt="PsyWell Logo" class="small-logo" />
     </div>
   </div>
-
-  <!-- Perfil -->
-  <div class="profile-info" *ngIf="accessToken">
-    <ion-avatar>
-      <img src="assets/perfil.png" alt="User Profile" />
-    </ion-avatar>
-  </div>
-
-  <!-- Botones de autenticación -->
   <div class="auth-buttons">
+    <!-- Botón de inicio de sesión -->
     <button *ngIf="!accessToken" class="google-login-button" (click)="loginWithGoogle()">
       <img src="assets/google.png" alt="Google Icon" class="google-icon" />
       Iniciar sesión con Google
     </button>
+  
+    <!-- Botón de cierre de sesión -->
     <button *ngIf="accessToken" class="google-logout-button" (click)="logout()">
       <img src="assets/google.png" alt="Google Logout Icon" class="google-icon" />
       Cerrar sesión
     </button>
   </div>
+  
+  <!-- Contenedor de Datos Fisiológicos -->
+  <div *ngIf="accessToken" class="data-container">
+    <h2 class="center-text">Datos Fisiológicos en Tiempo Real</h2>
 
-  <!-- Contenedor de datos -->
-  <div *ngIf="accessToken" class="scroll-container">
-    <div class="card-container">
-      <!-- Datos en tiempo real -->
-      <div class="real-time-data">
-        <h3>Datos en Tiempo Real</h3>
-
-        <!-- Tarjeta de Pasos -->
-        <div class="card">
-          <div #stepsAnimation class="lottie-animation"></div>
-          <div class="card-content">
-            <p><strong>Pasos:</strong> {{ todayData.steps | number }} pasos</p>
-          </div>
+    <!-- Tarjetas de datos circulares -->
+    <div class="circular-card-grid">
+      <!-- Pasos -->
+      <div class="circular-card">
+        <div class="icon-container">
+          <ion-icon name="walk" class="data-icon"></ion-icon>
         </div>
-
-        <!-- Tarjeta de Frecuencia Cardíaca -->
-        <div class="card">
-          <div #heartAnimation class="lottie-animation"></div>
-          <div class="card-content">
-            <p><strong>Frecuencia Cardíaca:</strong> {{ todayData.heartRate }} bpm</p>
-          </div>
+        <div class="data-value">
+          {{ todayData.steps | number }}
         </div>
+        <div class="data-label">Pasos</div>
+      </div>
 
-        <!-- Tarjeta de Saturación de Oxígeno -->
-        <div class="card">
-          <div #oxygenAnimation class="lottie-animation"></div>
-          <div class="card-content">
-            <p><strong>Saturación de Oxígeno:</strong> {{ todayData.oxygenSaturation }} %</p>
-          </div>
+      <!-- Frecuencia Cardíaca -->
+      <div class="circular-card">
+        <div class="icon-container">
+          <ion-icon name="heart" class="data-icon"></ion-icon>
         </div>
+        <div class="data-value">
+          {{ todayData.heartRate }} bpm
+        </div>
+        <div class="data-label">Frecuencia Cardíaca</div>
+      </div>
 
-        <!-- Tarjeta de Energía Gastada -->
-        <div class="card">
-          <div #caloriesAnimation class="lottie-animation"></div>
-          <div class="card-content">
-            <p><strong>Energía Gastada:</strong> {{ todayData.energyExpended | number }} kcal</p>
+      <!-- Saturación de Oxígeno -->
+      <div class="circular-card">
+        <div class="icon-container">
+          <ion-icon name="pulse" class="data-icon"></ion-icon>
+        </div>
+        <div class="data-value">
+          {{ todayData.oxygenSaturation }} %
+        </div>
+        <div class="data-label">Saturación de Oxígeno</div>
+      </div>
+
+      <!-- Energía Gastada -->
+      <div class="circular-card">
+        <div class="icon-container">
+          <ion-icon name="flame" class="data-icon"></ion-icon>
+        </div>
+        <div class="data-value">
+          {{ todayData.energyExpended | number }} kcal
+        </div>
+        <div class="data-label">Energía Gastada</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Resumen Semanal -->
+  <div *ngIf="accessToken" class="weekly-summary">
+    <h2 class="center-text">Resumen Semanal</h2>
+
+    <!-- Gráfico Semanal -->
+    <div class="weekly-chart">
+      <div class="chart-item">
+        <div class="chart-icon">
+          <ion-icon name="walk"></ion-icon>
+        </div>
+        <div class="chart-content">
+          <p class="chart-label">Total Pasos</p>
+          <div class="chart-bar">
+            <div class="chart-bar-fill" [style.width.%]="weeklyTotals.steps / 10000 * 100"></div>
           </div>
+          <p class="chart-value">{{ weeklyTotals.steps | number }} pasos</p>
         </div>
       </div>
 
-      <!-- Resumen Semanal -->
-      <div class="weekly-summary">
-        <h3>Resumen Semanal</h3>
-
-        <div class="weekly-data">
-          <!-- Total Pasos -->
-          <div class="card">
-            <div #stepsAnimationWeekly class="lottie-animation"></div>
-            <div class="card-content">
-              <p><strong>Total Pasos:</strong> {{ weeklyTotals.steps | number }} pasos</p>
-            </div>
+      <div class="chart-item">
+        <div class="chart-icon">
+          <ion-icon name="heart"></ion-icon>
+        </div>
+        <div class="chart-content">
+          <p class="chart-label">Promedio Frecuencia Cardíaca</p>
+          <div class="chart-bar">
+            <div class="chart-bar-fill" [style.width.%]="weeklyTotals.heartRate / 150 * 100"></div>
           </div>
+          <p class="chart-value">{{ weeklyTotals.heartRate }} bpm</p>
+        </div>
+      </div>
 
-          <!-- Promedio Frecuencia Cardíaca -->
-          <div class="card">
-            <div #heartAnimationWeekly class="lottie-animation"></div>
-            <div class="card-content">
-              <p><strong>Promedio Frecuencia Cardíaca:</strong> {{ weeklyTotals.heartRate }} bpm</p>
-            </div>
+      <div class="chart-item">
+        <div class="chart-icon">
+          <ion-icon name="pulse"></ion-icon>
+        </div>
+        <div class="chart-content">
+          <p class="chart-label">Promedio Saturación Oxígeno</p>
+          <div class="chart-bar">
+            <div class="chart-bar-fill" [style.width.%]="weeklyTotals.oxygenSaturation / 100 * 100"></div>
           </div>
+          <p class="chart-value">{{ weeklyTotals.oxygenSaturation }} %</p>
+        </div>
+      </div>
 
-          <!-- Promedio Saturación de Oxígeno -->
-          <div class="card">
-            <div #oxygenAnimationWeekly class="lottie-animation"></div>
-            <div class="card-content">
-              <p><strong>Promedio Saturación de Oxígeno:</strong> {{ weeklyTotals.oxygenSaturation }} %</p>
-            </div>
+      <div class="chart-item">
+        <div class="chart-icon">
+          <ion-icon name="flame"></ion-icon>
+        </div>
+        <div class="chart-content">
+          <p class="chart-label">Total Energía Gastada</p>
+          <div class="chart-bar">
+            <div class="chart-bar-fill" [style.width.%]="weeklyTotals.energyExpended / 5000 * 100"></div>
           </div>
-
-          <!-- Total Energía Gastada -->
-          <div class="card">
-            <div #caloriesAnimationWeekly class="lottie-animation"></div>
-            <div class="card-content">
-              <p><strong>Total Energía Gastada:</strong> {{ weeklyTotals.energyExpended | number }} kcal</p>
-            </div>
-          </div>
+          <p class="chart-value">{{ weeklyTotals.energyExpended | number }} kcal</p>
         </div>
       </div>
     </div>
   </div>
 </ion-content>
 
+
 <ion-footer>
   <ion-toolbar>
     <ion-segment>
-      <ion-segment-button
-        [ngClass]="{'active-segment': currentSegment === 'registrar-emociones'}"
-        (click)="navigateTo('/registrar-emociones')">
+      <!-- Botón de registrar emociones -->
+      <ion-segment-button [ngClass]="{'active-segment': currentSegment === 'registrar-emociones'}" (click)="navigateTo('/registrar-emociones')">
         <img src="assets/emotes/calendario.svg" alt="Registrar emociones" class="nav-icon" />
       </ion-segment-button>
-      <ion-segment-button
-        [ngClass]="{'active-segment': currentSegment === 'home'}"
-        (click)="navigateTo('/home')">
+      <!-- Botón de home -->
+      <ion-segment-button [ngClass]="{'active-segment': currentSegment === 'home'}" (click)="navigateTo('/home')">
         <img src="assets/emotes/home.svg" alt="Home" class="nav-icon" />
       </ion-segment-button>
-      <ion-segment-button
-        [ngClass]="{'active-segment': currentSegment === 'tips'}"
-        (click)="navigateTo('/tips')">
+      <!-- Botón de tips -->
+      <ion-segment-button [ngClass]="{'active-segment': currentSegment === 'tips'}" (click)="navigateTo('/tips')">
         <img src="assets/emotes/tranquilidad.svg" alt="Tips" class="nav-icon" />
       </ion-segment-button>
-      <ion-segment-button
-        [ngClass]="{'active-segment': currentSegment === 'reloj'}"
-        (click)="navigateTo('/reloj')">
+      <!-- Botón de reloj -->
+      <ion-segment-button [ngClass]="{'active-segment': currentSegment === 'reloj'}" (click)="navigateTo('/reloj')">
         <img src="assets/emotes/reloj.webp" alt="Reloj" class="nav-icon" />
       </ion-segment-button>
     </ion-segment>

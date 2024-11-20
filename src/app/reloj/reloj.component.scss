@@ -1,207 +1,144 @@
-/* Fondo de contenido */
+/* Fondo general */
 ion-content {
   --background: #105685;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-/* Contenedor del encabezado */
+/* Encabezado */
 .header-container {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 20px;
-}
-
-/* Logo */
-.logo-container {
-  flex: 1;
-  display: flex;
   justify-content: center;
-  align-items: center;
   margin-top: 10px;
 }
 
-.small-logo {
-  width: 150px;
+.logo-container {
+  position: relative;
+  z-index: 1; /* Asegura que el logo esté en un nivel más bajo */
 }
 
-/* Estilo para las tarjetas de citas */
-.cita-card {
-  background-color: #174a6a;
+.logo-container img {
+  width: 200px;
+  filter: drop-shadow(0px 4px 8px rgba(0, 0, 0, 0.5));
+  position: relative;
+}
+
+/* Título de sección */
+.center-text {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
   color: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  padding: 15px;
-  margin: 2% auto;
-  max-width: 90%;
-  text-align: left;
+  margin: 20px 0;
 }
 
-/* Botón de ajustes */
-.settings-button {
-  color: #f5f5f5;
-  font-size: 24px;
-  position: absolute;
-  top: 60px;
-  right: 10px;
-}
-
-/* Información del perfil */
-.profile-info {
-  display: flex;
-  align-items: center;
-  padding: 15px 20px;
-  background-color: #bb9f25;
-  border-radius: 10px;
-  margin: 0 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-ion-avatar {
-  margin-right: 15px;
-  width: 100px;
-  height: 100px;
-  flex-shrink: 0;
-  border: 3px solid #fff;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.user-details {
-  flex: 1;
-  text-align: left;
-
-  h2 {
-    margin: 0;
-    font-size: 22px;
-    color: #fff;
-  }
-
-  p {
-    margin: 2px 0;
-    color: #f9f9f9;
-  }
-}
-
-/* Contenedor de datos IoT */
-.iot-data-container {
+/* Tarjetas circulares */
+.circular-card-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-gap: 15px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
   padding: 20px;
 }
 
-/* Tarjetas de datos IoT */
-.data-card {
-  background-color: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  padding: 15px;
-  color: #000;
+.circular-card {
+  width: 150px;
+  height: 150px;
+  background: #174a6a;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  color: #ffffff;
+  text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.circular-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+}
+
+.icon-container {
+  width: 50px;
+  height: 50px;
+  background: #105685;
+  border-radius: 50%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  text-align: left;
-  height: 100px;
-  max-width: 350px;
-  gap: 15px;
-
-  img {
-    width: 40px;
-  }
-
-  .data-text {
-    h3 {
-      font-size: 20px;
-      font-weight: bold;
-      margin: 0;
-    }
-
-    h4 {
-      font-size: 14px;
-      color: #666;
-      margin: 0;
-    }
-  }
+  justify-content: center;
+  margin-bottom: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Tarjeta especial para monitoreo del sueño */
-.data-card.sleep-card {
-  grid-column: span 2;
-  height: 100px;
-  max-width: calc(120% - 40px);
+.data-icon {
+  font-size: 24px;
+  color: #ffd700;
 }
 
-/* Barra de navegación */
-ion-footer {
-  --background: #083d5d;
+.data-value {
+  font-size: 1.2rem;
+  font-weight: bold;
 }
 
-ion-segment {
+.data-label {
+  font-size: 0.9rem;
+  color: #d3d3d3;
+}
+
+/* Gráfico semanal */
+.weekly-chart {
+  width: 100%;
+  padding: 20px;
   display: flex;
-  justify-content: space-around;
-  background-color: #083d5d;
-  padding: 5px 0;
-  border-top: 1px solid #ccc;
+  flex-direction: column;
+  gap: 15px;
 }
 
-.nav-icon {
-  width: 30px;
-  height: 30px;
-  cursor: pointer;
-  transition: transform 0.3s ease;
-
-  &:active {
-    transform: scale(1.2);
-  }
+.chart-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
-/* Resaltar botón activo en la barra de navegación */
-.active-segment {
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
-  background-color: #ffffff20;
-  border-radius: 8px;
+.chart-icon ion-icon {
+  font-size: 32px;
+  color: #ffd700;
 }
 
-/* Contenedor para tarjetas de datos de actividad */
-.scroll-container {
-  max-height: 70vh;
-  overflow-y: auto;
-  padding: 1rem;
+.chart-content {
+  flex: 1;
 }
 
-.card-container {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 1rem;
+.chart-label {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #ffffff;
 }
 
-.card {
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  margin-bottom: 1.5rem;
-  padding: 1rem;
-
-  h3 {
-    margin-top: 0;
-    color: #333;
-  }
-
-  h4 {
-    margin: 0.5rem 0 0.2rem;
-    color: #666;
-  }
-
-  .card-content p {
-    margin: 0.2rem 0;
-    color: #555;
-  }
+.chart-bar {
+  width: 100%;
+  height: 10px;
+  background: #174a6a;
+  border-radius: 5px;
+  overflow: hidden;
+  margin: 5px 0;
 }
 
-/* Estilo general para encabezados */
-h2 {
-  text-align: center;
-  color: #333;
+.chart-bar-fill {
+  height: 100%;
+  background: #ffd700;
+  transition: width 0.3s ease-in-out;
 }
+
+.chart-value {
+  font-size: 0.9rem;
+  color: #ffffff;
+  text-align: right;
+}
+
 
 .auth-buttons {
   display: flex;
@@ -221,8 +158,13 @@ h2 {
   cursor: pointer;
   transition: background-color 0.3s ease;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  margin-top: 10px;
+  margin-top: -80px;
+
+  /* Aseguramos que el botón esté por encima */
+  position: relative;
+  z-index: 10; /* Coloca el botón por encima */
 }
+
 
 .google-login-button {
   background-color: #4285f4;
@@ -231,10 +173,6 @@ h2 {
 
 .google-login-button:hover {
   background-color: #357ae8;
-}
-
-.google-login-button:active {
-  background-color: #2a65c7;
 }
 
 .google-logout-button {
@@ -246,76 +184,94 @@ h2 {
   background-color: #c33c2d;
 }
 
-.google-logout-button:active {
-  background-color: #a32e23;
-}
-
 .google-icon {
   width: 20px;
   height: 20px;
   margin-right: 10px;
 }
 
-.header-logo {
-  width: 150px;
-  margin: auto;
-  display: block;
+
+/* Footer General */
+ion-footer {
+  --background: #083d5d; /* Fondo oscuro del footer */
+  height: 70px; /* Altura del footer */
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2); /* Sombra para resaltar el footer */
 }
 
-.auth-buttons {
-  margin: 20px;
+/* Toolbar dentro del footer */
+ion-toolbar {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
 }
 
-.profile-card {
-  margin: 20px;
+/* Segmento del footer */
+ion-segment {
+  display: flex;
+  justify-content: space-around; /* Espaciado uniforme entre botones */
+  align-items: center;
+  width: 100%;
+  padding: 5px 0;
+  border-top: 2px solid #005582; /* Línea decorativa superior */
+  background-color: #083d5d;
 }
 
-.main-container {
-  padding: 20px;
-}
-
-ion-card {
-  margin-bottom: 20px;
-}
-
+/* Botones del segmento */
 ion-segment-button {
-  --indicator-color: #3880ff;
-  --background-hover: #f4f5f8;
-}
-
-ion-segment-button.active-segment {
-  color: #3880ff;
-  font-weight: bold;
-}
-
-.outlier {
-  color: red;
-  font-weight: bold;
-}
-
-.weekly-details-scroll {
-  max-height: 200px; /* Limita la altura para habilitar scroll */
-  overflow-y: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  --indicator-color: transparent; /* Oculta la línea del indicador por defecto */
+  background: none;
+  border: none;
   padding: 10px;
-  background-color: #f9f9f9;
-  border: 1px solid #ddd;
-  border-radius: 5px;
+  position: relative;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+
+  &.active-segment {
+    background-color: #005582; /* Fondo para el botón activo */
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3); /* Sombra para el botón activo */
+    transform: scale(1.1); /* Aumenta el tamaño para destacar */
+  }
 }
 
+/* Íconos dentro de los botones */
+.nav-icon {
+  width: 30px;
+  height: 30px;
+  transition: transform 0.3s ease, filter 0.3s ease;
+  filter: brightness(0.9); /* Reduce el brillo por defecto */
 
-/* Personalización opcional del scrollbar */
-.weekly-details-scroll::-webkit-scrollbar {
-  width: 8px;
+  &:hover {
+    transform: scale(1.2); /* Aumenta el tamaño al pasar el cursor */
+    filter: brightness(1); /* Incrementa el brillo */
+  }
+
+  &:active {
+    transform: scale(0.95); /* Disminuye el tamaño al hacer clic */
+    filter: brightness(1.2); /* Aumenta el brillo al hacer clic */
+  }
 }
 
-.weekly-details-scroll::-webkit-scrollbar-thumb {
-  background: #ccc;
-  border-radius: 4px;
+/* Efecto de botón activo */
+.active-segment img {
+  filter: brightness(1.5); /* Incrementa el brillo del ícono activo */
 }
 
-.weekly-details-scroll::-webkit-scrollbar-thumb:hover {
-  background: #aaa;
+/* Ajuste para pantallas pequeñas */
+@media (max-width: 600px) {
+  ion-footer {
+    height: 60px; /* Reduce la altura en pantallas pequeñas */
+  }
+
+  .nav-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  ion-segment-button {
+    padding: 8px;
+  }
 }
