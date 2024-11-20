@@ -1,170 +1,255 @@
-@import "~animate.css/animate.css";
-
-:host {
-  --ion-background-color: #f5f8ff;
-}
-
-.page-container {
+.container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  animation: fadeIn 1.5s;
+  justify-content: flex-start;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  padding-top: 180px; /* Asegura espacio para el logo */
+  background-size: cover;
+  background-image: url('../../assets/login.jpg');
+
+  background-position: center;
+  background-attachment: fixed;
+  transition: background-image 0.5s ease;
+
+  &.register-mode {
+    background-image: url('../../assets/register.jpg');
+
+    overflow-y: auto; /* Solo permitir scroll en registro */
+  }
 }
 
-.header {
+/* Logo de la aplicación */
+.app-logo-container {
+  position: absolute;
+  top: 20px;
+  z-index: 2;
+  animation: fadeIn 1.5s ease;
   display: flex;
-  align-items: center;
+  justify-content: center;
   width: 100%;
-  padding: 16px;
-  background-color: transparent;
-}
-
-.logo-container {
-  margin-bottom: -100px; /* Reduce la separación entre el logo y la tarjeta */
-  animation: bounceInDown 1.5s;
 }
 
 .app-logo {
-  width: 300px; 
-  margin-top: -30px;/* Aumenta el tamaño del logo */
+  width: 250px;
   height: auto;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.7));
+  transition: transform 0.3s ease, filter 0.3s ease;
+
+  &:hover {
+    transform: scale(1.05);
+    filter: drop-shadow(0 6px 15px rgba(0, 0, 0, 0.9));
+  }
 }
 
-.form-container {
-  background: hwb(197 42% 11%);
-  border-radius: 15px;
-  padding: 30px;
-  width: 90%;
+.flip-container {
+  perspective: 1000px;
+  width: 100%;
   max-width: 400px;
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-  animation: fadeInUp 1s;
-}
-ion-card {
-  --background: hwb(197 42% 11%);
-  border-radius: 15px;
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+  position: relative;
+  height: calc(100vh - 150px); /* Espacio para el logo y margen superior */
+  overflow: hidden; /* Sin desplazamiento por defecto */
+  padding: 20px 0;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(108, 99, 255, 0.5) transparent; /* Estilizar barra de desplazamiento */
+
+  &.register-mode {
+    overflow-y: auto; /* Permitir desplazamiento solo en el modo de registro */
+  }
+
+  &.login-mode {
+    overflow: hidden; /* Bloquear desplazamiento en el login */
+  }
+  
 }
 
+
+
+
+
+.card-front,
+.card-back {
+  width: 100%;
+  backface-visibility: hidden;
+  transition: transform 0.6s ease-in-out;
+  transform-style: preserve-3d;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.card-front {
+  transform: rotateY(0deg);
+  z-index: 2;
+  visibility: visible;
+}
+
+.card-back {
+  transform: rotateY(180deg);
+  z-index: 1;
+  visibility: hidden;
+}
+
+.flip-container.register-mode .card-front {
+  transform: rotateY(-180deg);
+  z-index: 1;
+  visibility: hidden;
+}
+
+.flip-container.register-mode .card-back {
+  transform: rotateY(0deg);
+  z-index: 2;
+  visibility: visible;
+}
+
+/* Tarjetas */
+ion-card {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  margin: auto;
+}
+
+/* Títulos */
 ion-card-title {
   text-align: center;
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   font-weight: bold;
-  margin-bottom: 10px; /* Reduce el margen inferior del título */
   color: #333;
+  margin-bottom: 20px;
+  animation: fadeInDown 1s ease;
 }
 
+/* Campos del formulario */
 ion-item {
-  --background: transparent;
-  margin-bottom: 12px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  background: #f9f9f9;
+  padding: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
-ion-label {
+ion-icon {
+  font-size: 1.4rem;
+  color: #6c63ff;
+  margin-right: 10px;
+}
+
+ion-input,
+ion-datetime,
+ion-select {
+  font-size: 1rem;
   color: #333;
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
 }
 
-ion-input {
-  --padding-start: 10px;
-}
-
-.input-group {
+/* Opciones */
+.options {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  color: #666;
 }
 
-.input-group ion-input {
-  width: 30%;
+.options .forgot-password {
+  color: #6c63ff;
+  text-decoration: none;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: #3b3b98;
+  }
 }
 
-ion-select {
-  --padding-start: 10px;
-}
-
-ion-button {
-  width: 100%;
-  height: 50px;
+/* Botones */
+.action-buttons ion-button {
   font-size: 1rem;
+  height: 50px;
   --border-radius: 25px;
-  margin-top: 15px;
+  margin-bottom: 15px;
 }
 
-.register-button,
 .login-button {
-  --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --background: linear-gradient(135deg, #f4a261, #e76f51);
   --color: white;
-  animation: pulse 2s infinite;
+  box-shadow: 0 4px 12px rgba(244, 162, 97, 0.5);
+
+  &:hover {
+    filter: brightness(1.1);
+  }
 }
 
 .google-button {
-  --background: #ffffff;
-  --border-width: 1px;
-  --border-color: #764ba2;
-  --color: #764ba2;
-  text-align: center;
+  --background: #e63946;
+  --color: white;
+  border: none;
+
+  &:hover {
+    filter: brightness(1.1);
+  }
 }
 
+.register-button {
+  --background: linear-gradient(135deg, #6c63ff, #3b3b98);
+  --color: white;
+
+  &:hover {
+    filter: brightness(1.1);
+  }
+}
+
+/* Enlaces para cambiar de modo */
 .switch-mode {
-  margin-top: 10px;
   text-align: center;
   font-size: 0.9rem;
-  color: #667eea;
+  color: #666;
+  margin-top: 10px;
+}
+
+.switch-mode span {
+  color: #666;
 }
 
 .switch-mode a {
-  color: #667eea;
-  text-decoration: underline;
+  color: #6c63ff;
+  font-weight: bold;
+  text-decoration: none;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: #3b3b98;
+  }
 }
 
+/* Animaciones */
 @keyframes fadeIn {
-  0% {
+  from {
     opacity: 0;
   }
-  100% {
+  to {
     opacity: 1;
   }
 }
 
-@keyframes fadeInUp {
-  0% {
+@keyframes fadeInDown {
+  from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(-20px);
   }
-  100% {
+  to {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-
-@keyframes bounceInDown {
-  0%, 20%, 40%, 60%, 80%, 100% {
-    animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
-  }
-  0% {
-    opacity: 0;
-    transform: translateY(-2000px);
-  }
-  60% {
-    opacity: 1;
-    transform: translateY(30px);
-  }
-  80% {
-    transform: translateY(-10px);
-  }
-  100% {
-    transform: translateY(0);
-  }
-}
-
-@keyframes pulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(118, 75, 162, 0.4);
-  }
-  70% {
-    box-shadow: 0 0 0 30px rgba(118, 75, 162, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(118, 75, 162, 0);
   }
 }

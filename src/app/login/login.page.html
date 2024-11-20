@@ -1,94 +1,150 @@
 <ion-content>
-  <div class="container">
-
+  <div class="container" [ngClass]="{ 'register-mode': isRegisterMode }">
     <!-- Logo de la aplicación -->
-    <div class="logo-container ion-text-center ion-padding">
-      <img src="assets/logo.png" alt="Logo PsyWell" class="app-logo">
+    <div class="app-logo-container">
+      <img src="assets/logo.png" alt="Logo PsyWell" class="app-logo" />
     </div>
 
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title *ngIf="!isRegisterMode">Iniciar Sesión</ion-card-title>
-        <ion-card-title *ngIf="isRegisterMode">Registrar Cuenta</ion-card-title>
-      </ion-card-header>
+    <!-- Contenedor Flip -->
+    <div
+      class="flip-container"
+      #flipContainer
+      [ngClass]="{ 'register-mode': isRegisterMode }"
+    >
+      <!-- Lado Frontal -->
+      <div class="card-front">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>Inicio de sesión</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <form [formGroup]="loginForm" (ngSubmit)="login()">
+              <ion-item>
+                <ion-icon name="mail-outline" slot="start"></ion-icon>
+                <ion-input
+                  type="email"
+                  formControlName="email"
+                  placeholder="Correo Electrónico"
+                ></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+                <ion-input
+                  type="password"
+                  formControlName="password"
+                  placeholder="Contraseña"
+                ></ion-input>
+              </ion-item>
 
-      <ion-card-content>
-        <!-- Formulario de inicio de sesión -->
-        <form *ngIf="!isRegisterMode" [formGroup]="loginForm" (ngSubmit)="login()">
-          <ion-item>
-            <ion-label position="floating">Correo Electrónico</ion-label>
-            <ion-input type="email" formControlName="email"></ion-input>
-          </ion-item>
+              <div class="options">
+                <ion-checkbox slot="start"></ion-checkbox>
+                <span>Recordarme</span>
+                <a href="#" class="forgot-password">¿Olvidaste tu contraseña?</a>
+              </div>
 
-          <ion-item>
-            <ion-label position="floating">Contraseña</ion-label>
-            <ion-input type="password" formControlName="password"></ion-input>
-          </ion-item>
+              <div class="action-buttons">
+                <ion-button
+                  expand="block"
+                  type="submit"
+                  class="login-button"
+                  [disabled]="loginForm.invalid"
+                >
+                  Iniciar Sesión
+                </ion-button>
+                <ion-button
+                  expand="block"
+                  fill="outline"
+                  class="google-button"
+                  (click)="loginWithGoogle()"
+                >
+                  Iniciar Sesión con Google
+                </ion-button>
+              </div>
 
-          <div class="ion-padding-top">
-            <ion-button expand="block" type="submit" [disabled]="loginForm.invalid">Iniciar Sesión</ion-button>
-          </div>
-          <ion-button expand="block" fill="outline" (click)="loginWithGoogle()">Iniciar Sesión con Google</ion-button>
+              <div class="switch-mode">
+                <span>¿No tienes una cuenta?</span>
+                <a (click)="toggleRegisterMode()">Regístrate</a>
+              </div>
+            </form>
+          </ion-card-content>
+        </ion-card>
+      </div>
 
-          <div class="ion-text-center ion-padding">
-            <ion-button fill="clear" (click)="toggleRegisterMode()">¿No tienes una cuenta? Regístrate</ion-button>
-          </div>
-        </form>
+      <!-- Lado Trasero -->
+      <div class="card-back">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>Regístrate</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <form [formGroup]="registerForm">
+              <ion-item>
+                <ion-icon name="person-outline" slot="start"></ion-icon>
+                <ion-input
+                  type="text"
+                  formControlName="nombre"
+                  placeholder="Nombre Completo"
+                ></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-icon name="mail-outline" slot="start"></ion-icon>
+                <ion-input
+                  type="email"
+                  formControlName="email"
+                  placeholder="Correo Electrónico"
+                ></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-icon name="calendar-outline" slot="start"></ion-icon>
+                <ion-datetime
+                  presentation="date"
+                  formControlName="fechaNacimiento"
+                  placeholder="Fecha de Nacimiento"
+                ></ion-datetime>
+              </ion-item>
+              <ion-item>
+                <ion-icon name="people-outline" slot="start"></ion-icon>
+                <ion-select formControlName="genero" placeholder="Género">
+                  <ion-select-option value="masculino">Masculino</ion-select-option>
+                  <ion-select-option value="femenino">Femenino</ion-select-option>
+                  <ion-select-option value="otro">Otro</ion-select-option>
+                </ion-select>
+              </ion-item>
+              <ion-item>
+                <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+                <ion-input
+                  type="password"
+                  formControlName="password"
+                  placeholder="Contraseña"
+                ></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+                <ion-input
+                  type="password"
+                  formControlName="confirmPassword"
+                  placeholder="Confirmar Contraseña"
+                ></ion-input>
+              </ion-item>
 
-        <!-- Formulario de registro -->
-        <form *ngIf="isRegisterMode" [formGroup]="registerForm">
-          <ion-item>
-            <ion-label position="floating">Nombre Completo</ion-label>
-            <ion-input type="text" formControlName="nombre"></ion-input>
-          </ion-item>
+              <div class="action-buttons">
+                <ion-button
+                  expand="block"
+                  class="register-button"
+                  (click)="register()"
+                >
+                  Registrarse
+                </ion-button>
+              </div>
 
-          <ion-item>
-            <ion-label position="floating">Correo Electrónico</ion-label>
-            <ion-input type="email" formControlName="email"></ion-input>
-          </ion-item>
-
-          <!-- Apartados para la fecha de nacimiento -->
-          <div class="ion-padding-vertical">
-            <ion-grid>
-              <ion-row>
-                <ion-col size="12">
-                    <ion-label position="floating">Fecha Nacimiento</ion-label>
-                    <ion-datetime  presentation="date"  locale="es-CL" formControlName="fechaNacimiento"></ion-datetime>
-                </ion-col>
-              </ion-row>
-            </ion-grid>
-          </div>
-
-          <ion-item>
-            <ion-label>Género</ion-label>
-            <ion-select formControlName="genero">
-              <ion-select-option value="masculino">Masculino</ion-select-option>
-              <ion-select-option value="femenino">Femenino</ion-select-option>
-              <ion-select-option value="otro">Otro</ion-select-option>
-            </ion-select>
-          </ion-item>
-
-          <ion-item>
-            <ion-label position="floating">Contraseña</ion-label>
-            <ion-input type="password" formControlName="password"></ion-input>
-          </ion-item>
-
-          <ion-item>
-            <ion-label position="floating">Confirmar Contraseña</ion-label>
-            <ion-input type="password" formControlName="confirmPassword"></ion-input>
-          </ion-item>
-
-          <div class="ion-padding-top">
-            <!-- <ion-button expand="block" type="submit" [disabled]="registerForm.invalid">Registrarse</ion-button> -->
-            <ion-button expand="block" (click)="register()">Registrarse</ion-button>
-
-          </div>
-
-          <div class="ion-text-center ion-padding">
-            <ion-button fill="clear" (click)="toggleRegisterMode()">¿Ya tienes una cuenta? Inicia Sesión</ion-button>
-          </div>
-        </form>
-      </ion-card-content>
-    </ion-card>
+              <div class="switch-mode">
+                <span>¿Ya tienes una cuenta?</span>
+                <a (click)="toggleRegisterMode()">Iniciar Sesión</a>
+              </div>
+            </form>
+          </ion-card-content>
+        </ion-card>
+      </div>
+    </div>
   </div>
 </ion-content>

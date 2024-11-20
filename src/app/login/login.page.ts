@@ -54,12 +54,36 @@ export class LoginRegisterComponent implements OnInit {
 
   toggleRegisterMode() {
     this.isRegisterMode = !this.isRegisterMode;
-    if (this.isRegisterMode) {
-      this.registerForm.reset();
+  
+    const flipContainer = document.querySelector('.flip-container') as HTMLElement;
+    const ionContent = document.querySelector('ion-content') as HTMLElement;
+  
+    if (!this.isRegisterMode) {
+      // Cambiar a modo login
+      if (flipContainer) {
+        flipContainer.classList.remove('register-mode');
+        flipContainer.classList.add('login-mode');
+        flipContainer.scrollTo({ top: 0, behavior: 'smooth' }); // Asegura que el scroll del registro vuelva al inicio
+      }
+  
+      if (ionContent) {
+        ionContent.scrollTo({ top: 0, behavior: 'smooth' }); // Resetear scroll del contenedor principal
+      }
     } else {
-      this.loginForm.reset();
+      // Cambiar a modo registro
+      if (flipContainer) {
+        flipContainer.classList.remove('login-mode');
+        flipContainer.classList.add('register-mode');
+      }
     }
   }
+  
+  
+  
+  
+  
+  
+  
 
   async register() {
     /*if (this.registerForm.invalid) {
