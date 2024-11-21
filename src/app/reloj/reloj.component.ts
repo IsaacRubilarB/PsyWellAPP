@@ -118,6 +118,8 @@ export class RelojComponent implements OnInit, OnDestroy {
     this.getTodayHeartRateData();
     this.getTodayOxygenSaturationData();
     this.getTodayEnergyExpendedData();
+    this.getTodaySleepData();
+    this.getTodayStressData();
     this.cdRef.detectChanges();
   }
 
@@ -193,6 +195,52 @@ export class RelojComponent implements OnInit, OnDestroy {
       endTimeMillis: endTimeMillis
     };
   }
+
+  getTodaySleepData() {
+    const headers = this.createRequestHeaders();
+    const body = this.createAggregateBody('com.google.sleep.segment', 86400000);
+
+    this.http.post('https://fitness.googleapis.com/fitness/v1/users/me/dataset:aggregate', body, { headers }).subscribe({
+      next: (data: any) => {
+        const sleepData = data?.bucket[0]?.dataset[0]?.point || [];
+        if (sleepData.length > 0) {
+          const totalSleepMillis = sleepData.reduce((sum: number, point: any) => {
+            return sum + (point.endTimeNanos - point.startTimeNanos) / 1e6;
+          }, 0);
+          const sleepHours = (totalSleepMillis / (1000 * 60 * 60)).toFixed(1); // Convertir a horas
+          this.todayData.sleep = sleepHours;
+          console.log(`Sueño de hoy: ${this.todayData.sleep} horas`);
+        } else {
+          console.warn('No se encontraron datos de sueño para hoy.');
+          this.todayData.sleep = 0;
+        }
+      },
+      error: (error) => console.error('Error al obtener datos de sueño:', error)
+    });
+  }
+
+  getTodayStressData() {
+    const headers = this.createRequestHeaders();
+    const body = this.createAggregateBody('com.google.heart_rate.bpm', 86400000);
+
+    this.http.post('https://fitness.googleapis.com/fitness/v1/users/me/dataset:aggregate', body, { headers }).subscribe({
+      next: (data: any) => {
+        const heartRateData = data?.bucket[0]?.dataset[0]?.point || [];
+        if (heartRateData.length > 0) {
+          const avgHeartRate = heartRateData.reduce((sum: number, point: any) => {
+            return sum + (point.value[0]?.fpVal || 0);
+          }, 0) / heartRateData.length;
+          this.todayData.stress = Math.round(avgHeartRate); // Utiliza el promedio de la frecuencia cardíaca
+          console.log(`Estrés (promedio de frecuencia cardíaca): ${this.todayData.stress}`);
+        } else {
+          console.warn('No se encontraron datos de frecuencia cardíaca para calcular el estrés.');
+          this.todayData.stress = 0;
+        }
+      },
+      error: (error) => console.error('Error al obtener datos de estrés:', error)
+    });
+  }
+
 
   // Datos diarios
   getTodayStepsData() {
