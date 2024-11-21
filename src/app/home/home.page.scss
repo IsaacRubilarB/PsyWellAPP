@@ -206,7 +206,6 @@ ion-content {
   color: #105685;
 }
 
-/* Barra de navegación */
 ion-footer {
   --background: #083d5d;
 }
@@ -215,7 +214,8 @@ ion-segment {
   display: flex;
   justify-content: space-around;
   background-color: #083d5d;
-  padding: 10px 0;
+  padding: 5px 0;
+  border-top: 1px solid #ccc;
 }
 
 .nav-icon {
@@ -225,10 +225,12 @@ ion-segment {
   transition: transform 0.3s ease;
 }
 
-.nav-icon:hover {
+.nav-icon:active {
   transform: scale(1.2);
 }
 
-.nav-icon:active {
-  transform: scale(1.3);
+.active-segment {
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+  background-color: #ffffff20;
+  border-radius: 8px;
 }
