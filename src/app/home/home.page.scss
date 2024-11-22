@@ -1,6 +1,6 @@
 /* Fondo azul oscuro */
 ion-content {
-  --background: #105685;
+  --background: #105685 !important;
 }
 
 /* Contenedor del encabezado */
@@ -23,31 +23,14 @@ ion-content {
   left: 10px;
   font-size: 18px;
   color: #ffffff;
-  background: #105685;
-  border-radius: 50%;
   padding: 8px;
   cursor: pointer;
   transition: transform 0.2s ease, background-color 0.2s ease;
-}
 
-.logout-button:hover {
-  transform: scale(1.1);
-  background: #062d46;
-}
-
-.settings-button {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 18px;
-  color: #ffffff;
-  cursor: pointer;
-  transition: transform 0.2s ease, background-color 0.2s ease;
-}
-
-.settings-button:hover {
-  transform: scale(1.1);
-  background: #062d46;
+  &:hover {
+    transform: scale(1.1);
+    background: #062d46;
+  }
 }
 
 /* Contenedor del perfil */
@@ -82,16 +65,16 @@ ion-content {
   display: flex;
   align-items: center;
   justify-content: center;
-}
 
-.profile-image-container ion-avatar {
-  width: 120px;
-  height: 120px;
+  ion-avatar {
+    width: 120px;
+    height: 120px;
+  }
 }
 
 .edit-icon {
   position: absolute;
-  top: 10px; 
+  top: 10px;
   right: 10px;
   background: #105685;
   color: #ffffff;
@@ -100,15 +83,15 @@ ion-content {
   font-size: 14px;
   cursor: pointer;
   transition: transform 0.3s ease;
-}
 
-.edit-icon:hover {
-  transform: scale(1.2);
+  &:hover {
+    transform: scale(1.2);
+  }
 }
 
 .user-details {
   position: absolute;
-  top: 50%; 
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
@@ -117,33 +100,33 @@ ion-content {
   border-radius: 10px;
   color: #ffffff;
   width: 85%;
-}
 
-.user-details h2 {
-  margin: 0;
-  font-size: 18px;
-  font-weight: bold;
-}
+  h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: bold;
+  }
 
-.user-details p {
-  margin: 0;
-  font-size: 14px;
-  color: #cce7ff;
+  p {
+    margin: 0;
+    font-size: 14px;
+    color: #cce7ff;
+  }
 }
 
 /* Estilo para las tarjetas de citas */
 .citas-container {
   margin-top: 30px;
   padding: 15px;
-}
 
-.citas-container h2 {
-  text-align: center;
-  color: #ffffff;
-  font-size: 1.8rem;
-  margin-top: -30px;
-  margin-bottom: 10px;
-  font-weight: bold;
+  h2 {
+    text-align: center;
+    color: #ffffff;
+    font-size: 1.8rem;
+    margin-top: -30px;
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
 }
 
 .cita-card {
@@ -155,82 +138,144 @@ ion-content {
   padding: 15px;
   margin-bottom: 20px;
   transition: transform 0.3s ease;
-}
 
-.cita-card:hover {
-  transform: scale(1.02);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-}
+  &:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  }
 
-.cita-card ion-avatar {
-  flex-shrink: 0;
-  margin-right: 15px;
-  width: 90px;
-  height: 90px;
-}
+  ion-avatar {
+    flex-shrink: 0;
+    margin-right: 15px;
+    width: 90px;
+    height: 90px;
 
-.cita-card ion-avatar img {
-  border-radius: 50%;
-  border: 3px solid #105685;
-}
+    img {
+      border-radius: 50%;
+      border: 3px solid #105685;
+    }
+  }
 
-.cita-header-details {
-  flex-grow: 1;
-}
+  .cita-header-details {
+    flex-grow: 1;
 
-.cita-header-details h3 {
-  margin: 0;
-  font-size: 1.4rem;
-  color: #105685;
-  font-weight: bold;
-}
+    h3 {
+      margin: 0;
+      font-size: 1.4rem;
+      color: #105685;
+      font-weight: bold;
+    }
 
-.cita-header-details p {
-  margin: 0;
-  font-size: 1rem;
-  color: #6c757d;
-}
+    p {
+      margin: 0;
+      font-size: 1rem;
+      color: #6c757d;
+    }
+  }
 
-.cita-body {
-  padding-top: 10px;
-}
+  .cita-body {
+    padding-top: 10px;
 
-.cita-body p {
-  margin: 5px 0;
-  font-size: 1rem;
-  color: #495057;
-  line-height: 1.4;
-}
+    p {
+      margin: 5px 0;
+      font-size: 1rem;
+      color: #495057;
+      line-height: 1.4;
 
-.cita-body p strong {
-  color: #105685;
+      strong {
+        color: #105685;
+      }
+    }
+  }
 }
 
 ion-footer {
-  --background: #083d5d;
+  --background: #083d5d; /* Fondo oscuro */
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  z-index: 1000;
+  box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.3); /* Sombra */
+  padding: 0;
+  margin: 0;
+  height: 70px; /* Asegura que cubra todo */
 }
 
-ion-segment {
+/* Elimina cualquier estilo predeterminado en el toolbar */
+ion-toolbar {
+  --background: transparent; /* Fondo transparente */
+  padding: 0;
+  margin: 0;
+  border: none;
+  box-shadow: none;
+  height: 100%; /* Asegura que ocupe toda la altura del footer */
   display: flex;
-  justify-content: space-around;
-  background-color: #083d5d;
-  padding: 5px 0;
-  border-top: 1px solid #ccc;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Personalización del segmento de navegación */
+ion-segment {
+  width: 100%; /* Extiende todo el ancho */
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: none; /* Sin fondo adicional */
+}
+
+/* Botones del segmento */
+ion-segment-button {
+  background: none;
+  border: none;
+  margin: 0;
+  width: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .nav-icon {
-  width: 30px;
-  height: 30px;
+  width: 35px;
+  height: 35px;
   cursor: pointer;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.nav-icon:active {
-  transform: scale(1.2);
+.nav-icon:hover {
+  transform: scale(1.1);
+  box-shadow: 0px 4px 8px rgba(255, 255, 255, 0.4); /* Sombra ligera */
 }
 
+/* Botón activo del segmento */
 .active-segment {
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
-  background-color: #ffffff20;
-  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.2); /* Fondo semi-transparente */
+  border-radius: 12px;
+  padding: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.active-segment img {
+  filter: brightness(1.2); /* Aumentar brillo para íconos activos */
+}
+
+/* Elimina el borde blanco visible */
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* Previene scroll horizontal */
+}
+
+/* Asegura que el footer cubra completamente el área */
+html,
+body,
+ion-app,
+ion-content {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  --background: #083d5d;
 }

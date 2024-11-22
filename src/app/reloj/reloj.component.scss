@@ -1,228 +1,214 @@
-/* Fondo general */
 ion-content {
-  --background: #105685;
+  --background: #105685; // Fondo oscuro y calmante
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  .logo-container {
+    text-align: center;
+    margin-top: 5px;
+
+    img {
+      width: 100px;
+      height: auto;
+      margin-bottom: -10px;
+      opacity: 0.8;
+      filter: drop-shadow(0px 4px 8px rgba(0, 0, 0, 0.5));
+    }
+  }
+
+  .center-text {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #ffffff;
+    margin: 20px 0;
+  }
+
+  .circular-card-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    padding: 20px;
+  }
+
+  .circular-card {
+    width: 150px;
+    height: 150px;
+    background: #174a6a;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    color: #ffffff;
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+
+    &:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+    }
+
+    .icon-container {
+      width: 50px;
+      height: 50px;
+      background: #105685;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+
+      .data-icon {
+        font-size: 24px;
+        color: #ffd700;
+      }
+    }
+
+    .data-value {
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+
+    .data-label {
+      font-size: 0.9rem;
+      color: #d3d3d3;
+    }
+  }
+
+  .weekly-chart {
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+    .chart-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+
+      ion-icon {
+        font-size: 32px;
+        color: #ffd700;
+      }
+
+      .chart-content {
+        flex: 1;
+
+        .chart-label {
+          font-size: 1rem;
+          font-weight: bold;
+          color: #ffffff;
+        }
+
+        .chart-bar {
+          width: 100%;
+          height: 10px;
+          background: #174a6a;
+          border-radius: 5px;
+          overflow: hidden;
+          margin: 5px 0;
+
+          .chart-bar-fill {
+            height: 100%;
+            background: #ffd700;
+            transition: width 0.3s ease-in-out;
+          }
+        }
+
+        .chart-value {
+          font-size: 0.9rem;
+          color: #ffffff;
+          text-align: right;
+        }
+      }
+    }
+  }
+
+  .auth-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px 0;
+
+    .google-login-button,
+    .google-logout-button {
+      display: flex;
+      align-items: center;
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      position: relative;
+      z-index: 10;
+
+      &.google-login-button {
+        background-color: #4285f4;
+        color: white;
+
+        &:hover {
+          background-color: #357ae8;
+        }
+      }
+
+      &.google-logout-button {
+        background-color: #db4437;
+        color: white;
+
+        &:hover {
+          background-color: #c33c2d;
+        }
+      }
+
+      .google-icon {
+        width: 20px;
+        height: 20px;
+        margin-right: 10px;
+      }
+    }
+  }
 }
 
-/* Encabezado */
-.header-container {
-  display: flex;
-  justify-content: center;
-  margin-top: 10px;
-}
-
-.logo-container {
-  position: relative;
-  z-index: 1; /* Asegura que el logo esté en un nivel más bajo */
-}
-
-.logo-container img {
-  width: 200px;
-  filter: drop-shadow(0px 4px 8px rgba(0, 0, 0, 0.5));
-  position: relative;
-}
-
-/* Título de sección */
-.center-text {
-  text-align: center;
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #ffffff;
-  margin: 20px 0;
-}
-
-/* Tarjetas circulares */
-.circular-card-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-  padding: 20px;
-}
-
-.circular-card {
-  width: 150px;
-  height: 150px;
-  background: #174a6a;
-  border-radius: 50%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  color: #ffffff;
-  text-align: center;
-  transition: transform 0.3s, box-shadow 0.3s;
-}
-
-.circular-card:hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
-}
-
-.icon-container {
-  width: 50px;
-  height: 50px;
-  background: #105685;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.data-icon {
-  font-size: 24px;
-  color: #ffd700;
-}
-
-.data-value {
-  font-size: 1.2rem;
-  font-weight: bold;
-}
-
-.data-label {
-  font-size: 0.9rem;
-  color: #d3d3d3;
-}
-
-/* Gráfico semanal */
-.weekly-chart {
-  width: 100%;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.chart-item {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.chart-icon ion-icon {
-  font-size: 32px;
-  color: #ffd700;
-}
-
-.chart-content {
-  flex: 1;
-}
-
-.chart-label {
-  font-size: 1rem;
-  font-weight: bold;
-  color: #ffffff;
-}
-
-.chart-bar {
-  width: 100%;
-  height: 10px;
-  background: #174a6a;
-  border-radius: 5px;
-  overflow: hidden;
-  margin: 5px 0;
-}
-
-.chart-bar-fill {
-  height: 100%;
-  background: #ffd700;
-  transition: width 0.3s ease-in-out;
-}
-
-.chart-value {
-  font-size: 0.9rem;
-  color: #ffffff;
-  text-align: right;
-}
-
-
-.auth-buttons {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 20px 0;
-}
-
-.google-login-button, .google-logout-button {
-  display: flex;
-  align-items: center;
-  padding: 10px 20px;
-  font-size: 16px;
-  font-weight: bold;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  margin-top: -80px;
-
-  /* Aseguramos que el botón esté por encima */
-  position: relative;
-  z-index: 10; /* Coloca el botón por encima */
-}
-
-
-.google-login-button {
-  background-color: #4285f4;
-  color: white;
-}
-
-.google-login-button:hover {
-  background-color: #357ae8;
-}
-
-.google-logout-button {
-  background-color: #db4437;
-  color: white;
-}
-
-.google-logout-button:hover {
-  background-color: #c33c2d;
-}
-
-.google-icon {
-  width: 20px;
-  height: 20px;
-  margin-right: 10px;
-}
-
-
-/* Footer General */
+/* Footer unificado */
 ion-footer {
-  --background: #083d5d; /* Fondo oscuro del footer */
-  height: 70px; /* Altura del footer */
-  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2); /* Sombra para resaltar el footer */
+  --background: #083d5d; /* Fondo oscuro */
+  height: 70px; /* Altura fija */
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.3); /* Sombra superior */
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  z-index: 1000;
 }
 
-/* Toolbar dentro del footer */
 ion-toolbar {
+  --background: #105685; 
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0;
+  height: 100%;
 }
 
-/* Segmento del footer */
 ion-segment {
   display: flex;
-  justify-content: space-around; /* Espaciado uniforme entre botones */
-  align-items: center;
+  justify-content: space-around;
   width: 100%;
   padding: 5px 0;
-  border-top: 2px solid #005582; /* Línea decorativa superior */
-  background-color: #083d5d;
+  background-color: #105685;
+  border-top: 2px solid #005582;
 }
 
-/* Botones del segmento */
 ion-segment-button {
   display: flex;
   justify-content: center;
   align-items: center;
-  --indicator-color: transparent; /* Oculta la línea del indicador por defecto */
   background: none;
   border: none;
   padding: 10px;
@@ -230,62 +216,35 @@ ion-segment-button {
   transition: transform 0.2s ease, background-color 0.2s ease;
 
   &.active-segment {
-    background-color: #005582; /* Fondo para el botón activo */
+    background-color: #005582;
     border-radius: 10px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3); /* Sombra para el botón activo */
-    transform: scale(1.1); /* Aumenta el tamaño para destacar */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
+  }
+
+  .nav-icon {
+    width: 30px;
+    height: 30px;
+    transition: transform 0.3s ease, filter 0.3s ease;
+    filter: brightness(0.9);
+
+    &:hover {
+      transform: scale(1.2);
+      filter: brightness(1);
+    }
+
+    &:active {
+      transform: scale(0.95);
+      filter: brightness(1.2);
+    }
+  }
+
+  &.active-segment img {
+    filter: brightness(1.5);
   }
 }
 
-/* Íconos dentro de los botones */
-.nav-icon {
-  width: 30px;
-  height: 30px;
-  transition: transform 0.3s ease, filter 0.3s ease;
-  filter: brightness(0.9); /* Reduce el brillo por defecto */
-
-  &:hover {
-    transform: scale(1.2); /* Aumenta el tamaño al pasar el cursor */
-    filter: brightness(1); /* Incrementa el brillo */
-  }
-
-  &:active {
-    transform: scale(0.95); /* Disminuye el tamaño al hacer clic */
-    filter: brightness(1.2); /* Aumenta el brillo al hacer clic */
-  }
-}
-
-/* Efecto de botón activo */
-.active-segment img {
-  filter: brightness(1.5); /* Incrementa el brillo del ícono activo */
-}
-
-/* Ajuste para pantallas pequeñas */
-ion-footer {
-  --background: #083d5d;
-}
-
-ion-segment {
-  display: flex;
-  justify-content: space-around;
-  background-color: #083d5d;
-  padding: 5px 0;
-  border-top: 1px solid #ccc;
-}
-
-.nav-icon {
-  width: 30px;
-  height: 30px;
-  cursor: pointer;
-  transition: transform 0.3s ease;
-}
-
-.nav-icon:active {
-  transform: scale(1.2);
-}
-
-.active-segment {
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
-  background-color: #ffffff20;
-  border-radius: 8px;
+/* Asegura que el contenido no solape el footer */
+ion-content {
+  padding-bottom: 80px; /* Espacio para el footer */
 }

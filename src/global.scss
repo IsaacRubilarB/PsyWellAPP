@@ -14,12 +14,8 @@
  /* Definir la fuente global */
 body {
     font-family: 'Poppins', sans-serif;
-    background-color: #1A3D5D; /* Aplicar el fondo azul a todas las páginas */
   }
   
-  ion-content {
-    --background: #1A3D5D; /* Fondo azul oscuro para todas las páginas */
-  }
 /* Core CSS required for Ionic components to work properly */
 @import "@ionic/angular/css/core.css";
 

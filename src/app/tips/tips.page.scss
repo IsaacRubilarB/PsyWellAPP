@@ -172,32 +172,60 @@ ion-content {
   }
 }
 
+/* Footer unificado */
 ion-footer {
-  --background: #083d5d;
+  --background: #105685;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  z-index: 1000;
+  height: 70px;
+  box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.3);
+}
+
+ion-toolbar {
+  --background: #105685;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 0;
+  margin: 0;
 }
 
 ion-segment {
+  width: 100%;
   display: flex;
-  justify-content: space-around;
-  background-color: #083d5d;
-  padding: 5px 0;
-  border-top: 1px solid #ccc;
+  justify-content: space-evenly;
+  align-items: center;
+  padding: 0;
+  background: none;
 }
 
 .nav-icon {
-  width: 30px;
-  height: 30px;
+  width: 35px;
+  height: 35px;
   cursor: pointer;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.nav-icon:active {
-  transform: scale(1.2);
+.nav-icon:hover {
+  transform: scale(1.1);
+  box-shadow: 0px 4px 8px rgba(255, 255, 255, 0.4);
 }
 
 .active-segment {
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
-  background-color: #ffffff20;
-  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 5px;
+  transition: background-color 0.3s ease;
 }
 
+.active-segment img {
+  filter: brightness(1.2);
+}
+
+/* Asegurar que el contenido no se solape con el footer */
+ion-content {
+  padding-bottom: 70px;
+}
