@@ -1,29 +1,59 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+
+interface UserProfile {
+  name: string;
+  age: number;
+  condition: string;
+  image: string;
+}
 
 @Component({
   selector: 'app-ajustes',
   templateUrl: './ajustes.page.html',
   styleUrls: ['./ajustes.page.scss'],
 })
-export class AjustesPage {
-  // Variables para mostrar u ocultar modales
+export class AjustesPage implements OnInit {
+  // Variables de modales
   showNotification = false;
   showSound = false;
   showLanguage = false;
   showPrivacy = false;
   showAbout = false;
-  showProfile = false; // Para mostrar el modal de editar perfil
-  
-  // Variable para activar/desactivar notificaciones
+  showProfile = false;
+
+  // Información del usuario logueado
+  userProfile: UserProfile = {
+    name: 'Cristina Ormazábal',
+    age: 29,
+    condition: 'Depresión',
+    image: 'assets/perfil.png',
+  };
+
+  // Variables de notificaciones
   notificationsEnabled = false;
 
-  // Variable para mantener el segmento activo
+  // Segmento actual
   currentSegment = 'ajustes';
 
   constructor(private router: Router) {}
 
-  // Métodos para mostrar los modales correspondientes
+  ngOnInit(): void {
+    this.loadUserProfile(); // Cargar datos dinámicos
+  }
+
+  // Cargar perfil de usuario (simulación)
+  loadUserProfile() {
+    // Aquí podrías implementar la lógica para obtener los datos del usuario desde un servicio
+    this.userProfile = {
+      name: 'Cristina Ormazábal',
+      age: 29,
+      condition: 'Depresión',
+      image: 'assets/perfil.png', // Reemplaza por una URL dinámica
+    };
+  }
+
+  // Mostrar modales
   showNotificationModal() {
     this.closeAllModals();
     this.showNotification = true;
@@ -51,21 +81,13 @@ export class AjustesPage {
 
   showProfileModal() {
     this.closeAllModals();
-    this.showProfile = true; // Mostrar el modal de editar perfil
+    this.showProfile = true;
   }
 
-  // Método para cerrar todos los modales
   closeModal() {
     this.closeAllModals();
   }
 
-  // Método para cambiar el idioma de la aplicación (se debe implementar)
-  changeLanguage(language: string) {
-    console.log(`Idioma cambiado a: ${language}`);
-    // Aquí se puede agregar la lógica para cambiar el idioma de la aplicación
-  }
-
-  // Método para cerrar todos los modales
   closeAllModals() {
     this.showNotification = false;
     this.showSound = false;
@@ -75,15 +97,13 @@ export class AjustesPage {
     this.showProfile = false;
   }
 
-  // Método para navegar entre rutas y cambiar el segmento actual
+  saveProfile() {
+    console.log('Perfil guardado:', this.userProfile);
+    this.closeModal();
+  }
+
   navigateTo(path: string) {
     this.router.navigate([path]);
-    this.currentSegment = path.substring(1); // Actualiza el segmento activo basado en la ruta
-  }
-  
-  // Método para guardar cambios de perfil (puedes implementar la lógica según necesites)
-  saveProfile() {
-    console.log("Perfil actualizado");
-    this.closeModal();
+    this.currentSegment = path.substring(1);
   }
 }
