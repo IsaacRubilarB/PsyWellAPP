@@ -65,12 +65,27 @@ export class AuthService {
 
   async loginWithGoogle() {
     const provider = new GoogleAuthProvider();
+
+    // Agrega los scopes necesarios para Google Fit
+    provider.addScope('https://www.googleapis.com/auth/fitness.activity.read');
+    provider.addScope('https://www.googleapis.com/auth/fitness.heart_rate.read');
+    provider.addScope('https://www.googleapis.com/auth/fitness.sleep.read');
+    provider.addScope('https://www.googleapis.com/auth/fitness.oxygen_saturation.read');
+
     try {
       const result = await signInWithPopup(this.auth, provider);
-      const token = await getIdToken(result.user);
-      this.storeUserLocally(result.user, token);
-      this.token = token;
-      return { user: result.user, token };
+
+      // Obtén el OAuth Access Token
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      const accessToken = credential?.accessToken;
+
+      if (accessToken) {
+        this.storeUserLocally(result.user, accessToken);
+        this.token = accessToken; // Usar este token para llamadas a Google Fit
+        return { user: result.user, token: accessToken };
+      } else {
+        throw new Error('No se pudo obtener el token de acceso.');
+      }
     } catch (error) {
       console.error('Error al iniciar sesión con Google:', error);
       throw error;

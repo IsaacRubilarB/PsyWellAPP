@@ -55,10 +55,10 @@ export class RelojComponent implements OnInit, OnDestroy {
       this.router.navigate(['/login']); // Redirige al login si no está autenticado
       return;
     }
-  
+
     const user = this.authService.getCurrentUser();
     const token = this.authService.getAccessToken();
-  
+
     if (token) {
       this.accessToken = token;
       console.log('Token de acceso encontrado:', this.accessToken);
@@ -69,7 +69,7 @@ export class RelojComponent implements OnInit, OnDestroy {
       console.error('No se encontró un token de acceso para el usuario actual.');
     }
   }
-  
+
   getAccessToken(): string | null {
     return this.accessToken;
   }
@@ -78,7 +78,7 @@ export class RelojComponent implements OnInit, OnDestroy {
     this.currentSegment = route.split('/')[1]; // Cambia el segmento actual basado en la ruta
     this.router.navigate([route]); // Navega a la ruta especificada
   }
-  
+
   ngOnDestroy() {
     if (this.refreshInterval) {
       clearInterval(this.refreshInterval);
@@ -87,7 +87,7 @@ export class RelojComponent implements OnInit, OnDestroy {
 
   private initializeGoogleClient() {
     this.tokenClient = google.accounts.oauth2.initTokenClient({
-      client_id: '546817145485-9gut154rg11ernn0qnd116c7nob1rpna.apps.googleusercontent.com',
+      client_id: '471287872717-uonv4m9k2h6llpf0r7md4l9tca5rvk7t.apps.googleusercontent.com',
       scope: 'https://www.googleapis.com/auth/fitness.activity.read https://www.googleapis.com/auth/fitness.heart_rate.read https://www.googleapis.com/auth/fitness.sleep.read https://www.googleapis.com/auth/fitness.oxygen_saturation.read',
       callback: (response: any) => this.handleAuthResponse(response),
     });
@@ -103,7 +103,7 @@ export class RelojComponent implements OnInit, OnDestroy {
       this.tokenClient.requestAccessToken(); // Solicitar un nuevo token si el actual no es válido
     }
   }
-  
+
 
   loginWithGoogle() {
     if (this.tokenClient) {
