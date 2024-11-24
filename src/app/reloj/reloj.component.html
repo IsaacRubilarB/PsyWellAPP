@@ -17,7 +17,7 @@
           <ion-icon name="walk" class="data-icon"></ion-icon>
         </div>
         <div class="data-value">
-          {{ todayData.steps | number }}
+          {{ todayData.steps | number:'1.0-0' || '...' }}
         </div>
         <div class="data-label">Pasos</div>
       </div>
@@ -28,7 +28,7 @@
           <ion-icon name="heart" class="data-icon"></ion-icon>
         </div>
         <div class="data-value">
-          {{ todayData.heartRate }} bpm
+          {{ todayData.heartRate || '...' }} bpm
         </div>
         <div class="data-label">Frecuencia Cardíaca</div>
       </div>
@@ -39,7 +39,7 @@
           <ion-icon name="pulse" class="data-icon"></ion-icon>
         </div>
         <div class="data-value">
-          {{ todayData.oxygenSaturation }} %
+          {{ todayData.oxygenSaturation || '...' }} %
         </div>
         <div class="data-label">Saturación de Oxígeno</div>
       </div>
@@ -50,7 +50,7 @@
           <ion-icon name="flame" class="data-icon"></ion-icon>
         </div>
         <div class="data-value">
-          {{ todayData.energyExpended | number }} kcal
+          {{ todayData.energyExpended | number:'1.0-0' || '...' }} kcal
         </div>
         <div class="data-label">Energía Gastada</div>
       </div>
@@ -65,7 +65,7 @@
         <ion-icon name="bed" class="data-icon"></ion-icon>
       </div>
       <div class="data-value">
-        {{ todayData.sleep }} h
+        {{ todayData.sleep || '...' }} h
       </div>
       <div class="data-label">Sueño</div>
     </div>
@@ -76,7 +76,7 @@
         <ion-icon name="alert" class="data-icon"></ion-icon>
       </div>
       <div class="data-value">
-        {{ todayData.stress }}
+        {{ todayData.stress || '...' }}
       </div>
       <div class="data-label">Estrés</div>
     </div>
@@ -87,6 +87,7 @@
     <h2 class="center-text">Resumen Semanal</h2>
 
     <div class="weekly-chart">
+      <!-- Total Pasos -->
       <div class="chart-item">
         <div class="chart-icon">
           <ion-icon name="walk"></ion-icon>
@@ -94,12 +95,16 @@
         <div class="chart-content">
           <p class="chart-label">Total Pasos</p>
           <div class="chart-bar">
-            <div class="chart-bar-fill" [style.width.%]="weeklyTotals.steps / 10000 * 100"></div>
+            <div
+              class="chart-bar-fill"
+              [style.width.%]="(weeklyTotals.steps / 70000) * 100 || 0"
+            ></div>
           </div>
-          <p class="chart-value">{{ weeklyTotals.steps | number }} pasos</p>
+          <p class="chart-value">{{ weeklyTotals.steps | number:'1.0-0' || '...' }} pasos</p>
         </div>
       </div>
 
+      <!-- Promedio Frecuencia Cardíaca -->
       <div class="chart-item">
         <div class="chart-icon">
           <ion-icon name="heart"></ion-icon>
@@ -107,12 +112,16 @@
         <div class="chart-content">
           <p class="chart-label">Promedio Frecuencia Cardíaca</p>
           <div class="chart-bar">
-            <div class="chart-bar-fill" [style.width.%]="weeklyTotals.heartRate / 150 * 100"></div>
+            <div
+              class="chart-bar-fill"
+              [style.width.%]="(weeklyTotals.heartRate / 150) * 100 || 0"
+            ></div>
           </div>
-          <p class="chart-value">{{ weeklyTotals.heartRate }} bpm</p>
+          <p class="chart-value">{{ weeklyTotals.heartRate || '...' }} bpm</p>
         </div>
       </div>
 
+      <!-- Promedio Saturación Oxígeno -->
       <div class="chart-item">
         <div class="chart-icon">
           <ion-icon name="pulse"></ion-icon>
@@ -120,12 +129,16 @@
         <div class="chart-content">
           <p class="chart-label">Promedio Saturación Oxígeno</p>
           <div class="chart-bar">
-            <div class="chart-bar-fill" [style.width.%]="weeklyTotals.oxygenSaturation / 100 * 100"></div>
+            <div
+              class="chart-bar-fill"
+              [style.width.%]="(weeklyTotals.oxygenSaturation / 100) * 100 || 0"
+            ></div>
           </div>
-          <p class="chart-value">{{ weeklyTotals.oxygenSaturation }} %</p>
+          <p class="chart-value">{{ weeklyTotals.oxygenSaturation || '...' }} %</p>
         </div>
       </div>
 
+      <!-- Total Energía Gastada -->
       <div class="chart-item">
         <div class="chart-icon">
           <ion-icon name="flame"></ion-icon>
@@ -133,15 +146,17 @@
         <div class="chart-content">
           <p class="chart-label">Total Energía Gastada</p>
           <div class="chart-bar">
-            <div class="chart-bar-fill" [style.width.%]="weeklyTotals.energyExpended / 5000 * 100"></div>
+            <div
+              class="chart-bar-fill"
+              [style.width.%]="(weeklyTotals.energyExpended / 5000) * 100 || 0"
+            ></div>
           </div>
-          <p class="chart-value">{{ weeklyTotals.energyExpended | number }} kcal</p>
+          <p class="chart-value">{{ weeklyTotals.energyExpended | number:'1.0-0' || '...' }} kcal</p>
         </div>
       </div>
     </div>
   </div>
 </ion-content>
-
 
 <ion-footer>
   <ion-toolbar>
