@@ -1,5 +1,5 @@
 ion-content {
-  --background: #1a3b5d; // Fondo oscuro y calmante
+  --background: #105685; // Fondo oscuro y calmante
   padding: 15px;
 
   .logo-container {
@@ -172,34 +172,60 @@ ion-content {
   }
 }
 
+/* Footer unificado */
 ion-footer {
-  ion-toolbar {
-    background-color: #0f3556;
-  }
+  --background: #105685;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  z-index: 1000;
+  height: 70px;
+  box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.3);
+}
 
-  ion-segment {
-    display: flex;
-    justify-content: space-around;
-    background-color: transparent;
-    padding: 5px 0;
+ion-toolbar {
+  --background: #105685;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+}
 
-    .nav-icon {
-      width: 30px;
-      height: 30px;
-      opacity: 0.8;
-      transition: opacity 0.3s ease, transform 0.3s ease;
+ion-segment {
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  padding: 0;
+  background: none;
+}
 
-      &:hover {
-        opacity: 1;
-        transform: scale(1.1);
-      }
-    }
+.nav-icon {
+  width: 35px;
+  height: 35px;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
-    .active-segment {
-      background-color: #ffffff20;
-      border-radius: 10px;
-      padding: 5px;
-      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
-    }
-  }
+.nav-icon:hover {
+  transform: scale(1.1);
+  box-shadow: 0px 4px 8px rgba(255, 255, 255, 0.4);
+}
+
+.active-segment {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.active-segment img {
+  filter: brightness(1.2);
+}
+
+/* Asegurar que el contenido no se solape con el footer */
+ion-content {
+  padding-bottom: 70px;
 }
