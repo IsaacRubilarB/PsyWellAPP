@@ -15,6 +15,14 @@
 body {
     font-family: 'Poppins', sans-serif;
   }
+  ion-footer {
+    background: #083d5d !important;
+  }
+  
+  ion-toolbar {
+    background: #083d5d !important;
+  }
+  
   
 /* Core CSS required for Ionic components to work properly */
 @import "@ionic/angular/css/core.css";
