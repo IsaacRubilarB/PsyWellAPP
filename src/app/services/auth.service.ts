@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { initializeApp } from 'firebase/app';
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signOut, Auth, User } from 'firebase/auth';
+import { environment } from '../../environments/environment'; // Asegúrate de que este archivo contenga tu configuración de Firebase
 
 @Injectable({
   providedIn: 'root',
@@ -10,7 +12,9 @@ export class AuthService {
   user = new BehaviorSubject<User | null>(null);
 
   constructor() {
-    this.auth = getAuth(); // Obtenemos la instancia de Auth de Firebase una vez en el constructor
+    // Inicializar Firebase
+    const app = initializeApp(environment.firebaseConfig);
+    this.auth = getAuth(app); // Obtenemos la instancia de Auth vinculada a la app inicializada
 
     // Escuchamos el estado de autenticación del usuario y actualizamos el observable 'user'
     onAuthStateChanged(this.auth, (user) => {
@@ -25,7 +29,7 @@ export class AuthService {
       this.user.next(userCredential.user); // Actualizamos el usuario en el BehaviorSubject
       return userCredential;
     } catch (error) {
-      console.error("Error al iniciar sesión con correo y contraseña", error);
+      console.error('Error al iniciar sesión con correo y contraseña', error);
       throw error;
     }
   }
@@ -38,7 +42,7 @@ export class AuthService {
       this.user.next(result.user); // Actualizamos el usuario en el BehaviorSubject
       return result;
     } catch (error) {
-      console.error("Error al iniciar sesión con Google", error);
+      console.error('Error al iniciar sesión con Google', error);
       throw error;
     }
   }
@@ -49,7 +53,7 @@ export class AuthService {
       await signOut(this.auth);
       this.user.next(null); // Limpiamos el usuario en el BehaviorSubject al cerrar sesión
     } catch (error) {
-      console.error("Error al cerrar sesión", error);
+      console.error('Error al cerrar sesión', error);
     }
   }
 

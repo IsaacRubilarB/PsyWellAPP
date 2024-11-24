@@ -9,8 +9,8 @@ import 'firebase/compat/auth';
 import { getAuth, signOut } from 'firebase/auth';
 import { getFirestore, collection, doc, setDoc } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
+import { AuthService } from '../services/auth.service';
 
-declare var gapi: any;
 
 @Component({
   selector: 'app-login-register',
@@ -27,7 +27,9 @@ export class LoginRegisterComponent implements OnInit {
     private afAuth: AngularFireAuth,
     private router: Router,
     private afs: AngularFirestore,
-    private usersService: UsersService
+    private usersService: UsersService,
+    private authService: AuthService
+
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -45,7 +47,8 @@ export class LoginRegisterComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.afAuth.authState.subscribe((user) => {
+    // Redirigir si el usuario ya está autenticado
+    this.authService.user.subscribe((user) => {
       if (user) {
         this.router.navigate(['/home']);
       }
@@ -54,10 +57,10 @@ export class LoginRegisterComponent implements OnInit {
 
   toggleRegisterMode() {
     this.isRegisterMode = !this.isRegisterMode;
-  
+
     const flipContainer = document.querySelector('.flip-container') as HTMLElement;
     const ionContent = document.querySelector('ion-content') as HTMLElement;
-  
+
     if (!this.isRegisterMode) {
       // Cambiar a modo login
       if (flipContainer) {
@@ -65,7 +68,7 @@ export class LoginRegisterComponent implements OnInit {
         flipContainer.classList.add('login-mode');
         flipContainer.scrollTo({ top: 0, behavior: 'smooth' }); // Asegura que el scroll del registro vuelva al inicio
       }
-  
+
       if (ionContent) {
         ionContent.scrollTo({ top: 0, behavior: 'smooth' }); // Resetear scroll del contenedor principal
       }
@@ -77,45 +80,45 @@ export class LoginRegisterComponent implements OnInit {
       }
     }
   }
-  
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
+
 
   async register() {
     /*if (this.registerForm.invalid) {
       alert('Formulario de registro no válido');
       return;
     }*/
-  
+
     const { password, confirmPassword, ...userData } = this.registerForm.value;
-  
+
     if (password !== confirmPassword) {
       alert('Las contraseñas no coinciden');
       return;
     }
-  
+
    /* if (new Date(userData.fechaNacimiento) > new Date()) {
       alert('La fecha de nacimiento no es válida');
       return;
     }*/
-  
+
     try {
       const userCredential = await this.afAuth.createUserWithEmailAndPassword(
         userData.email,
         password
       );
-  
+
       const uid = userCredential.user?.uid;
-  
+
       userData.contrasena = password;
       userData.estado = true;
       userData.perfil = 'paciente';
-      
-  
+
+
       // Guardar los datos del usuario en PostgreSQL y establecer el estado del usuario
       this.usersService.registrarUsuario(userData).subscribe(async res=>{
 
@@ -153,9 +156,9 @@ export class LoginRegisterComponent implements OnInit {
         alert('No se pudo agregar el usuario a PostgreSQL');
       }
   })
-     
 
-      
+
+
 
         /*
         (error) => {
@@ -168,7 +171,7 @@ export class LoginRegisterComponent implements OnInit {
       alert('Error al registrar usuario');
     }
   }
-  
+
 
   async login() {
     if (this.loginForm.valid) {
@@ -186,26 +189,13 @@ export class LoginRegisterComponent implements OnInit {
 
   async loginWithGoogle() {
     try {
-      // Cargar y inicializar gapi
-      await gapi.load('auth2', async () => {
-        const auth2 = gapi.auth2.init({
-          client_id: '', // Reemplaza con tu client_id
-        });
-
-        // Inicia sesión con Google
-        const googleUser = await auth2.signIn();
-        const idToken = googleUser.getAuthResponse().id_token;
-
-        // Usar el idToken con Firebase para la autenticación
-        const credential = firebase.auth.GoogleAuthProvider.credential(idToken);
-        await this.afAuth.signInWithCredential(credential);
-
-        console.log('Usuario autenticado con Google');
+      const result = await this.authService.loginWithGoogle();
+      if (result) {
         this.router.navigate(['/home']);
-      });
+      }
     } catch (error) {
       console.error('Error al iniciar sesión con Google:', error);
-      alert('Hubo un error al autenticar con Google');
+      alert('Error al iniciar sesión con Google. Inténtalo de nuevo.');
     }
   }
 
