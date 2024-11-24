@@ -1,29 +1,15 @@
 <ion-content>
-  <!-- Header -->
+  <!-- Encabezado -->
   <div class="header-container">
     <div class="logo-container">
       <img src="assets/logo1.png" alt="PsyWell Logo" class="small-logo" />
     </div>
   </div>
-  <div class="auth-buttons">
-    <!-- Botón de inicio de sesión -->
-    <button *ngIf="!accessToken" class="google-login-button" (click)="loginWithGoogle()">
-      <img src="assets/google.png" alt="Google Icon" class="google-icon" />
-      Iniciar sesión con Google
-    </button>
-
-    <!-- Botón de cierre de sesión -->
-    <button *ngIf="accessToken" class="google-logout-button" (click)="logout()">
-      <img src="assets/google.png" alt="Google Logout Icon" class="google-icon" />
-      Cerrar sesión
-    </button>
-  </div>
 
   <!-- Contenedor de Datos Fisiológicos -->
-  <div *ngIf="accessToken" class="data-container">
+  <div class="data-container">
     <h2 class="center-text">Datos Fisiológicos en Tiempo Real</h2>
 
-    <!-- Tarjetas de datos circulares -->
     <div class="circular-card-grid">
       <!-- Pasos -->
       <div class="circular-card">
@@ -71,33 +57,35 @@
     </div>
   </div>
 
-  <!-- Sueño -->
-  <div class="circular-card">
-    <div class="icon-container">
-      <ion-icon name="bed" class="data-icon"></ion-icon>
+  <!-- Tarjetas adicionales -->
+  <div class="additional-cards">
+    <!-- Sueño -->
+    <div class="circular-card">
+      <div class="icon-container">
+        <ion-icon name="bed" class="data-icon"></ion-icon>
+      </div>
+      <div class="data-value">
+        {{ todayData.sleep }} h
+      </div>
+      <div class="data-label">Sueño</div>
     </div>
-    <div class="data-value">
-      {{ todayData.sleep }} h
-    </div>
-    <div class="data-label">Sueño</div>
-  </div>
 
-  <!-- Estrés -->
-  <div class="circular-card">
-    <div class="icon-container">
-      <ion-icon name="alert" class="data-icon"></ion-icon>
+    <!-- Estrés -->
+    <div class="circular-card">
+      <div class="icon-container">
+        <ion-icon name="alert" class="data-icon"></ion-icon>
+      </div>
+      <div class="data-value">
+        {{ todayData.stress }}
+      </div>
+      <div class="data-label">Estrés</div>
     </div>
-    <div class="data-value">
-      {{ todayData.stress }}
-    </div>
-    <div class="data-label">Estrés</div>
   </div>
 
   <!-- Resumen Semanal -->
-  <div *ngIf="accessToken" class="weekly-summary">
+  <div class="weekly-summary">
     <h2 class="center-text">Resumen Semanal</h2>
 
-    <!-- Gráfico Semanal -->
     <div class="weekly-chart">
       <div class="chart-item">
         <div class="chart-icon">

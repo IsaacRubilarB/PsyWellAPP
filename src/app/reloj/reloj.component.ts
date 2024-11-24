@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { AuthService } from '../services/auth.service';
 
 declare const google: any;
 
@@ -8,7 +9,7 @@ declare const google: any;
   selector: 'app-reloj',
   templateUrl: './reloj.component.html',
   styleUrls: ['./reloj.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RelojComponent implements OnInit, OnDestroy {
   public accessToken: string = '';
@@ -31,7 +32,7 @@ export class RelojComponent implements OnInit, OnDestroy {
     heartRate: [],
     sleep: [],
     oxygenSaturation: [],
-    energyExpended: []
+    energyExpended: [],
   };
 
   weeklyTotals = {
@@ -39,40 +40,49 @@ export class RelojComponent implements OnInit, OnDestroy {
     heartRate: 0,
     sleep: 0,
     oxygenSaturation: 0,
-    energyExpended: 0
+    energyExpended: 0,
   };
 
-  constructor(private http: HttpClient, private router: Router, private cdRef: ChangeDetectorRef) {}
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private authService: AuthService,
+    private cdRef: ChangeDetectorRef
+  ) {}
 
   async ngOnInit() {
-    try {
-      await this.loadGoogleScript();
+    if (!this.authService.isAuthenticated()) {
+      this.router.navigate(['/login']); // Redirige al login si no está autenticado
+      return;
+    }
+  
+    const user = this.authService.getCurrentUser();
+    const token = this.authService.getAccessToken();
+  
+    if (token) {
+      this.accessToken = token;
+      console.log('Token de acceso encontrado:', this.accessToken);
       this.initializeGoogleClient();
-    } catch (error) {
-      console.error('Error al inicializar la API de Google:', error);
+      this.fetchTodayData();
+      this.fetchWeeklyData();
+    } else {
+      console.error('No se encontró un token de acceso para el usuario actual.');
     }
   }
+  
+  getAccessToken(): string | null {
+    return this.accessToken;
+  }
 
+  navigateTo(route: string): void {
+    this.currentSegment = route.split('/')[1]; // Cambia el segmento actual basado en la ruta
+    this.router.navigate([route]); // Navega a la ruta especificada
+  }
+  
   ngOnDestroy() {
     if (this.refreshInterval) {
       clearInterval(this.refreshInterval);
     }
-  }
-
-  private loadGoogleScript(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      if ((window as any).google && (window as any).google.accounts) {
-        resolve();
-      } else {
-        const script = document.createElement('script');
-        script.src = 'https://accounts.google.com/gsi/client';
-        script.async = true;
-        script.defer = true;
-        script.onload = () => resolve();
-        script.onerror = (error) => reject(error);
-        document.head.appendChild(script);
-      }
-    });
   }
 
   private initializeGoogleClient() {
@@ -83,70 +93,40 @@ export class RelojComponent implements OnInit, OnDestroy {
     });
   }
 
-  loginWithGoogle() {
-    if (!this.tokenClient) {
-      console.error('tokenClient no está inicializado.');
-      return;
-    }
-    this.tokenClient.requestAccessToken();
-  }
-
-  logout() {
-    this.accessToken = '';
-    clearInterval(this.refreshInterval);
-    console.log('Sesión cerrada.');
-  }
-
   private handleAuthResponse(response: any) {
     if (response?.access_token) {
       this.accessToken = response.access_token;
-      console.log('Autenticación exitosa. Token recibido.');
-      this.refreshInterval = setInterval(() => this.updateTodayData(), 5000); // Actualización cada 5 segundos
-      if (!this.isWeeklyDataLoaded) {
-        this.loadWeeklyData();
-        this.isWeeklyDataLoaded = true;
-      }
+      console.log('Token actualizado exitosamente.');
+      this.startAutoRefresh();
     } else {
-      console.error('Error en la autenticación.');
+      console.error('Error en la respuesta de autenticación:', response);
+      this.tokenClient.requestAccessToken(); // Solicitar un nuevo token si el actual no es válido
+    }
+  }
+  
+
+  loginWithGoogle() {
+    if (this.tokenClient) {
+      this.tokenClient.requestAccessToken();
+    } else {
+      console.error('TokenClient no inicializado.');
     }
   }
 
-  updateTodayData() {
-    console.log('Actualizando datos diarios...');
-    this.fetchTodayData();
-    this.cdRef.detectChanges();
+  logout() {
+    this.authService.logout(); // Usar AuthService para manejar la sesión
+    this.accessToken = '';
+    if (this.refreshInterval) {
+      clearInterval(this.refreshInterval);
+    }
+    this.router.navigate(['/login']);
   }
 
-  loadWeeklyData() {
-    console.log('Cargando datos semanales...');
-    this.fetchWeeklyData();
-  }
-
-  private createRequestHeaders(): HttpHeaders {
-    return new HttpHeaders().set('Authorization', `Bearer ${this.accessToken}`);
-  }
-
-  private createAggregateBody(dataType: string, duration: number, daysBack: number = 0): any {
-    const endTimeMillis = Date.now() - daysBack * 86400000;
-    const startTimeMillis = endTimeMillis - duration;
-    return {
-      aggregateBy: [{ dataTypeName: dataType }],
-      bucketByTime: { durationMillis: duration },
-      startTimeMillis: startTimeMillis,
-      endTimeMillis: endTimeMillis
-    };
-  }
-
-  private fetchDataFromGoogleFit(dataType: string, duration: number, callback: (data: any) => void) {
-    const headers = this.createRequestHeaders();
-    const body = this.createAggregateBody(dataType, duration);
-
-    this.http.post('https://fitness.googleapis.com/fitness/v1/users/me/dataset:aggregate', body, { headers }).subscribe({
-      next: callback,
-      error: (error) => {
-        console.error(`Error al obtener datos para ${dataType}:`, error);
-      }
-    });
+  private startAutoRefresh() {
+    this.refreshInterval = setInterval(() => {
+      this.fetchTodayData();
+      this.cdRef.markForCheck();
+    }, 60000); // Actualizar datos cada 60 segundos
   }
 
   fetchTodayData() {
@@ -155,31 +135,28 @@ export class RelojComponent implements OnInit, OnDestroy {
     // Pasos
     this.fetchDataFromGoogleFit('com.google.step_count.delta', oneDay, (data) => {
       this.todayData.steps = data?.bucket[0]?.dataset[0]?.point[0]?.value[0]?.intVal || 0;
-      console.log(`Pasos de hoy: ${this.todayData.steps}`);
+      console.log(`Pasos: ${this.todayData.steps}`);
     });
 
     // Frecuencia cardíaca
     this.fetchDataFromGoogleFit('com.google.heart_rate.bpm', oneDay, (data) => {
       this.todayData.heartRate = Math.round(data?.bucket[0]?.dataset[0]?.point[0]?.value[0]?.fpVal || 0);
-      console.log(`Frecuencia cardíaca de hoy: ${this.todayData.heartRate}`);
+      console.log(`Frecuencia cardíaca: ${this.todayData.heartRate}`);
     });
 
-   // Sueño
-this.fetchDataFromGoogleFit('com.google.sleep.segment', oneDay, (data) => {
-  const sleepData = data?.bucket[0]?.dataset[0]?.point || [];
-  if (sleepData.length > 0) {
-    const totalSleepMillis = sleepData.reduce((sum: number, point: any) => {
-      return sum + (point.endTimeNanos - point.startTimeNanos) / 1e6;
-    }, 0);
-    this.todayData.sleep = parseFloat((totalSleepMillis / (1000 * 60 * 60)).toFixed(1));
-  } else {
-    this.todayData.sleep = 0;
-  }
-  console.log(`Horas de sueño: ${this.todayData.sleep}`);
-});
-
-
-    
+    // Sueño
+    this.fetchDataFromGoogleFit('com.google.sleep.segment', oneDay, (data) => {
+      const sleepData = data?.bucket[0]?.dataset[0]?.point || [];
+      if (sleepData.length > 0) {
+        const totalSleepMillis = sleepData.reduce((sum: number, point: any) => {
+          return sum + (point.endTimeNanos - point.startTimeNanos) / 1e6;
+        }, 0);
+        this.todayData.sleep = parseFloat((totalSleepMillis / (1000 * 60 * 60)).toFixed(1));
+      } else {
+        this.todayData.sleep = 0;
+      }
+      console.log(`Horas de sueño: ${this.todayData.sleep}`);
+    });
 
     // Saturación de oxígeno
     this.fetchDataFromGoogleFit('com.google.oxygen_saturation', oneDay, (data) => {
@@ -195,11 +172,6 @@ this.fetchDataFromGoogleFit('com.google.sleep.segment', oneDay, (data) => {
     });
   }
 
-  navigateTo(route: string): void {
-    this.currentSegment = route.split('/')[1];
-    this.router.navigate([route]);
-  }
-  
   fetchWeeklyData() {
     const oneWeek = 86400000 * 7;
 
@@ -207,17 +179,34 @@ this.fetchDataFromGoogleFit('com.google.sleep.segment', oneDay, (data) => {
     this.fetchDataFromGoogleFit('com.google.step_count.delta', oneWeek, (data) => {
       this.weeklyData.steps = data?.bucket.map((bucket: any) => ({
         date: new Date(parseInt(bucket.startTimeMillis)).toLocaleDateString(),
-        steps: bucket?.dataset[0]?.point[0]?.value[0]?.intVal || 0
+        steps: bucket?.dataset[0]?.point[0]?.value[0]?.intVal || 0,
       }));
       console.log('Datos semanales de pasos:', this.weeklyData.steps);
     });
 
-    // Otros datos semanales (se puede añadir más de la misma forma)
+    // Otros datos semanales...
   }
 
-  syncDataNow() {
-    console.log('Sincronizando datos manualmente...');
-    this.updateTodayData();
-    this.loadWeeklyData();
+  private fetchDataFromGoogleFit(dataType: string, duration: number, callback: (data: any) => void) {
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${this.accessToken}`);
+    const body = this.createAggregateBody(dataType, duration);
+
+    this.http.post('https://fitness.googleapis.com/fitness/v1/users/me/dataset:aggregate', body, { headers }).subscribe({
+      next: callback,
+      error: (error) => {
+        console.error(`Error al obtener datos para ${dataType}:`, error);
+      },
+    });
+  }
+
+  private createAggregateBody(dataType: string, duration: number): any {
+    const endTimeMillis = Date.now();
+    const startTimeMillis = endTimeMillis - duration;
+    return {
+      aggregateBy: [{ dataTypeName: dataType }],
+      bucketByTime: { durationMillis: duration },
+      startTimeMillis,
+      endTimeMillis,
+    };
   }
 }

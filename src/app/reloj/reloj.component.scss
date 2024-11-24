@@ -1,181 +1,217 @@
+/* General Styles */
 ion-content {
-  --background: #105685; // Fondo oscuro y calmante
+  --background: linear-gradient(to bottom, #17365a, #204569);
+  color: #ffffff;
+  font-family: 'Poppins', sans-serif;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
 
-  .logo-container {
-    text-align: center;
-    margin-top: 5px;
+/* Header */
+.header-container {
+  width: 100%;
+  text-align: center;
+  background-color: #17365a;
+  padding: 20px 0;
+  border-bottom: 3px solid #ffc107;
 
-    img {
-      width: 100px;
-      height: auto;
-      margin-bottom: -10px;
-      opacity: 0.8;
-      filter: drop-shadow(0px 4px 8px rgba(0, 0, 0, 0.5));
+  .logo-container img {
+    width: 80px;
+    height: auto;
+    animation: float 3s ease-in-out infinite;
+  }
+}
+
+/* Floating animation */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Section Title */
+h2.center-text {
+  font-size: 22px;
+  font-weight: bold;
+  margin: 20px 0 10px;
+  color: #ffc107;
+}
+
+/* Data Container */
+.data-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  padding: 20px;
+  width: 100%;
+}
+
+/* Circular Card */
+.circular-card {
+  background: linear-gradient(to bottom right, #1c4969, #213d5a);
+  border: 2px solid #ffc107;
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.8);
+  }
+
+  .icon-container {
+    background-color: #ffc107;
+    border-radius: 50%;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 5px;
+
+    ion-icon {
+      font-size: 24px;
+      color: #17365a;
     }
   }
 
-  .center-text {
-    text-align: center;
-    font-size: 1.5rem;
+  .data-value {
+    font-size: 20px;
     font-weight: bold;
     color: #ffffff;
-    margin: 20px 0;
   }
 
-  .circular-card-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-    padding: 20px;
-  }
-
-  .circular-card {
-    width: 150px;
-    height: 150px;
-    background: #174a6a;
-    border-radius: 50%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    color: #ffffff;
+  .data-label {
+    font-size: 14px;
+    color: #cccccc;
     text-align: center;
-    transition: transform 0.3s, box-shadow 0.3s;
+  }
+}
 
-    &:hover {
-      transform: scale(1.05);
-      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
-    }
+/* Weekly Summary */
+.weekly-summary {
+  width: 100%;
+  margin-top: 30px;
 
-    .icon-container {
-      width: 50px;
-      height: 50px;
-      background: #105685;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-
-      .data-icon {
-        font-size: 24px;
-        color: #ffd700;
-      }
-    }
-
-    .data-value {
-      font-size: 1.2rem;
-      font-weight: bold;
-    }
-
-    .data-label {
-      font-size: 0.9rem;
-      color: #d3d3d3;
-    }
+  .center-text {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #ffc107;
   }
 
   .weekly-chart {
-    width: 100%;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
 
     .chart-item {
-      display: flex;
-      align-items: center;
-      gap: 15px;
+      background: linear-gradient(to bottom right, #1c4969, #213d5a);
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+      text-align: center;
 
-      ion-icon {
-        font-size: 32px;
-        color: #ffd700;
-      }
+      .chart-icon {
+        width: 40px;
+        height: 40px;
+        background-color: #ffc107;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0 auto;
 
-      .chart-content {
-        flex: 1;
-
-        .chart-label {
-          font-size: 1rem;
-          font-weight: bold;
-          color: #ffffff;
-        }
-
-        .chart-bar {
-          width: 100%;
-          height: 10px;
-          background: #174a6a;
-          border-radius: 5px;
-          overflow: hidden;
-          margin: 5px 0;
-
-          .chart-bar-fill {
-            height: 100%;
-            background: #ffd700;
-            transition: width 0.3s ease-in-out;
-          }
-        }
-
-        .chart-value {
-          font-size: 0.9rem;
-          color: #ffffff;
-          text-align: right;
-        }
-      }
-    }
-  }
-
-  .auth-buttons {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 20px 0;
-
-    .google-login-button,
-    .google-logout-button {
-      display: flex;
-      align-items: center;
-      padding: 10px 20px;
-      font-size: 16px;
-      font-weight: bold;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      position: relative;
-      z-index: 10;
-
-      &.google-login-button {
-        background-color: #4285f4;
-        color: white;
-
-        &:hover {
-          background-color: #357ae8;
+        ion-icon {
+          font-size: 20px;
+          color: #17365a;
         }
       }
 
-      &.google-logout-button {
-        background-color: #db4437;
-        color: white;
+      .chart-label {
+        font-size: 14px;
+        color: #ffffff;
+        margin: 10px 0;
+      }
 
-        &:hover {
-          background-color: #c33c2d;
+      .chart-bar {
+        background-color: #17365a;
+        border-radius: 5px;
+        height: 10px;
+        overflow: hidden;
+        position: relative;
+
+        .chart-bar-fill {
+          background-color: #ffc107;
+          height: 100%;
+          transition: width 0.5s ease;
         }
       }
 
-      .google-icon {
-        width: 20px;
-        height: 20px;
-        margin-right: 10px;
+      .chart-value {
+        font-size: 14px;
+        color: #cccccc;
+        margin-top: 5px;
       }
     }
   }
 }
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .circular-card {
+    width: 100px;
+    height: 100px;
+
+    .icon-container {
+      padding: 8px;
+
+      ion-icon {
+        font-size: 20px;
+      }
+    }
+
+    .data-value {
+      font-size: 16px;
+    }
+
+    .data-label {
+      font-size: 12px;
+    }
+  }
+
+  .weekly-summary .weekly-chart .chart-item {
+    padding: 10px;
+
+    .chart-icon {
+      width: 30px;
+      height: 30px;
+    }
+
+    .chart-label {
+      font-size: 12px;
+    }
+
+    .chart-value {
+      font-size: 12px;
+    }
+  }
+}
+
 
 /* Footer unificado */
 ion-footer {

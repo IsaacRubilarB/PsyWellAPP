@@ -198,6 +198,7 @@ export class LoginRegisterComponent implements OnInit {
       alert('Error al iniciar sesión con Google. Inténtalo de nuevo.');
     }
   }
+  
 
   async logout() {
     try {
