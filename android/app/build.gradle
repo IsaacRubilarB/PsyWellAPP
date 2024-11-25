@@ -40,6 +40,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:21.0.5'
     implementation 'com.google.android.gms:play-services-auth:19.2.0'
     implementation 'com.google.android.gms:play-services-fitness:21.0.0'
+    implementation fileTree(dir: 'libs', include: ['*.aar', '*.jar'])
+    implementation "com.samsung.android.sdk:health-data:1.5.0"
 }
 
 apply plugin: 'com.google.gms.google-services'

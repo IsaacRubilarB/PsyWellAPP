@@ -6,6 +6,8 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:8.2.1'
         classpath 'com.google.gms:google-services:4.3.15'
+        implementation fileTree(dir: 'libs', include: ['*.aar', '*.jar'])
+        implementation "com.samsung.android.sdk:health-data:1.5.0"
     }
 }
 

@@ -143,7 +143,7 @@ export class AuthService {
   }
 
   // Obtener datos de Google Fit
-  async fetchGoogleFitData(endpoint: string, body: any) {
+  async fetchGoogleFitData(endpoint: string, body: any): Promise<any> {
     if (!this.token) {
       throw new Error('No se puede obtener datos, token no disponible.');
     }
@@ -159,7 +159,9 @@ export class AuthService {
       });
 
       if (!response.ok) {
-        throw new Error(`Error en la solicitud: ${response.status}`);
+        const error = await response.json();
+        console.error(`Error en la solicitud (${response.status}):`, error);
+        throw new Error(`Error al obtener datos de Google Fit: ${error.message || response.status}`);
       }
 
       return await response.json();
@@ -168,6 +170,7 @@ export class AuthService {
       throw error;
     }
   }
+
 
   // Métodos auxiliares para almacenamiento local
   private storeUserLocally(user: User, token: string) {

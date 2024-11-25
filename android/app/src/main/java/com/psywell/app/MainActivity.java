@@ -1,12 +1,15 @@
 package com.psywell.app;
 
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
+import com.getcapacitor.BridgeActivity;
+import com.psywell.app.SamsungHealthPlugin;
 
-public class MainActivity extends AppCompatActivity {
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_main);
-  }
+public class MainActivity extends BridgeActivity {
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // Registrar el plugin SamsungHealthPlugin
+        registerPlugin(SamsungHealthPlugin.class);
+    }
 }

@@ -17,7 +17,7 @@
         </div>
         <div class="card-content">
           <h2 class="card-title">Pasos</h2>
-          <p class="card-value">{{ todayData.steps | number }}</p>
+          <p class="card-value">{{ todayData.steps | number:'1.0-0' }}</p>
         </div>
       </div>
 
@@ -28,7 +28,7 @@
         </div>
         <div class="card-content">
           <h2 class="card-title">Frecuencia Cardíaca</h2>
-          <p class="card-value">{{ todayData.heartRate }} bpm</p>
+          <p class="card-value">{{ todayData.heartRate | number:'1.0-0' }} bpm</p>
         </div>
       </div>
 
@@ -39,7 +39,7 @@
         </div>
         <div class="card-content">
           <h2 class="card-title">Oxígeno</h2>
-          <p class="card-value">{{ todayData.oxygenSaturation }} %</p>
+          <p class="card-value">{{ todayData.oxygenSaturation | number:'1.1-1' }} %</p>
         </div>
       </div>
 
@@ -50,31 +50,31 @@
         </div>
         <div class="card-content">
           <h2 class="card-title">Calorías</h2>
-          <p class="card-value">{{ todayData.energyExpended | number }} kcal</p>
+          <p class="card-value">{{ todayData.energyExpended | number:'1.0-0' }} kcal</p>
         </div>
       </div>
 
-      <!-- Sueño -->
+      <!-- Sueño
       <div class="card">
         <div class="card-icon">
           <ion-icon name="bed"></ion-icon>
         </div>
         <div class="card-content">
           <h2 class="card-title">Sueño</h2>
-          <p class="card-value">{{ todayData.sleep }} h</p>
+          <p class="card-value">{{ todayData.sleep | number:'1.0-0' }} h</p>
         </div>
-      </div>
+      </div>  -->
 
-      <!-- Estrés -->
+      <!-- Estrés
       <div class="card">
         <div class="card-icon">
           <ion-icon name="alert"></ion-icon>
         </div>
         <div class="card-content">
           <h2 class="card-title">Estrés</h2>
-          <p class="card-value">{{ todayData.stress }}</p>
+          <p class="card-value">{{ todayData.stress | number:'1.0-0' }}</p>
         </div>
-      </div>
+      </div> -->
     </div>
   </section>
 
@@ -85,22 +85,22 @@
       <div class="weekly-card">
         <ion-icon name="walk" class="weekly-icon"></ion-icon>
         <p class="weekly-label">Total Pasos</p>
-        <p class="weekly-value">{{ weeklyTotals.steps | number }} pasos</p>
+        <p class="weekly-value">{{ weeklyTotals.steps | number:'1.0-0' }} pasos</p>
       </div>
       <div class="weekly-card">
         <ion-icon name="heart" class="weekly-icon"></ion-icon>
         <p class="weekly-label">Frecuencia Cardíaca</p>
-        <p class="weekly-value">{{ weeklyTotals.heartRate }} bpm</p>
+        <p class="weekly-value">{{ weeklyTotals.heartRate | number:'1.0-0' }} bpm</p>
       </div>
       <div class="weekly-card">
         <ion-icon name="pulse" class="weekly-icon"></ion-icon>
         <p class="weekly-label">Oxígeno Promedio</p>
-        <p class="weekly-value">{{ weeklyTotals.oxygenSaturation }} %</p>
+        <p class="weekly-value">{{ weeklyTotals.oxygenSaturation | number:'1.1-1' }} %</p>
       </div>
       <div class="weekly-card">
         <ion-icon name="flame" class="weekly-icon"></ion-icon>
         <p class="weekly-label">Calorías Totales</p>
-        <p class="weekly-value">{{ weeklyTotals.energyExpended | number }} kcal</p>
+        <p class="weekly-value">{{ weeklyTotals.energyExpended | number:'1.0-0' }} kcal</p>
       </div>
     </div>
   </section>
