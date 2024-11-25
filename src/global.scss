@@ -23,6 +23,82 @@ body {
     background: #083d5d !important;
   }
   
+  /* Footer */
+ion-footer {
+  --background: #083d5d; /* Fondo oscuro */
+  position: relative; /* Mantiene el footer fijo en la parte inferior */
+  bottom: 0;
+  width: 100%;
+  z-index: 1000;
+  height: 70px; /* Altura consistente */
+  box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.3); /* Sombra para separación */
+  padding: 0;
+  margin: 0;
+}
+
+ion-toolbar {
+  --background: transparent; /* Fondo transparente */
+  padding: 0;
+  margin: 0;
+  border: none;
+  box-shadow: none;
+  height: 100%; /* Asegura que ocupe toda la altura del footer */
+  display: flex;
+  justify-content: space-evenly; /* Distribuye los botones uniformemente */
+  align-items: center;
+}
+
+ion-segment {
+  width: 100%; /* Extiende todo el ancho */
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: none; /* Sin fondo adicional */
+}
+
+ion-segment-button {
+  background: none;
+  border: none;
+  margin: 0;
+  width: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.nav-icon {
+  width: 35px;
+  height: 35px;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.nav-icon:hover {
+  transform: scale(1.1);
+  box-shadow: 0px 4px 8px rgba(255, 255, 255, 0.4); /* Sombra ligera */
+}
+
+/* Botón activo del segmento */
+.active-segment {
+  background-color: rgba(255, 255, 255, 0.2); /* Fondo semi-transparente */
+  border-radius: 12px;
+  padding: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.active-segment img {
+  filter: brightness(1.2); /* Aumentar brillo para íconos activos */
+}
+
+/* Asegura que el contenido no se sobreponga al footer */
+ion-content {
+  padding-bottom: 70px; /* Espacio reservado para el footer */
+  --background: #083d5d;
+}
+
   
 /* Core CSS required for Ionic components to work properly */
 @import "@ionic/angular/css/core.css";
