@@ -46,16 +46,13 @@ export class PsicologoModalComponent implements OnInit {
       if (Array.isArray(usuarios.data)) {
         // Filtrar solo los psicólogos y agregar la URL de la imagen con el token
         this.psychologists = usuarios.data
-          .filter((usuario: { perfil: string }) => usuario.perfil === 'psicologo')
-          .map((psychologist: any) => {
-            // Generar la URL de la imagen desde Firebase Storage utilizando el correo electrónico del psicólogo
-            psychologist.fotoUrl = this.getPsychologistImageUrl(psychologist.email);
-            //psychologist.idUsuario =psychologist.idUsuario;
-            // Definir si tienen citas disponibles (esto es solo un ejemplo, debes implementar la lógica correcta)
-            psychologist.citasDisponibles = Math.random() > 0.5;
-  
-            return psychologist;
-          });
+        .filter((usuario: { perfil: string }) => usuario.perfil === 'psicologo')
+        .map((psychologist: any) => {
+          psychologist.fotoUrl = this.getPsychologistImageUrl(psychologist.email);
+          psychologist.citasDisponibles = true; // Forzar que siempre estén disponibles
+          return psychologist;
+        });
+      
       } else {
         console.error('La propiedad "data" no es un array:', usuarios.data);
       }
@@ -172,7 +169,6 @@ getPsychologistImageUrl(email: string): string {
   }
 
   async acceptAppointment() {
-    // Mostrar mensajes para verificar los valores actuales
     console.log('ID del paciente:', this.userId);
     console.log('ID del psicólogo:', this.selectedPsychologist?.idUsuario);
     console.log('Fecha seleccionada:', this.selectedDate);
@@ -181,14 +177,7 @@ getPsychologistImageUrl(email: string): string {
     console.log('Comentarios:', this.comentarios);
   
     // Validaciones de campos obligatorios
-    if (
-      !this.selectedPsychologist ||
-      !this.selectedTime ||
-      !this.selectedDate ||
-      !this.userId ||
-      !this.ubicacion ||
-      !this.comentarios
-    ) {
+    if (!this.selectedPsychologist || !this.selectedTime || !this.selectedDate || !this.userId || !this.ubicacion || !this.comentarios) {
       const alert = await this.alertController.create({
         header: 'Error',
         message: 'Por favor selecciona un psicólogo, fecha, hora, ubicación y agrega comentarios para continuar.',
@@ -198,8 +187,16 @@ getPsychologistImageUrl(email: string): string {
       return;
     }
   
-    console.log('ID del paciente:', this.userId);
-    console.log('ID del psicólogo:', this.selectedPsychologist.idUsuario);
+    if (!this.userId) {
+      console.error('Error: El ID del usuario es nulo. Asegúrate de que el usuario esté registrado correctamente.');
+      const alert = await this.alertController.create({
+        header: 'Error',
+        message: 'Hubo un problema con tu cuenta. Intenta cerrar sesión y volver a iniciar.',
+        buttons: ['OK'],
+      });
+      await alert.present();
+      return;
+    }
   
     // Calculamos la hora de fin automáticamente sumando una hora a la hora de inicio seleccionada
     const [horaInicio] = this.selectedTime.split(' - ');
@@ -209,11 +206,11 @@ getPsychologistImageUrl(email: string): string {
       idPaciente: this.userId,
       idPsicologo: this.selectedPsychologist.idUsuario,
       ubicacion: this.ubicacion,
-      estado: "Pendiente",
+      estado: 'Pendiente',
       fecha: this.selectedDate,
       horaInicio: horaInicio,
       horaFin: horaFin,
-      comentarios: "Primera Cita - " + this.comentarios
+      comentarios: 'Primera Cita - ' + this.comentarios,
     };
   
     console.log('Cita aceptada:', appointmentData);
@@ -221,8 +218,6 @@ getPsychologistImageUrl(email: string): string {
     try {
       await this.citasService.registrarCita(appointmentData).toPromise();
       this.successMessage = 'Cita registrada correctamente!';
-      // Llamar a un método para refrescar la lista de psicólogos
-      //this.refreshPsychologists();
       this.resetForm();
       this.router.navigate(['/home']);
     } catch (error) {
@@ -230,6 +225,7 @@ getPsychologistImageUrl(email: string): string {
       this.successMessage = 'Hubo un error al registrar la cita.';
     }
   }
+  
   
   // Función para calcular la hora de fin sumando una hora a la hora de inicio
   calculateEndTime(horaInicio: string): string {
@@ -312,21 +308,28 @@ getPsychologistImageUrl(email: string): string {
     const user = await this.afAuth.currentUser;
     if (user) {
       const uid = user.uid;
-      
+  
       if (uid) {
         const userDoc = await this.afs.collection('users').doc(uid).get().toPromise();
-        
+  
         if (userDoc && userDoc.exists) {
           const userData = userDoc.data() as { nombre?: string; idUsuario?: string };
-          this.userId = userData?.idUsuario || '';
+          this.userId = userData?.idUsuario || null; // Asegúrate de que sea null si no se encuentra
+          if (!this.userId) {
+            console.error('No se encontró el idUsuario para el usuario actual.');
+          }
         } else {
+          console.error('No se encontró el documento del usuario en Firestore.');
           this.userId = null;
-
         }
       } else {
         console.error('No se pudo obtener el UID del usuario.');
       }
+    } else {
+      console.error('No se encontró un usuario autenticado.');
+      this.userId = null;
     }
   }
+  
   
 }

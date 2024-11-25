@@ -4,13 +4,11 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Router } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { UsersService } from '../services/userService';
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth';
+import Swal from 'sweetalert2';
+import { AuthService } from '../services/auth.service';
 import { getAuth, signOut } from 'firebase/auth';
 import { getFirestore, collection, doc, setDoc } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
-import { AuthService } from '../services/auth.service';
-
 
 @Component({
   selector: 'app-login-register',
@@ -29,7 +27,6 @@ export class LoginRegisterComponent implements OnInit {
     private afs: AngularFirestore,
     private usersService: UsersService,
     private authService: AuthService
-
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -39,7 +36,7 @@ export class LoginRegisterComponent implements OnInit {
     this.registerForm = this.fb.group({
       nombre: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      fechaNacimiento: ['', Validators.required], // Añadir este control
+      fechaNacimiento: ['', Validators.required],
       genero: ['', Validators.required],
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', Validators.required],
@@ -47,7 +44,6 @@ export class LoginRegisterComponent implements OnInit {
   }
 
   ngOnInit() {
-    // Redirigir si el usuario ya está autenticado
     this.authService.user.subscribe((user) => {
       if (user) {
         this.router.navigate(['/home']);
@@ -62,49 +58,23 @@ export class LoginRegisterComponent implements OnInit {
     const ionContent = document.querySelector('ion-content') as HTMLElement;
 
     if (!this.isRegisterMode) {
-      // Cambiar a modo login
-      if (flipContainer) {
-        flipContainer.classList.remove('register-mode');
-        flipContainer.classList.add('login-mode');
-        flipContainer.scrollTo({ top: 0, behavior: 'smooth' }); // Asegura que el scroll del registro vuelva al inicio
-      }
+      flipContainer?.classList.remove('register-mode');
+      flipContainer?.classList.add('login-mode');
+      flipContainer?.scrollTo({ top: 0, behavior: 'smooth' });
 
-      if (ionContent) {
-        ionContent.scrollTo({ top: 0, behavior: 'smooth' }); // Resetear scroll del contenedor principal
-      }
+      ionContent?.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
-      // Cambiar a modo registro
-      if (flipContainer) {
-        flipContainer.classList.remove('login-mode');
-        flipContainer.classList.add('register-mode');
-      }
+      flipContainer?.classList.remove('login-mode');
+      flipContainer?.classList.add('register-mode');
     }
   }
 
-
-
-
-
-
-
-
   async register() {
-    /*if (this.registerForm.invalid) {
-      alert('Formulario de registro no válido');
-      return;
-    }*/
-
     const { password, confirmPassword, ...userData } = this.registerForm.value;
 
     if (password !== confirmPassword) {
-      alert('Las contraseñas no coinciden');
       return;
     }
-
-   /* if (new Date(userData.fechaNacimiento) > new Date()) {
-      alert('La fecha de nacimiento no es válida');
-      return;
-    }*/
 
     try {
       const userCredential = await this.afAuth.createUserWithEmailAndPassword(
@@ -114,64 +84,50 @@ export class LoginRegisterComponent implements OnInit {
 
       const uid = userCredential.user?.uid;
 
+      if (!uid) {
+        return;
+      }
+
       userData.contrasena = password;
       userData.estado = true;
       userData.perfil = 'paciente';
 
+      this.usersService.registrarUsuario(userData).subscribe(async (res) => {
+        if (res && res.data.idUsuario) {
+          const postgresId = res.data.idUsuario;
 
-      // Guardar los datos del usuario en PostgreSQL y establecer el estado del usuario
-      this.usersService.registrarUsuario(userData).subscribe(async res=>{
+          const firebaseConfig = {
+            apiKey: "AIzaSyAFJUcrBDDLPM2SscMvi1x_jUv6Wlqnukg",
+            authDomain: "psywell-ab0ee.firebaseapp.com",
+            projectId: "psywell-ab0ee",
+            storageBucket: "psywell-ab0ee.firebasestorage.app",
+            messagingSenderId: "471287872717",
+            appId: "1:471287872717:web:588c0acfcb84728c7657d84",
+            measurementId: "G-TG8E6CBF8D",
+          };
 
-      if (res && res.data.idUsuario) {
-        const postgresId = res.data.idUsuario;
+          initializeApp(firebaseConfig);
+          const db = getFirestore();
+          await setDoc(doc(collection(db, 'users'), uid), {
+            nombre: userData.nombre,
+            email: userData.email,
+            idUsuario: postgresId,
+          });
 
-        const firebaseConfig = {
-          apiKey: "AIzaSyAFJUcrBDDLPM2SscMvi1x_jUv6Wlqnukg",
-          authDomain: "psywell-ab0ee.firebaseapp.com",
-          projectId: "psywell-ab0ee",
-          storageBucket: "psywell-ab0ee.appspot.com",
-          messagingSenderId: "471287872717",
-          appId: "1:471287872717:web:588c0acfcb84728c7657d84",
-          measurementId: "G-TG8E6CBF8D",
-        };
+          this.usersService.setUserData({
+            nombre: userData.nombre,
+            email: userData.email,
+            idUsuario: postgresId,
+          });
 
-        initializeApp(firebaseConfig);
-        // Uso de la nueva API de Firestore
-        const db = getFirestore();
-        await setDoc(doc(collection(db, 'users'), uid), {
-          nombre: userData.nombre,
-          email: userData.email,
-          idUsuario: postgresId,
-        });
-
-        // Establecer los datos del usuario en el servicio
-        this.usersService.setUserData({
-          nombre: userData.nombre,
-          email: userData.email,
-          idUsuario: postgresId,
-        });
-
-        //this.router.navigate(['/home']);
-      } else {
-        alert('No se pudo agregar el usuario a PostgreSQL');
-      }
-  })
-
-
-
-
-        /*
-        (error) => {
-          console.error('Error al agregar usuario a PostgreSQL:', error);
-          alert('Hubo un error al registrarse');
+          this.router.navigate(['/home']);
+        } else {
         }
-      );*/
+      });
     } catch (error) {
       console.error('Error al registrar usuario:', error);
-      alert('Error al registrar usuario');
     }
   }
-
 
   async login() {
     if (this.loginForm.valid) {
@@ -183,7 +139,6 @@ export class LoginRegisterComponent implements OnInit {
         console.error('Error al iniciar sesión:', error);
       }
     } else {
-      alert('Por favor completa todos los campos correctamente.');
     }
   }
 
@@ -191,13 +146,36 @@ export class LoginRegisterComponent implements OnInit {
     try {
       const result = await this.authService.loginWithGoogle();
       if (result) {
+        const user = result.user;
+  
+        if (!user) {
+          throw new Error('No se pudo obtener el usuario de Google.');
+        }
+  
+        // Verificar y crear documento del usuario en Firestore
+        const userDocRef = this.afs.collection('users').doc(user.uid);
+        const userDoc = await userDocRef.get().toPromise();
+  
+        if (!userDoc?.exists) {
+          await userDocRef.set({
+            nombre: user.displayName || 'Usuario de Google',
+            email: user.email,
+            idUsuario: user.uid,
+          });
+        }
+  
+        // Redirigir al home sin mostrar alertas
         this.router.navigate(['/home']);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error al iniciar sesión con Google:', error);
-      alert('Error al iniciar sesión con Google. Inténtalo de nuevo.');
+  
+      // Manejo del error en consola o lógica adicional sin alertas
+      const errorMessage = error?.message || 'No se pudo iniciar sesión con Google. Intenta nuevamente.';
+      console.error('Mensaje de error:', errorMessage);
     }
   }
+  
   
 
   async logout() {
@@ -207,7 +185,6 @@ export class LoginRegisterComponent implements OnInit {
       this.router.navigate(['/login']);
     } catch (error) {
       console.error('Error al cerrar sesión:', error);
-      alert('Error al cerrar sesión');
     }
   }
 }
