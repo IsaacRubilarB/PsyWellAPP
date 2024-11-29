@@ -13,6 +13,7 @@ import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { AuthService } from './services/auth.service';
 import { AuthGuard } from './guards/auth.guard';
 import { ModalImageComponent } from './modal-image/modal-image.component';  // Importar el componente
+import { GoogleMapsComponent } from './google-maps/google-maps.component';
 
 import { SafePipe } from './pipes/safe.pipe';
 
@@ -35,6 +36,7 @@ import { PsicologoModalComponent } from './psicologo-modal/psicologo-modal.compo
     AngularFireModule.initializeApp(environment.firebaseConfig),  // Configuración de Firebase
     AngularFireAuthModule,
     RouterModule.forRoot([]),
+    GoogleMapsComponent
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },

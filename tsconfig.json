@@ -1,33 +1,29 @@
-/* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./",
-    "outDir": "./dist/out-tsc",
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "noImplicitOverride": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "sourceMap": true,
-    "declaration": false,
-    "downlevelIteration": true,
-    "experimentalDecorators": true,
-    "moduleResolution": "node",
-    "importHelpers": true,
-    "target": "es2022",
-    "module": "es2020",
-    "lib": [
-      "es2018", 
-      "dom"
-    ],
-    "useDefineForClassFields": false
+    "types": ["@types/google.maps"], // Incluye los tipos de Google Maps
+    "baseUrl": "./", // Define la base del proyecto
+    "outDir": "./dist/out-tsc", // Salida del compilador
+    "forceConsistentCasingInFileNames": true, // Consistencia en mayúsculas/minúsculas en nombres de archivo
+    "strict": true, // Habilita modo estricto
+    "noImplicitOverride": true, // Detecta sobrescrituras implícitas no intencionadas
+    "noPropertyAccessFromIndexSignature": true, // Prohíbe acceso a índices no tipados
+    "noImplicitReturns": true, // Detecta rutas sin retorno
+    "noFallthroughCasesInSwitch": true, // Prohíbe fallthrough en switch
+    "sourceMap": true, // Habilita source maps
+    "declaration": false, // No genera declaraciones .d.ts
+    "downlevelIteration": true, // Iteración compatible con ES5
+    "experimentalDecorators": true, // Habilita decoradores experimentales
+    "moduleResolution": "node", // Resolución de módulos tipo Node.js
+    "importHelpers": true, // Reduce duplicados de helpers
+    "target": "es2022", // ES2022 como objetivo
+    "module": "es2020", // Módulos ES2020
+    "lib": ["es2018", "dom"] // Incluye librerías estándar y del DOM
   },
   "angularCompilerOptions": {
-    "enableI18nLegacyMessageIdFormat": false,
-    "strictInjectionParameters": true,
-    "strictInputAccessModifiers": true,
-    "strictTemplates": true
+    "enableI18nLegacyMessageIdFormat": false, // Formato de ID de mensaje internacional desactivado
+    "strictInjectionParameters": true, // Inyección estricta
+    "strictInputAccessModifiers": true, // Reglas estrictas para modificadores en inputs
+    "strictTemplates": true // Reglas estrictas en templates Angular
   }
 }

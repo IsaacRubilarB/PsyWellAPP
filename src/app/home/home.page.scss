@@ -189,3 +189,22 @@ ion-content {
   }
 }
 
+
+
+
+.map-button-container {
+  margin-top: 20px;
+  text-align: center;
+
+  ion-button {
+    --background: #2c7dff;
+    --color: #ffffff;
+    --border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+
+    &:hover {
+      --background: #0056b3;
+    }
+  }
+}

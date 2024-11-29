@@ -1,28 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <title>Ionic App</title>
+  <head>
+    <meta charset="utf-8" />
+    <title>Ionic App</title>
 
-  <base href="/" />
+    <base href="/" />
 
-  <meta name="color-scheme" content="light dark" />
-  <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="format-detection" content="telephone=no" />
-  <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      name="viewport"
+      content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
 
-  <!-- Cargar solo los scripts necesarios una vez -->
-  <script src="https://apis.google.com/js/platform.js" async defer></script>
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <!-- Cargar solo los scripts necesarios una vez -->
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 
-  <link rel="icon" type="image/png" href="assets/icon/favicon.png" />
+    <!-- Agregar el script de Google Maps -->
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAFJUcrBDDLPM2SscMvi1x_jUv6Wlqnukg&libraries=places"></script>
 
-  <!-- add to homescreen for ios -->
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-</head>
+    <!-- Icono de la app -->
+    <link rel="icon" type="image/png" href="assets/icon/favicon.png" />
 
-<body>
-  <app-root></app-root>
-</body>
+    <!-- Agregar al inicio de pantalla en IOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  </head>
+
+  <body>
+    <app-root></app-root>
+  </body>
 </html>

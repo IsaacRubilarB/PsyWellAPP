@@ -23,7 +23,6 @@
   </ion-list>
   
 
-  <!-- Mostrar el calendario y detalles del psicólogo solo si se selecciona un psicólogo -->
   <div *ngIf="selectedPsychologist" class="selected-psychologist-container">
     <ion-item class="psychologist-details-card">
       <ion-avatar slot="start" class="avatar-container">
@@ -37,20 +36,12 @@
       </ion-label>
     </ion-item>
 
-    <!-- Mostrar calendario solo si hay citas disponibles -->
     <ion-item *ngIf="selectedPsychologist.citasDisponibles" class="calendar-item">
       <ion-label position="floating">Selecciona la fecha de la cita</ion-label>
-      <ion-datetime 
-        [(ngModel)]="selectedDate" 
-        displayFormat="DD/MM/YYYY" 
-        min="2024-01-01" 
-        max="2024-12-31" 
-        presentation="date" 
-        (ionChange)="showAvailableTimes()">
+      <ion-datetime [(ngModel)]="selectedDate" displayFormat="DD/MM/YYYY" min="2024-01-01" max="2024-12-31" presentation="date" (ionChange)="showAvailableTimes()">
       </ion-datetime>
     </ion-item>
 
-    <!-- Mostrar horarios disponibles después de seleccionar la fecha -->
     <ion-list *ngIf="showTimes && selectedDate" class="available-times">
       <ion-item *ngFor="let time of availableTimes" (click)="selectTime(time)" [ngClass]="{'selected-time': selectedTime === time}">
         <ion-label>{{ time }}</ion-label>
@@ -58,25 +49,32 @@
     </ion-list>
 
     <ion-item *ngIf="selectedTime" class="ion-item-location">
-  <ion-label position="floating">Ubicación de la cita</ion-label>
-  <ion-input [(ngModel)]="ubicacion" placeholder="Ingrese la ubicación de la cita" required></ion-input>
-</ion-item>
+      <ion-label position="floating">Ubicación de la cita</ion-label>
+      <ion-input [(ngModel)]="ubicacion" placeholder="Ingrese la ubicación de la cita" required></ion-input>
+      <ion-button type="button" (click)="openLocationModal()">Seleccionar en el Mapa</ion-button>
+    </ion-item>
 
-<ion-item *ngIf="selectedTime" class="ion-item-comment">
-  <ion-label position="floating">Comentarios</ion-label>
-  <ion-textarea [(ngModel)]="comentarios" placeholder="Ingrese cualquier comentario adicional" required></ion-textarea>
-</ion-item>
+    <ion-item *ngIf="selectedTime" class="ion-item-comment">
+      <ion-label position="floating">Comentarios</ion-label>
+      <ion-textarea [(ngModel)]="comentarios" placeholder="Ingrese cualquier comentario adicional" required></ion-textarea>
+    </ion-item>
 
-    
-    <!-- Botón para agendar la cita solo si se ha seleccionado la hora -->
     <ion-button *ngIf="selectedTime" expand="full" color="primary" (click)="acceptAppointment()" class="appointment-button">
       Agendar Cita
     </ion-button>
 
-    <!-- Botón de volver a la lista de psicólogos -->
     <ion-button expand="full" color="secondary" (click)="resetSelection()" class="back-button">Volver a la lista</ion-button>
   </div>
 
-  <!-- Mensaje de éxito -->
   <p *ngIf="successMessage" class="success-message">{{ successMessage }}</p>
+
+<!-- Modal para mostrar el mapa -->
+<ion-modal [isOpen]="isMapModalOpen" class="map-modal" (willDismiss)="closeMapModal()">
+  <app-google-maps></app-google-maps>
+</ion-modal>
+
+
+
+
+
 </ion-content>

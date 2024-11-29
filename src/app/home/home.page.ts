@@ -169,6 +169,8 @@ export class HomePage implements OnInit {
     });
   }
   
+
+  
   private async saveImageUrlToFirestore(type: 'profile' | 'banner', url: string): Promise<void> {
     try {
       const user = await this.afAuth.currentUser;
@@ -456,6 +458,11 @@ export class HomePage implements OnInit {
         this.obtenerCitas(); 
       }
     });
+  }
+
+  // Método para navegar al mapa
+  navigateToMap(): void {
+    this.router.navigate(['/google-maps']);
   }
   
 }

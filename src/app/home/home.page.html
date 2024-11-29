@@ -47,6 +47,13 @@
         Pedir Cita
       </ion-button>
     </div>
+    
+    <!-- Botón para ir al mapa -->
+<div class="map-button-container">
+  <ion-button (click)="navigateToMap()" expand="block" color="secondary">
+    Abrir Mapa
+  </ion-button>
+</div>
 
     <ion-grid *ngIf="citas.length > 0">
       <ion-row>
