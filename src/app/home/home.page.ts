@@ -217,10 +217,36 @@ export class HomePage implements OnInit {
     }
   }
   
+
+  
+  private async geocodeAddress(address: string): Promise<{ lat: number; lng: number } | null> {
+    return new Promise((resolve) => {
+      const geocoder = new google.maps.Geocoder();
+      geocoder.geocode({ address }, (results: google.maps.GeocoderResult[] | null, status: google.maps.GeocoderStatus) => {
+        if (status === 'OK' && results && results[0]) {
+          resolve({
+            lat: results[0].geometry.location.lat(),
+            lng: results[0].geometry.location.lng(),
+          });
+        } else {
+          console.error('Error al geocodificar la dirección:', status);
+          resolve(null); // Devuelve null si no se encuentran las coordenadas
+        }
+      });
+    });
+  }
   
   
   
-  
+  openGoogleMaps(lat: number, lng: number): void {
+    if (lat && lng) {
+      const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+      window.open(googleMapsUrl, '_blank');
+    } else {
+      console.error('Las coordenadas no están disponibles.');
+      alert('No se pudo obtener la ubicación del destino.');
+    }
+  }
   
 
 
@@ -247,36 +273,47 @@ export class HomePage implements OnInit {
   
   
 
-  obtenerCitas() {
+  async obtenerCitas() {
     if (!this.userId) {
       console.warn('ID de usuario no disponible para cargar citas.');
       return;
     }
   
     this.citasService.listarCitas().subscribe({
-      next: (response) => {
+      next: async (response) => {
         if (response && response.status === 'success' && Array.isArray(response.data)) {
           console.log('Citas obtenidas:', response.data);
   
-          this.citas = response.data.filter(
-            (cita: Cita) => `${cita.idPaciente}` === `${this.userId}` || `${cita.idPsicologo}` === `${this.userId}`
+          this.citas = await Promise.all(
+            response.data
+              .filter(
+                (cita: Cita) =>
+                  `${cita.idPaciente}` === `${this.userId}` || `${cita.idPsicologo}` === `${this.userId}`
+              )
+              .map(async (cita: Cita) => {
+                const psicologo = this.psicologos.find((p: any) => `${p.idUsuario}` === `${cita.idPsicologo}`) || {};
+                const fotoPsicologoUrl = psicologo.email
+                  ? `https://firebasestorage.googleapis.com/v0/b/psywell-ab0ee.firebasestorage.app/o/fotoPerfil%2F${encodeURIComponent(psicologo.email)}?alt=media`
+                  : 'assets/default-psicologo.png';
+  
+                // Convertir dirección a coordenadas
+                let coordinates = null;
+                if (cita.ubicacion) {
+                  coordinates = await this.geocodeAddress(cita.ubicacion);
+                }
+  
+                return {
+                  ...cita,
+                  nombrePsicologo: psicologo.nombre || 'Desconocido',
+                  fotoPsicologo: fotoPsicologoUrl,
+                  nombrePaciente: this.getNombreUsuario(cita.idPaciente),
+                  latitud: coordinates?.lat || null,
+                  longitud: coordinates?.lng || null,
+                };
+              })
           );
   
-          this.citas = this.citas.map((cita: Cita) => {
-            const psicologo = this.psicologos.find((p: any) => `${p.idUsuario}` === `${cita.idPsicologo}`) || {};
-            const fotoPsicologoUrl = psicologo.email
-              ? `https://firebasestorage.googleapis.com/v0/b/psywell-ab0ee.firebasestorage.app/o/fotoPerfil%2F${encodeURIComponent(psicologo.email)}?alt=media`
-              : 'assets/default-psicologo.png';
-  
-            return {
-              ...cita,
-              nombrePsicologo: psicologo.nombre || 'Desconocido',
-              fotoPsicologo: fotoPsicologoUrl,
-              nombrePaciente: this.getNombreUsuario(cita.idPaciente),
-            };
-          });
-  
-          console.log('Citas filtradas:', this.citas);
+          console.log('Citas filtradas con coordenadas:', this.citas);
         } else {
           console.error('La respuesta no es válida:', response);
         }
@@ -284,7 +321,7 @@ export class HomePage implements OnInit {
       error: (error) => {
         console.error('Error al listar citas:', error);
         this.errorMessage = 'No se pudo cargar las citas. Intenta de nuevo más tarde.';
-      }
+      },
     });
   }
   

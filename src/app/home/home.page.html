@@ -5,7 +5,6 @@
       <img src="assets/logo1.png" alt="PsyWell Logo" class="small-logo" />
     </div>
 
-
     <!-- Botón de cerrar sesión -->
     <ion-button fill="clear" class="logout-button" (click)="logout()">
       <ion-icon name="log-out-outline"></ion-icon>
@@ -40,44 +39,52 @@
   <!-- Sección de citas -->
   <div class="citas-container">
     <h2>Tus Próximas Citas</h2>
-    
+
     <!-- Mostrar el botón de "Pedir Cita" si no hay citas -->
     <div *ngIf="citas.length === 0" class="no-citas-container">
       <ion-button (click)="openPsychologistModal()" expand="block" color="primary">
         Pedir Cita
       </ion-button>
     </div>
-    
-    <!-- Botón para ir al mapa -->
-<div class="map-button-container">
-  <ion-button (click)="navigateToMap()" expand="block" color="secondary">
-    Abrir Mapa
-  </ion-button>
-</div>
 
     <ion-grid *ngIf="citas.length > 0">
       <ion-row>
         <ion-col size="12" *ngFor="let cita of citas">
+          <!-- Tarjeta con mapa y detalles -->
           <div class="cita-card">
-            <div class="cita-header">
-              <ion-avatar>
+            <!-- Mapa estático con la ubicación -->
+            <div
+              class="map-container"
+              *ngIf="cita.latitud && cita.longitud"
+              (click)="openGoogleMaps(cita.latitud, cita.longitud)"
+            >
+              <img
+                [src]="'https://maps.googleapis.com/maps/api/staticmap?center=' + cita.latitud + ',' + cita.longitud + '&zoom=15&size=400x200&markers=color:red|' + cita.latitud + ',' + cita.longitud + '&key=AIzaSyAFJUcrBDDLPM2SscMvi1x_jUv6Wlqnukg'"
+                alt="Mapa de ubicación"
+                class="map"
+              />
+              <!-- Avatar centrado sobre el mapa -->
+              <div class="avatar-container">
                 <img [src]="cita.fotoPsicologo || 'assets/default-psicologo.png'" alt="Psicólogo" />
-              </ion-avatar>
-              <div class="cita-header-details">
-                <h3>{{ cita.nombrePsicologo }}</h3>
-                <p>Especialista en Salud Mental</p>
               </div>
-              <!-- Botón para activar/desactivar la alarma -->
-              <ion-button fill="clear" (click)="toggleAlarm(cita)">
-                <ion-icon [name]="cita.alarmActive ? 'notifications' : 'notifications-off'"></ion-icon>
-              </ion-button>
             </div>
-            <div class="cita-body">
-              <p><strong>Paciente:</strong> {{ cita.nombrePaciente }}</p>
-              <p><strong>Fecha:</strong> {{ cita.fecha | date: 'fullDate' }}</p>
-              <p><strong>Hora:</strong> {{ cita.horaInicio }} - {{ cita.horaFin }}</p>
-              <p><strong>Ubicación:</strong> {{ cita.ubicacion }}</p>
-              <p><strong>Comentarios:</strong> {{ cita.comentarios }}</p>
+
+            <!-- Detalles de la cita -->
+            <div class="info-container">
+              <h3>{{ cita.nombrePsicologo }}</h3>
+              <div class="details">
+                <p>
+                  <ion-icon name="calendar-outline"></ion-icon>
+                  Fecha: {{ cita.fecha | date: 'fullDate' }}
+                </p>
+                <p>
+                  <ion-icon name="time-outline"></ion-icon>
+                  Hora: {{ cita.horaInicio }} - {{ cita.horaFin }}
+                </p>
+              </div>
+              <p class="comments">
+                <strong>Comentarios:</strong> {{ cita.comentarios }}
+              </p>
             </div>
           </div>
         </ion-col>
