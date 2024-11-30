@@ -43,19 +43,26 @@
           <div class="cita-card">
             <!-- Mapa estático con la ubicación -->
             <div
-              class="map-container"
-              *ngIf="cita.latitud && cita.longitud"
-              (click)="openGoogleMaps(cita.latitud, cita.longitud)"
-            >
+            class="map-container"
+            *ngIf="cita.latitud && cita.longitud"
+            (click)="openGoogleMaps(cita.latitud, cita.longitud)"
+          >
+            <img
+              [src]="'https://maps.googleapis.com/maps/api/staticmap?center=' + cita.latitud + ',' + cita.longitud + '&zoom=15&size=400x200&markers=color:red|' + cita.latitud + ',' + cita.longitud + '&key=AIzaSyAFJUcrBDDLPM2SscMvi1x_jUv6Wlqnukg'"
+              alt="Mapa de ubicación"
+              class="map"
+            />
+            <div class="avatar-container">
               <img
-                [src]="'https://maps.googleapis.com/maps/api/staticmap?center=' + cita.latitud + ',' + cita.longitud + '&zoom=15&size=400x200&markers=color:red|' + cita.latitud + ',' + cita.longitud + '&key=AIzaSyAFJUcrBDDLPM2SscMvi1x_jUv6Wlqnukg'"
-                alt="Mapa de ubicación"
-                class="map"
+                *ngIf="cita.fotoPsicologo"
+                [src]="sanitizeImageUrl(cita.fotoPsicologo)"
+                alt="Foto del Psicólogo"
+                (error)="onImageError(cita)" 
               />
-              <div class="avatar-container">
-                <img [src]="cita.fotoPsicologo || 'assets/default-psicologo.png'" alt="Psicólogo" />
-              </div>
             </div>
+          </div>
+          
+          
 
             <div class="info-container">
               <h3>{{ cita.nombrePsicologo }}</h3>
@@ -89,3 +96,27 @@
     </ion-grid>
   </div>
 </ion-content>
+
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-segment>
+      <!-- Botón de registrar emociones -->
+      <ion-segment-button [ngClass]="{'active-segment': currentSegment === 'registrar-emociones'}" (click)="navigateTo('/registrar-emociones')">
+        <img src="assets/emotes/calendario.svg" alt="Registrar emociones" class="nav-icon" />
+      </ion-segment-button>
+      <!-- Botón de home -->
+      <ion-segment-button [ngClass]="{'active-segment': currentSegment === 'home'}" (click)="navigateTo('/home')">
+        <img src="assets/emotes/home.svg" alt="Home" class="nav-icon" />
+      </ion-segment-button>
+      <!-- Botón de tips -->
+      <ion-segment-button [ngClass]="{'active-segment': currentSegment === 'tips'}" (click)="navigateTo('/tips')">
+        <img src="assets/emotes/tranquilidad.svg" alt="Tips" class="nav-icon" />
+      </ion-segment-button>
+      <!-- Botón de reloj -->
+      <ion-segment-button [ngClass]="{'active-segment': currentSegment === 'reloj'}" (click)="navigateTo('/reloj')">
+        <img src="assets/emotes/reloj.webp" alt="Reloj" class="nav-icon" />
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-footer>

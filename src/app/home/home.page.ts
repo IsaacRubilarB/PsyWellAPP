@@ -17,6 +17,7 @@ import { catchError } from 'rxjs/operators';
 import { ModalImageComponent } from '../modal-image/modal-image.component';
 import { AlarmasService } from '../services/alarmas.service'; // Importamos el servicio de alarmas
 import { ToastController } from '@ionic/angular';
+import { SafeUrl } from '@angular/platform-browser';
 
 
 @Component({
@@ -75,41 +76,61 @@ export class HomePage implements OnInit {
     private storage: AngularFireStorage,
     private alertController: AlertController,
     private alarmasService: AlarmasService, // Inyectamos el servicio de alarmas
-    private toastController: ToastController
+    private toastController: ToastController,
 
   ) {}
 
-  ngOnInit() {
-    this.afAuth.authState.subscribe(user => {
+
+  ngOnInit(): void {
+    this.afAuth.authState.subscribe(async (user) => {
       if (user) {
         this.userEmail = user.email || '';
         if (this.userEmail) {
-          this.cargarPaciente(this.userEmail);
-          this.loadUserImages(this.userEmail);
+          console.log(`Usuario autenticado: ${this.userEmail}`);
+          try {
+            const isPaciente = await this.cargarPaciente(this.userEmail);
+            this.loadUserImages(this.userEmail, isPaciente);
+            await this.obtenerUsuarios();
+            this.obtenerCitas();
+          } catch (error) {
+            console.error('Error al inicializar datos del usuario:', error);
+          }
         } else {
-          console.error('El correo del usuario aún no está disponible.');
+          console.error('El correo del usuario no está disponible.');
         }
       } else {
-        this.resetUserData(); 
+        this.resetUserData();
       }
     });
   
-    this.obtenerUsuarios(); 
     setTimeout(() => {
-      this.initializeDrag(); 
+      this.initializeDrag();
     });
   }
   
-  private loadUserImages(email: string): void {
-    if (email) {
-      const sanitizedEmail = email.replace('@', '_').replace('.', '_');
   
-      this.profileImage = this.getFirebaseImageUrl(sanitizedEmail, 'profile');
-      this.bannerImage = this.getFirebaseImageUrl(sanitizedEmail, 'banner');
-    } else {
-      console.error('El correo proporcionado está vacío. No se puede cargar las imágenes.');
-    }
+
+public fotoPsicologoUrl: string | null = null; // Variable para cachear la URL
+
+  
+// Método para cargar datos de un paciente
+private loadUserImages(email: string, isPaciente: boolean): void {
+  if (!email) {
+      console.error('El correo proporcionado está vacío. No se pueden cargar las imágenes.');
+      return;
   }
+
+  this.profileImage = this.getFirebaseImageUrl(email, 'profile', isPaciente);
+  this.bannerImage = this.getFirebaseImageUrl(email, 'banner', isPaciente);
+
+  console.log(`Cargando imágenes para el usuario: ${email}`);
+  console.log(`URL de imagen de perfil: ${this.profileImage}`);
+  console.log(`URL de banner: ${this.bannerImage}`);
+}
+  
+  
+  
+  
   
   private resetUserData(): void {
     this.userName = '';
@@ -202,27 +223,38 @@ export class HomePage implements OnInit {
   async loadUserName(): Promise<void> {
     const user = await this.afAuth.currentUser;
     if (user) {
-      const uid = user.uid;
-      this.userEmail = user.email || '';
-      
-      if (uid) {
-        const userDoc = await this.afs.collection('users').doc(uid).get().toPromise();
-        
-        if (userDoc && userDoc.exists) {
-          const userData = userDoc.data() as { nombre?: string; idUsuario?: string };
-          this.userName = userData?.nombre || 'Usuario';
-          this.idUsuario = userData?.idUsuario || '';
-          this.profileImage = this.getFirebaseImageUrl(user.email || '', 'profile');
-          this.bannerImage = this.getFirebaseImageUrl(user.email || '', 'banner');
+        const uid = user.uid;
+        this.userEmail = user.email || '';
+
+        if (uid) {
+            const userDoc = await this.afs.collection('users').doc(uid).get().toPromise();
+
+            if (userDoc && userDoc.exists) {
+                const userData = userDoc.data() as { nombre?: string; idUsuario?: string; perfil?: string };
+                this.userName = userData?.nombre || 'Usuario';
+                this.idUsuario = userData?.idUsuario || '';
+
+                // Determinar si el usuario es paciente o psicólogo
+                const isPaciente = userData?.perfil === 'paciente';
+
+                // Obtener URLs de imágenes con el método corregido
+                this.profileImage = this.getFirebaseImageUrl(user.email || '', 'profile', isPaciente);
+                this.bannerImage = this.getFirebaseImageUrl(user.email || '', 'banner', isPaciente);
+
+                console.log(`Perfil cargado: ${this.userName}, URL de perfil: ${this.profileImage}, URL de banner: ${this.bannerImage}`);
+            } else {
+                console.warn('Usuario no encontrado en la base de datos.');
+                this.userName = 'Usuario';
+            }
         } else {
-          this.userName = 'Usuario';
+            console.error('No se pudo obtener el UID del usuario.');
         }
-      } else {
-        console.error('No se pudo obtener el UID del usuario.');
-      }
+    } else {
+        console.error('No hay usuario autenticado.');
     }
-  }
-  
+}
+
+
 
   
   private async geocodeAddress(address: string): Promise<{ lat: number; lng: number } | null> {
@@ -256,30 +288,42 @@ export class HomePage implements OnInit {
   
 
 
-  cargarPaciente(email: string) {
-    this.usersService.listarUsuarios().subscribe(
-      (response: any) => {
-        const user = response.data.find((user: any) => user.email === email);
-        if (user) {
-          this.userId = user.idUsuario;
-          this.userName = user.nombre || 'Usuario';
-          this.profileImage = this.getFirebaseImageUrl(user.email, 'profile');
-          this.bannerImage = this.getFirebaseImageUrl(user.email, 'banner');
-          console.log('Usuario cargado:', user);
-          this.obtenerCitas(); 
-        } else {
-          console.warn('Usuario no encontrado, usando datos predeterminados');
+  cargarPaciente(email: string): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.usersService.listarUsuarios().subscribe(
+        (response: any) => {
+          const user = response.data.find((user: any) => user.email === email);
+          if (user) {
+            this.userId = user.idUsuario;
+            console.log(`Usuario encontrado: ${user.nombre} (ID: ${this.userId})`);
+            this.userName = user.nombre || 'Usuario';
+  
+            // Determinar si el usuario es un paciente
+            const isPaciente = user.perfil === 'paciente';
+            resolve(isPaciente);
+          } else {
+            console.warn('Usuario no encontrado.');
+            reject('Usuario no encontrado');
+          }
+        },
+        (error) => {
+          console.error('Error al cargar el usuario:', error);
+          reject(error);
         }
-      },
-      (error) => {
-        console.error('Error al cargar el usuario:', error);
-      }
-    );
+      );
+    });
   }
   
   
 
-  async obtenerCitas() {
+
+  
+  
+  
+  
+  
+  
+  async obtenerCitas(): Promise<void> {
     if (!this.userId) {
       console.warn('ID de usuario no disponible para cargar citas.');
       return;
@@ -292,45 +336,39 @@ export class HomePage implements OnInit {
   
           this.citas = await Promise.all(
             response.data
-              .filter(
-                (cita: Cita) =>
-                  `${cita.idPaciente}` === `${this.userId}` || `${cita.idPsicologo}` === `${this.userId}`
+              .filter((cita: Cita) => 
+                `${cita.idPaciente}` === `${this.userId}` || 
+                `${cita.idPsicologo}` === `${this.userId}`
               )
               .map(async (cita: Cita) => {
                 const psicologo = this.psicologos.find((p: any) => `${p.idUsuario}` === `${cita.idPsicologo}`) || {};
                 const fotoPsicologoUrl = psicologo.email
-                  ? `https://firebasestorage.googleapis.com/v0/b/psywell-ab0ee.firebasestorage.app/o/fotoPerfil%2F${encodeURIComponent(psicologo.email)}?alt=media`
+                  ? this.getFirebaseImageUrl(psicologo.email, 'profile', false)
                   : 'assets/default-psicologo.png';
-              
-                // Asegúrate de asignar correctamente el nombre del psicólogo
+  
                 const nombrePsicologo = psicologo.nombre || 'Desconocido';
-              
-                // Convertir dirección a coordenadas
+  
+                // Obtener coordenadas de ubicación si están disponibles
                 let coordinates = null;
                 if (cita.ubicacion) {
                   coordinates = await this.geocodeAddress(cita.ubicacion);
                 }
-              
-                // Configurar alarma para la cita solo si tiene un nombre de psicólogo válido
-                if (nombrePsicologo !== 'Desconocido') {
-                  this.setCitaAlarm(cita, nombrePsicologo); // Ahora pasamos el nombre del psicólogo
-                }
-              
+  
+                console.log(`Procesando cita con Psicólogo: ${nombrePsicologo}`);
                 return {
                   ...cita,
-                  nombrePsicologo: nombrePsicologo,
+                  nombrePsicologo,
                   fotoPsicologo: fotoPsicologoUrl,
                   nombrePaciente: this.getNombreUsuario(cita.idPaciente),
                   latitud: coordinates?.lat || null,
                   longitud: coordinates?.lng || null,
                 };
               })
-              
           );
   
-          console.log('Citas filtradas con coordenadas:', this.citas);
+          console.log('Citas procesadas:', this.citas);
         } else {
-          console.error('La respuesta no es válida:', response);
+          console.error('Respuesta de citas no válida:', response);
         }
       },
       error: (error) => {
@@ -339,6 +377,17 @@ export class HomePage implements OnInit {
       },
     });
   }
+  
+
+onImageError(cita: any): void {
+  console.warn(`Error al cargar la imagen del psicólogo para la cita con ID ${cita.id}`);
+  cita.fotoPsicologo = 'assets/default-psicologo.png'; // Ruta de la imagen predeterminada
+}
+
+
+public sanitizeImageUrl(url: string): SafeUrl {
+  return this.sanitizer.bypassSecurityTrustUrl(url);
+}
   
   private setCitaAlarm(cita: any, nombrePsicologo: string): void {
     const citaDateTime = new Date(`${cita.fecha}T${cita.horaInicio}`);
@@ -360,12 +409,13 @@ export class HomePage implements OnInit {
   obtenerUsuarios() {
     this.usersService.listarUsuarios().subscribe(
       (response: any) => {
+        console.log('Respuesta completa de listarUsuarios:', response);
         if (response && response.data) {
-          console.log('Usuarios cargados:', response);
+          console.log('Usuarios cargados:', response.data);
           this.psicologos = response.data.filter((user: { perfil: string }) => user.perfil === 'psicologo');
           this.pacientes = response.data.filter((user: { perfil: string }) => user.perfil === 'paciente');
         } else {
-          console.error('No se encontraron usuarios');
+          console.error('No se encontraron usuarios en la respuesta:', response);
         }
       },
       (error) => {
@@ -373,6 +423,7 @@ export class HomePage implements OnInit {
       }
     );
   }
+  
 
   getNombreUsuario(id: number): string {
     if (!id) {
@@ -456,11 +507,15 @@ export class HomePage implements OnInit {
   
 
 
-  private getFirebaseImageUrl(email: string, tipo: 'profile' | 'banner'): string {
-    const sanitizedEmail = email.replace(/@/g, '_').replace(/\./g, '_');
+  private getFirebaseImageUrl(email: string, tipo: 'profile' | 'banner', isPaciente: boolean): string {
+    const sanitizedEmail = isPaciente ? email.replace(/[@.]/g, '_') : email;
     const folder = tipo === 'profile' ? 'fotoPerfil' : 'fotoPortada';
     return `https://firebasestorage.googleapis.com/v0/b/psywell-ab0ee.firebasestorage.app/o/${folder}%2F${encodeURIComponent(sanitizedEmail)}?alt=media`;
-  }
+}
+
+
+
+  
   
   
 
