@@ -15,6 +15,9 @@ import { finalize } from 'rxjs/operators';
 import interact from 'interactjs';
 import { catchError } from 'rxjs/operators';
 import { ModalImageComponent } from '../modal-image/modal-image.component';
+import { AlarmasService } from '../services/alarmas.service'; // Importamos el servicio de alarmas
+import { ToastController } from '@ionic/angular';
+
 
 @Component({
   selector: 'app-home',
@@ -70,7 +73,10 @@ export class HomePage implements OnInit {
     private sanitizer: DomSanitizer,
     private renderer: Renderer2,
     private storage: AngularFireStorage,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private alarmasService: AlarmasService, // Inyectamos el servicio de alarmas
+    private toastController: ToastController
+
   ) {}
 
   ngOnInit() {
@@ -295,22 +301,31 @@ export class HomePage implements OnInit {
                 const fotoPsicologoUrl = psicologo.email
                   ? `https://firebasestorage.googleapis.com/v0/b/psywell-ab0ee.firebasestorage.app/o/fotoPerfil%2F${encodeURIComponent(psicologo.email)}?alt=media`
                   : 'assets/default-psicologo.png';
-  
+              
+                // Asegúrate de asignar correctamente el nombre del psicólogo
+                const nombrePsicologo = psicologo.nombre || 'Desconocido';
+              
                 // Convertir dirección a coordenadas
                 let coordinates = null;
                 if (cita.ubicacion) {
                   coordinates = await this.geocodeAddress(cita.ubicacion);
                 }
-  
+              
+                // Configurar alarma para la cita solo si tiene un nombre de psicólogo válido
+                if (nombrePsicologo !== 'Desconocido') {
+                  this.setCitaAlarm(cita, nombrePsicologo); // Ahora pasamos el nombre del psicólogo
+                }
+              
                 return {
                   ...cita,
-                  nombrePsicologo: psicologo.nombre || 'Desconocido',
+                  nombrePsicologo: nombrePsicologo,
                   fotoPsicologo: fotoPsicologoUrl,
                   nombrePaciente: this.getNombreUsuario(cita.idPaciente),
                   latitud: coordinates?.lat || null,
                   longitud: coordinates?.lng || null,
                 };
               })
+              
           );
   
           console.log('Citas filtradas con coordenadas:', this.citas);
@@ -323,6 +338,18 @@ export class HomePage implements OnInit {
         this.errorMessage = 'No se pudo cargar las citas. Intenta de nuevo más tarde.';
       },
     });
+  }
+  
+  private setCitaAlarm(cita: any, nombrePsicologo: string): void {
+    const citaDateTime = new Date(`${cita.fecha}T${cita.horaInicio}`);
+    const message = `Tienes una cita con ${nombrePsicologo} el ${cita.fecha} a las ${cita.horaInicio}.`;
+  
+    if (citaDateTime > new Date()) {
+      this.alarmasService.setCitaAlarm(cita.id, citaDateTime, message);
+      console.log(`Alarma configurada para la cita: ${message}`);
+    } else {
+      console.warn(`La cita con ID ${cita.id} ya ha pasado. No se configura la alarma.`);
+    }
   }
   
   
@@ -461,15 +488,38 @@ export class HomePage implements OnInit {
       console.error('Error al cerrar sesión:', error);
     }
   }
-  async toggleAlarm(cita: any) {
+
+  toggleAlarm(cita: any): void {
     if (cita.alarmActive) {
-      cita.alarmActive = false;
-      this.showAlert('Alarma Desactivada', 'La alarma para esta cita ha sido desactivada.');
+      this.alarmasService.setCitaAlarm(
+        cita.id,
+        new Date(cita.fecha + 'T' + cita.horaInicio),
+        `Tienes una cita con ${cita.nombrePsicologo} el ${cita.fecha} a las ${cita.horaInicio}.`
+      );
+      this.showToast('Alarma activada para esta cita.', 'success');
     } else {
-      cita.alarmActive = true;
-      this.showAlert('Alarma Activada', 'La alarma para esta cita ha sido activada.');
+      this.alarmasService.cancelCitaAlarm(cita.id);
+      this.showToast('Alarma desactivada para esta cita.', 'warning');
     }
   }
+  
+  
+  async showToast(message: string, color: 'success' | 'warning'): Promise<void> {
+    const toast = await this.toastController.create({
+      message, // Mensaje dinámico
+      duration: 2000, // Duración en milisegundos
+      color, // Color basado en la acción
+      position: 'top', // Posición del toast
+      buttons: [
+        {
+          text: 'Cerrar',
+          role: 'cancel'
+        }
+      ]
+    });
+    await toast.present();
+  }
+  
 
   private async showAlert(header: string, message: string) {
     const alert = await this.alertController.create({

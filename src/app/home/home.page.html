@@ -14,33 +14,23 @@
   <div class="profile-info-container">
     <!-- Información del perfil -->
     <div class="profile-info" [style.background-image]="'url(' + bannerImage + ')'">
-      <!-- Imagen de perfil -->
       <div class="profile-image-container">
         <ion-avatar>
           <img [src]="profileImage" alt="User Profile" />
         </ion-avatar>
-        <!-- Lápiz para editar imagen de perfil -->
         <span class="edit-icon" (click)="openImageModal('profile')">✏️</span>
       </div>
 
-      <!-- Detalles del usuario con fondo translúcido -->
       <div class="user-details">
         <h2>{{ userName }}</h2>
         <p>{{ userEmail }}</p>
       </div>
-
-      <!-- Lápiz para editar banner -->
-      <div class="banner-edit-container">
-        <span class="edit-icon" (click)="openImageModal('banner')">✏️</span>
-      </div>
     </div>
   </div>
 
-  <!-- Sección de citas -->
   <div class="citas-container">
     <h2>Tus Próximas Citas</h2>
 
-    <!-- Mostrar el botón de "Pedir Cita" si no hay citas -->
     <div *ngIf="citas.length === 0" class="no-citas-container">
       <ion-button (click)="openPsychologistModal()" expand="block" color="primary">
         Pedir Cita
@@ -50,7 +40,6 @@
     <ion-grid *ngIf="citas.length > 0">
       <ion-row>
         <ion-col size="12" *ngFor="let cita of citas">
-          <!-- Tarjeta con mapa y detalles -->
           <div class="cita-card">
             <!-- Mapa estático con la ubicación -->
             <div
@@ -63,13 +52,11 @@
                 alt="Mapa de ubicación"
                 class="map"
               />
-              <!-- Avatar centrado sobre el mapa -->
               <div class="avatar-container">
                 <img [src]="cita.fotoPsicologo || 'assets/default-psicologo.png'" alt="Psicólogo" />
               </div>
             </div>
 
-            <!-- Detalles de la cita -->
             <div class="info-container">
               <h3>{{ cita.nombrePsicologo }}</h3>
               <div class="details">
@@ -82,6 +69,16 @@
                   Hora: {{ cita.horaInicio }} - {{ cita.horaFin }}
                 </p>
               </div>
+
+              <!-- Toggle para la alarma -->
+              <div class="alarm-toggle">
+                <ion-toggle
+                  [(ngModel)]="cita.alarmActive"
+                  (ionChange)="toggleAlarm(cita)"
+                ></ion-toggle>
+                <label>Alarma</label>
+              </div>
+
               <p class="comments">
                 <strong>Comentarios:</strong> {{ cita.comentarios }}
               </p>
@@ -92,26 +89,3 @@
     </ion-grid>
   </div>
 </ion-content>
-
-<ion-footer>
-  <ion-toolbar>
-    <ion-segment>
-      <!-- Botón de registrar emociones -->
-      <ion-segment-button [ngClass]="{'active-segment': currentSegment === 'registrar-emociones'}" (click)="navigateTo('/registrar-emociones')">
-        <img src="assets/emotes/calendario.svg" alt="Registrar emociones" class="nav-icon" />
-      </ion-segment-button>
-      <!-- Botón de home -->
-      <ion-segment-button [ngClass]="{'active-segment': currentSegment === 'home'}" (click)="navigateTo('/home')">
-        <img src="assets/emotes/home.svg" alt="Home" class="nav-icon" />
-      </ion-segment-button>
-      <!-- Botón de tips -->
-      <ion-segment-button [ngClass]="{'active-segment': currentSegment === 'tips'}" (click)="navigateTo('/tips')">
-        <img src="assets/emotes/tranquilidad.svg" alt="Tips" class="nav-icon" />
-      </ion-segment-button>
-      <!-- Botón de reloj -->
-      <ion-segment-button [ngClass]="{'active-segment': currentSegment === 'reloj'}" (click)="navigateTo('/reloj')">
-        <img src="assets/emotes/reloj.webp" alt="Reloj" class="nav-icon" />
-      </ion-segment-button>
-    </ion-segment>
-  </ion-toolbar>
-</ion-footer>
