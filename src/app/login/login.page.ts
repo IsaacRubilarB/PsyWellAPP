@@ -71,63 +71,55 @@ export class LoginRegisterComponent implements OnInit {
 
   async register() {
     const { password, confirmPassword, ...userData } = this.registerForm.value;
-
+  
     if (password !== confirmPassword) {
+      console.error('Las contraseñas no coinciden.');
       return;
     }
-
+  
     try {
+      // Registro en Firebase Authentication
       const userCredential = await this.afAuth.createUserWithEmailAndPassword(
         userData.email,
         password
       );
-
       const uid = userCredential.user?.uid;
-
+  
       if (!uid) {
+        console.error('No se pudo obtener el UID del usuario en Firebase.');
         return;
       }
-
+  
+      // Preparar datos para PostgreSQL
       userData.contrasena = password;
       userData.estado = true;
       userData.perfil = 'paciente';
-
+  
+      // Registro en PostgreSQL
       this.usersService.registrarUsuario(userData).subscribe(async (res) => {
         if (res && res.data.idUsuario) {
           const postgresId = res.data.idUsuario;
-
-          const firebaseConfig = {
-            apiKey: "AIzaSyAFJUcrBDDLPM2SscMvi1x_jUv6Wlqnukg",
-            authDomain: "psywell-ab0ee.firebaseapp.com",
-            projectId: "psywell-ab0ee",
-            storageBucket: "psywell-ab0ee.firebasestorage.app",
-            messagingSenderId: "471287872717",
-            appId: "1:471287872717:web:588c0acfcb84728c7657d84",
-            measurementId: "G-TG8E6CBF8D",
-          };
-
-          initializeApp(firebaseConfig);
-          const db = getFirestore();
-          await setDoc(doc(collection(db, 'users'), uid), {
+  
+          // Sincronizar con Firestore
+          await this.afs.collection('users').doc(uid).set({
             nombre: userData.nombre,
             email: userData.email,
-            idUsuario: postgresId,
+            idUsuario: postgresId, // ID de PostgreSQL
           });
-
-          this.usersService.setUserData({
-            nombre: userData.nombre,
-            email: userData.email,
-            idUsuario: postgresId,
-          });
-
+  
+          console.log('Usuario registrado y sincronizado con Firestore.');
           this.router.navigate(['/home']);
         } else {
+          console.error('No se obtuvo un ID válido desde PostgreSQL.');
         }
       });
     } catch (error) {
       console.error('Error al registrar usuario:', error);
     }
   }
+  
+
+
 
   async login() {
     if (this.loginForm.valid) {
@@ -142,40 +134,39 @@ export class LoginRegisterComponent implements OnInit {
     }
   }
 
-  async loginWithGoogle() {
-    try {
-      const result = await this.authService.loginWithGoogle();
-      if (result) {
-        const user = result.user;
-  
-        if (!user) {
-          throw new Error('No se pudo obtener el usuario de Google.');
-        }
-  
-        // Verificar y crear documento del usuario en Firestore
-        const userDocRef = this.afs.collection('users').doc(user.uid);
-        const userDoc = await userDocRef.get().toPromise();
-  
-        if (!userDoc?.exists) {
-          await userDocRef.set({
-            nombre: user.displayName || 'Usuario de Google',
-            email: user.email,
-            idUsuario: user.uid,
-          });
-        }
-  
-        // Redirigir al home sin mostrar alertas
-        this.router.navigate(['/home']);
+ async loginWithGoogle() {
+  try {
+    const result = await this.authService.loginWithGoogle();
+
+    if (result) {
+      const user = result.user;
+
+      if (!user || !user.email) {
+        throw new Error('No se pudo obtener el usuario de Google o su correo electrónico.');
       }
-    } catch (error: any) {
-      console.error('Error al iniciar sesión con Google:', error);
-  
-      // Manejo del error en consola o lógica adicional sin alertas
-      const errorMessage = error?.message || 'No se pudo iniciar sesión con Google. Intenta nuevamente.';
-      console.error('Mensaje de error:', errorMessage);
+
+      // Obtener ID del usuario desde PostgreSQL
+      const postgresId = await this.authService.getBackendUserId(user.email);
+
+      // Sincronizar datos en Firestore
+      const userDocRef = this.afs.collection('users').doc(user.uid);
+      const userDoc = await userDocRef.get().toPromise();
+
+      if (!userDoc?.exists) {
+        await userDocRef.set({
+          nombre: user.displayName || 'Usuario de Google',
+          email: user.email,
+          idUsuario: postgresId, // ID de PostgreSQL
+        });
+      }
+
+      this.router.navigate(['/home']);
     }
+  } catch (error: any) {
+    console.error('Error al iniciar sesión con Google:', error);
   }
-  
+}
+
   
 
   async logout() {

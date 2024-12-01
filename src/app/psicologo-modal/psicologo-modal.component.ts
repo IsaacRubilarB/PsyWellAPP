@@ -7,6 +7,7 @@ import { CitasService } from '../services/citasService';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { GoogleMapsComponent } from '../google-maps/google-maps.component';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-psicologo-modal',
@@ -20,7 +21,6 @@ export class PsicologoModalComponent implements OnInit {
   selectedPsychologist: any = null;
   selectedTime: string = '';
   selectedDate: string = '';
-  successMessage: string = '';
   showTimes: boolean = false;
   selectedPsychologistId: number | null = null;
   comentarios: any = '';
@@ -29,6 +29,8 @@ export class PsicologoModalComponent implements OnInit {
   estado: any;
   availableTimes: string[] = [];
   showDateSelector: boolean = false;
+  successMessage: string | null = null;
+  errorMessage: string | null = null;
 
   isMapModalOpen: boolean = false;  // Control para el modal del mapa
 
@@ -39,34 +41,50 @@ export class PsicologoModalComponent implements OnInit {
     private usersService: UsersService,
     private alertController: AlertController,
     private afAuth: AngularFireAuth,
-    private afs: AngularFirestore
+    private afs: AngularFirestore,
+    private changeDetector: ChangeDetectorRef,
+
   ) {}
 
+  
   async ngOnInit() {
     await this.loadUserName();
-
+  
     this.usersService.listarUsuarios().subscribe((usuarios: any) => {
       if (Array.isArray(usuarios.data)) {
         this.psychologists = usuarios.data
           .filter((usuario: { perfil: string }) => usuario.perfil === 'psicologo')
           .map((psychologist: any) => {
-            psychologist.fotoUrl = this.getPsychologistImageUrl(psychologist.email); 
+            psychologist.fotoUrl = this.getPsychologistImageUrl(psychologist.email) || 'assets/default-psicologo.png'; 
             psychologist.citasDisponibles = true;
+  
+            // Log para verificar las URLs generadas
+            console.log(`URL generada para ${psychologist.nombre}: ${psychologist.fotoUrl}`);
+            
             return psychologist;
           });
+  
+        // Forzar actualización de la vista
+        this.changeDetector.detectChanges();
       } else {
         console.error('La propiedad "data" no es un array:', usuarios.data);
       }
     });
   }
-
+  
+  
   getPsychologistImageUrl(email: string): string {
-    const sanitizedEmail = email;
+    if (!email) {
+      console.log('Email no disponible, devolviendo imagen predeterminada.');
+      return 'assets/default-psicologo.png';
+    }
   
-    const imageUrl = `https://firebasestorage.googleapis.com/v0/b/psywell-ab0ee.firebasestorage.app/o/fotoPerfil%2F${encodeURIComponent(sanitizedEmail)}?alt=media&token=c5469faf-f49d-4f4c-b927-e4f502a27914`;
-  
-    console.log('URL generada para la foto del psicólogo:', imageUrl);
-    return imageUrl;
+    const sanitizedEmail = encodeURIComponent(email); // Encode email para evitar errores en la URL
+    const url = `https://firebasestorage.googleapis.com/v0/b/psywell-ab0ee.firebasestorage.app/o/fotoPerfil%2F${sanitizedEmail}?alt=media`;
+    
+    console.log(`Generando URL para email ${email}: ${url}`); // Log para verificar cada URL generada
+    
+    return url;
   }
   
 
@@ -117,25 +135,27 @@ logLocation(event: any): void {
 }
 
 
-  // Métodos de selección de psicólogo, fecha y hora
-  selectPsychologist(psychologist: any) {
-    if (this.selectedPsychologist === psychologist) {
-      this.selectedPsychologist = null;
-      this.selectedPsychologistId = null;
-      this.availableTimes = [];
-      this.showTimes = false;
-      this.showDateSelector = false;
-    } else {
-      this.selectedPsychologist = psychologist;
-      this.selectedPsychologistId = psychologist.idUsuario;
-      this.selectedTime = '';
-      this.selectedDate = '';
-      this.showTimes = false;
-      this.showDateSelector = true;
-      this.availableTimes = [];
-    }
+selectPsychologist(psychologist: any) {
+  if (this.selectedPsychologist === psychologist) {
+    this.selectedPsychologist = null;
+    this.selectedPsychologistId = null;
+    this.availableTimes = [];
+    this.showTimes = false;
+    this.showDateSelector = false;
+  } else {
+    this.selectedPsychologist = psychologist;
+    this.selectedPsychologistId = psychologist.idUsuario;
+    this.selectedTime = '';
+    this.selectedDate = '';
+    this.showTimes = false;
+    this.showDateSelector = true;
+    this.availableTimes = [];
+
+    // Log para verificar la URL de la imagen
+    console.log(`Seleccionado: ${psychologist.nombre}, URL: ${psychologist.fotoUrl}`);
   }
-  
+}
+
   
 
   showAvailableTimes() {
@@ -267,9 +287,7 @@ logLocation(event: any): void {
     }
   }
 
-  async cancel() {
-    await this.modalController.dismiss();
-  }
+  
 
   async refreshPsychologists() {
     try {
@@ -297,46 +315,63 @@ logLocation(event: any): void {
     });
   }
 
- // Método para aceptar la cita y registrarla
-async acceptAppointment() {
-  // Validación de campos obligatorios
-  if (!this.selectedPsychologist || !this.selectedTime || !this.selectedDate || !this.userId || !this.ubicacion || !this.comentarios) {
-    const alert = await this.alertController.create({
-      header: 'Error',
-      message: 'Por favor selecciona un psicólogo, fecha, hora, ubicación y agrega comentarios para continuar.',
-      buttons: ['OK'],
-    });
-    await alert.present();
-    return;
+  async acceptAppointment() {
+    // Validación de campos obligatorios
+    if (!this.selectedPsychologist || !this.selectedTime || !this.selectedDate || !this.userId || !this.ubicacion || !this.comentarios) {
+      await Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Por favor selecciona un psicólogo, fecha, hora, ubicación y agrega comentarios para continuar.',
+      });
+      return;
+    }
+  
+    // Calculamos la hora de fin automáticamente
+    const [horaInicio] = this.selectedTime.split(' - ');
+    const horaFin = this.calculateEndTime(horaInicio);
+  
+    const appointmentData = {
+      idPaciente: this.userId,
+      idPsicologo: this.selectedPsychologist.idUsuario,
+      ubicacion: this.ubicacion,
+      estado: 'Pendiente',
+      fecha: this.selectedDate,
+      horaInicio: horaInicio,
+      horaFin: horaFin,
+      comentarios: 'Primera Cita - ' + this.comentarios,
+    };
+  
+    try {
+      // Registrar la cita en el backend
+      await this.citasService.registrarCita(appointmentData).toPromise();
+  
+      await Swal.fire({
+        icon: 'success',
+        title: '¡Éxito!',
+        text: '¡Cita registrada correctamente!',
+        confirmButtonText: 'OK',
+        heightAuto: false, // Evita que SweetAlert ajuste la altura
+        allowOutsideClick: false, // Deshabilita clics fuera del modal para prevenir interrupciones
+      });
+      
+  
+      // Cierra el modal y envía los datos de la cita al componente padre
+      await this.modalController.dismiss({
+        success: true,
+        appointment: appointmentData, // Pasa los datos de la cita registrada
+      });
+    } catch (error) {
+      console.error('Error al registrar la cita:', error);
+  
+      // Mostrar mensaje de error
+      await Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Hubo un error al registrar la cita. Intenta nuevamente.',
+      });
+    }
   }
-
-  // Calculamos la hora de fin automáticamente sumando una hora a la hora de inicio seleccionada
-  const [horaInicio] = this.selectedTime.split(' - ');
-  const horaFin = this.calculateEndTime(horaInicio);
-
-  const appointmentData = {
-    idPaciente: this.userId,
-    idPsicologo: this.selectedPsychologist.idUsuario,
-    ubicacion: this.ubicacion,  // Utilizamos la ubicación seleccionada
-    estado: 'Pendiente',
-    fecha: this.selectedDate,
-    horaInicio: horaInicio,
-    horaFin: horaFin,
-    comentarios: 'Primera Cita - ' + this.comentarios,
-  };
-
-  console.log('Cita aceptada:', appointmentData);
-
-  try {
-    await this.citasService.registrarCita(appointmentData).toPromise();
-    this.successMessage = 'Cita registrada correctamente!';
-    this.resetForm();
-    this.router.navigate(['/home']);
-  } catch (error) {
-    console.error('Error al registrar la cita:', error);
-    this.successMessage = 'Hubo un error al registrar la cita.';
-  }
-}
+  
 
 
   // Método para abrir el modal del mapa
@@ -348,5 +383,17 @@ async acceptAppointment() {
   closeMapModal() {
     this.isMapModalOpen = false;
   }
+
+  async cancel() {
+    await this.modalController.dismiss(); // Cierra el modal sin datos
+  }
+
+
+
+  clearMessages() {
+    this.successMessage = null;
+    this.errorMessage = null;
+  }
+  
 }
 

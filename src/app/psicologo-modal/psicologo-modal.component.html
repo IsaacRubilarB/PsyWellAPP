@@ -8,29 +8,52 @@
 </ion-header>
 
 <ion-content>
+  <!-- Alertas dinámicas -->
+  <div *ngIf="successMessage || errorMessage" class="alert-container" [ngClass]="successMessage ? 'alert-success' : 'alert-error'">
+    <span class="alert-icon">
+      <ion-icon [name]="successMessage ? 'checkmark-circle' : 'close-circle'"></ion-icon>
+    </span>
+    <span>{{ successMessage || errorMessage }}</span>
+    <button class="alert-close" (click)="clearMessages()">×</button>
+  </div>
+
+  <!-- Lista de psicólogos -->
   <ion-list *ngIf="!selectedPsychologist" class="psychologist-list">
-    <ion-item *ngFor="let psychologist of psychologists" (click)="selectPsychologist(psychologist)" [ngClass]="{'selected': selectedPsychologist === psychologist}" class="psychologist-card">
-      <ion-avatar slot="start" class="avatar-container">
-        <img [src]="psychologist.fotoUrl || 'assets/default-psicologo.png'" alt="{{psychologist.nombre}}" class="psychologist-avatar">
-      </ion-avatar>
+    <ion-item *ngFor="let psychologist of psychologists" 
+              (click)="selectPsychologist(psychologist)" 
+              [ngClass]="{'selected': selectedPsychologist === psychologist}" 
+              class="psychologist-card">
+              <ion-avatar slot="start" class="avatar-container">
+                <img [src]="psychologist.fotoUrl || 'assets/default-psicologo.png'" 
+                     alt="{{psychologist.nombre}}" 
+                     class="psychologist-avatar"
+                     (error)="psychologist.fotoUrl = 'assets/default-psicologo.png'">
+              </ion-avatar>
+              
+
       <ion-label class="psychologist-details">
         <h2>{{ psychologist.nombre }}</h2>
-        <p class="availability" [ngClass]="{'available': psychologist.citasDisponibles, 'not-available': !psychologist.citasDisponibles}">
+        <p class="availability" 
+           [ngClass]="{'available': psychologist.citasDisponibles, 'not-available': !psychologist.citasDisponibles}">
           {{ psychologist.citasDisponibles ? 'Citas disponibles' : 'No disponible' }}
         </p>
       </ion-label>
     </ion-item>
   </ion-list>
-  
 
+  <!-- Detalles del psicólogo seleccionado -->
   <div *ngIf="selectedPsychologist" class="selected-psychologist-container">
     <ion-item class="psychologist-details-card">
       <ion-avatar slot="start" class="avatar-container">
-        <img [src]="selectedPsychologist.fotoUrl || 'assets/default-psicologo.png'" alt="{{selectedPsychologist.nombre}}" class="psychologist-avatar">
+        <img [src]="selectedPsychologist.fotoUrl || 'assets/default-psicologo.png'" 
+             alt="{{selectedPsychologist.nombre}}" 
+             class="psychologist-avatar" 
+             (error)="selectedPsychologist.fotoUrl = 'assets/default-psicologo.png'">
       </ion-avatar>
       <ion-label class="psychologist-details">
         <h2>{{ selectedPsychologist.nombre }}</h2>
-        <p class="availability" [ngClass]="{'available': selectedPsychologist.citasDisponibles, 'not-available': !selectedPsychologist.citasDisponibles}">
+        <p class="availability" 
+           [ngClass]="{'available': selectedPsychologist.citasDisponibles, 'not-available': !selectedPsychologist.citasDisponibles}">
           {{ selectedPsychologist.citasDisponibles ? 'Citas disponibles' : 'No disponible' }}
         </p>
       </ion-label>
@@ -38,12 +61,16 @@
 
     <ion-item *ngIf="selectedPsychologist.citasDisponibles" class="calendar-item">
       <ion-label position="floating">Selecciona la fecha de la cita</ion-label>
-      <ion-datetime [(ngModel)]="selectedDate" displayFormat="DD/MM/YYYY" min="2024-01-01" max="2024-12-31" presentation="date" (ionChange)="showAvailableTimes()">
+      <ion-datetime [(ngModel)]="selectedDate" displayFormat="DD/MM/YYYY" 
+                    min="2024-01-01" max="2024-12-31" presentation="date" 
+                    (ionChange)="showAvailableTimes()">
       </ion-datetime>
     </ion-item>
 
     <ion-list *ngIf="showTimes && selectedDate" class="available-times">
-      <ion-item *ngFor="let time of availableTimes" (click)="selectTime(time)" [ngClass]="{'selected-time': selectedTime === time}">
+      <ion-item *ngFor="let time of availableTimes" 
+                (click)="selectTime(time)" 
+                [ngClass]="{'selected-time': selectedTime === time}">
         <ion-label>{{ time }}</ion-label>
       </ion-item>
     </ion-list>
@@ -59,22 +86,19 @@
       <ion-textarea [(ngModel)]="comentarios" placeholder="Ingrese cualquier comentario adicional" required></ion-textarea>
     </ion-item>
 
-    <ion-button *ngIf="selectedTime" expand="full" color="primary" (click)="acceptAppointment()" class="appointment-button">
+    <ion-button *ngIf="selectedTime" expand="full" color="primary" 
+                (click)="acceptAppointment()" class="appointment-button">
       Agendar Cita
     </ion-button>
 
-    <ion-button expand="full" color="secondary" (click)="resetSelection()" class="back-button">Volver a la lista</ion-button>
+    <ion-button expand="full" color="secondary" 
+                (click)="resetSelection()" class="back-button">
+      Volver a la lista
+    </ion-button>
   </div>
 
-  <p *ngIf="successMessage" class="success-message">{{ successMessage }}</p>
-
-<!-- Modal para mostrar el mapa -->
-<ion-modal [isOpen]="isMapModalOpen" class="map-modal" (willDismiss)="closeMapModal()">
-  <app-google-maps></app-google-maps>
-</ion-modal>
-
-
-
-
-
+  <!-- Modal para mostrar el mapa -->
+  <ion-modal [isOpen]="isMapModalOpen" class="map-modal" (willDismiss)="closeMapModal()">
+    <app-google-maps></app-google-maps>
+  </ion-modal>
 </ion-content>

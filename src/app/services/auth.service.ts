@@ -139,18 +139,18 @@ export class AuthService {
     }
   }
 
-  private async getBackendUserId(email: string): Promise<number> {
+  public async getBackendUserId(email: string): Promise<number> {
     try {
       const response = await fetch('http://localhost:8084/obtenerIdUsuario', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
       });
-
+  
       if (!response.ok) {
         throw new Error('Error al obtener el ID de usuario del backend.');
       }
-
+  
       const data = await response.json();
       return data.idUsuario || 0;
     } catch (error) {
@@ -158,6 +158,7 @@ export class AuthService {
       throw error;
     }
   }
+  
 
   async fetchGoogleFitData(endpoint: string, body: any): Promise<any> {
     if (!this.token) {

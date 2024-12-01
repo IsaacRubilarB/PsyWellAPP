@@ -588,16 +588,18 @@ public sanitizeImageUrl(url: string): SafeUrl {
 
   async openPsychologistModal() {
     const modal = await this.modalController.create({
-      component: PsicologoModalComponent, 
-      cssClass: 'modal-psychologist-class' 
+      component: PsicologoModalComponent,
+      cssClass: 'modal-psychologist-class',
     });
   
     await modal.present();
   
+    // Escucha cuando se cierre el modal
     modal.onDidDismiss().then((result) => {
       if (result.data) {
-        console.log('Resultado del modal:', result.data);
-        this.obtenerCitas(); 
+        console.log('Nueva cita registrada:', result.data);
+        // Recarga las citas automáticamente
+        this.obtenerCitas();
       }
     });
   }
@@ -606,7 +608,7 @@ public sanitizeImageUrl(url: string): SafeUrl {
   navigateToMap(): void {
     this.router.navigate(['/google-maps']);
   }
-  
+
 }
 
 
