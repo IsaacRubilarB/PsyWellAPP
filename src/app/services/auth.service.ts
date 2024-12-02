@@ -141,7 +141,7 @@ export class AuthService {
 
   public async getBackendUserId(email: string): Promise<number> {
     try {
-      const response = await fetch('http://localhost:8084/obtenerIdUsuario', {
+      const response = await fetch(environment.apiCalendario+'obtenerIdUsuario', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
