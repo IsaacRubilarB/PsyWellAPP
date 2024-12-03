@@ -4,9 +4,9 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Router } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { UsersService } from '../services/userService';
-import Swal from 'sweetalert2';
 import { AuthService } from '../services/auth.service';
 import { getAuth, signOut } from 'firebase/auth';
+import { ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-login-register',
@@ -24,7 +24,8 @@ export class LoginRegisterComponent implements OnInit {
     private router: Router,
     private afs: AngularFirestore,
     private usersService: UsersService,
-    private authService: AuthService
+    private authService: AuthService,
+    private toastController: ToastController
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -71,12 +72,11 @@ export class LoginRegisterComponent implements OnInit {
     const { password, confirmPassword, ...userData } = this.registerForm.value;
 
     if (password !== confirmPassword) {
-      Swal.fire('Error', 'Las contraseñas no coinciden.', 'error');
+      this.showToast('Las contraseñas no coinciden.', 'danger');
       return;
     }
 
     try {
-      // Registro en Firebase Authentication
       const userCredential = await this.afAuth.createUserWithEmailAndPassword(
         userData.email,
         password
@@ -84,34 +84,32 @@ export class LoginRegisterComponent implements OnInit {
       const uid = userCredential.user?.uid;
 
       if (!uid) {
-        Swal.fire('Error', 'No se pudo obtener el UID del usuario en Firebase.', 'error');
+        this.showToast('No se pudo obtener el UID del usuario en Firebase.', 'danger');
         return;
       }
 
-      // Preparar datos para PostgreSQL
       userData.contrasena = password;
       userData.estado = true;
       userData.perfil = 'paciente';
 
-      // Registro en PostgreSQL
       this.usersService.registrarUsuario(userData).subscribe(async (res) => {
         if (res && res.data.idUsuario) {
           const postgresId = res.data.idUsuario;
 
-          // Sincronizar con Firestore
           await this.afs.collection('users').doc(uid).set({
             nombre: userData.nombre,
             email: userData.email,
-            idUsuario: postgresId, // ID de PostgreSQL
+            idUsuario: postgresId,
           });
 
-          Swal.fire('Registro exitoso', 'Usuario registrado y sincronizado con Firestore.', 'success');
+          this.showToast('Usuario registrado correctamente.', 'success');
           this.router.navigate(['/home']);
         } else {
-          Swal.fire('Error', 'No se obtuvo un ID válido desde PostgreSQL.', 'error');
+          this.showToast('No se obtuvo un ID válido desde PostgreSQL.', 'danger');
         }
       });
     } catch (error) {
+      this.showToast('Error al registrar usuario.', 'danger');
     }
   }
 
@@ -120,12 +118,13 @@ export class LoginRegisterComponent implements OnInit {
       const { email, password } = this.loginForm.value;
       try {
         await this.afAuth.signInWithEmailAndPassword(email, password);
-        Swal.fire('Inicio de sesión exitoso', 'Bienvenido de nuevo.', 'success');
+        this.showToast('Inicio de sesión exitoso.', 'success');
         this.router.navigate(['/home']);
       } catch (error) {
+        this.showToast('Error al iniciar sesión. Verifica tus credenciales.', 'danger');
       }
     } else {
-      Swal.fire('Error', 'Por favor, completa todos los campos correctamente.', 'error');
+      this.showToast('Completa todos los campos correctamente.', 'danger');
     }
   }
 
@@ -135,16 +134,13 @@ export class LoginRegisterComponent implements OnInit {
 
       if (result) {
         const user = result.user;
-        const token = result.token;
 
         if (!user || !user.email) {
           throw new Error('No se pudo obtener el usuario de Google o su correo electrónico.');
         }
 
-        // Obtener ID del usuario desde PostgreSQL
         const postgresId = await this.authService.getBackendUserId(user.email);
 
-        // Sincronizar datos en Firestore
         const userDocRef = this.afs.collection('users').doc(user.uid);
         const userDoc = await userDocRef.get().toPromise();
 
@@ -152,24 +148,15 @@ export class LoginRegisterComponent implements OnInit {
           await userDocRef.set({
             nombre: user.displayName || 'Usuario de Google',
             email: user.email,
-            idUsuario: postgresId, // ID de PostgreSQL
+            idUsuario: postgresId,
           });
         }
 
-        // Guardar el token en localStorage para usar con APIs de Google
-        if (token) {
-          localStorage.setItem('googleAccessToken', token);
-        }
-
-        Swal.fire('Inicio de sesión exitoso', 'Bienvenido de nuevo.', 'success');
+        this.showToast('Inicio de sesión exitoso.', 'success');
         this.router.navigate(['/home']);
       }
     } catch (error: any) {
-      if (error.code === 'auth/network-request-failed') {
-        Swal.fire('Error', 'Error de red: Verifica tu conexión a Internet e intenta nuevamente.', 'error');
-      } else {
-        Swal.fire('Error', 'Error al iniciar sesión con Google: ' + (error.message || error), 'error');
-      }
+      this.showToast('Error al iniciar sesión con Google.', 'danger');
       console.error('Error al iniciar sesión con Google:', error);
     }
   }
@@ -179,9 +166,20 @@ export class LoginRegisterComponent implements OnInit {
       const auth = getAuth();
       await signOut(auth);
       localStorage.removeItem('googleAccessToken');
-      Swal.fire('Cierre de sesión', 'Has cerrado sesión exitosamente.', 'success');
+      this.showToast('Cierre de sesión exitoso.', 'success');
       this.router.navigate(['/login']);
     } catch (error) {
+      this.showToast('Error al cerrar sesión.', 'danger');
     }
+  }
+
+  private async showToast(message: string, color: 'success' | 'danger') {
+    const toast = await this.toastController.create({
+      message,
+      duration: 2000,
+      color,
+      position: 'top',
+    });
+    toast.present();
   }
 }

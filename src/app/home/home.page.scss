@@ -33,40 +33,39 @@ ion-content {
   }
 }
 
-/* Contenedor del perfil */
-.profile-info-container {
-  margin-top: -20px;
+.profile-image-container {
+  position: absolute;
+  top: -65px;
+  border: 5px solid #ffffff;
+  border-radius: 50%;
+  width: 130px;
+  height: 130px;
+  background-color: #030202;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   display: flex;
-  flex-direction: column;
   align-items: center;
-}
+  justify-content: center;
 
+  ion-avatar {
+    width: 120px;
+    height: 120px;
+  }
+}
+/* Contenedor del perfil */
 .profile-info {
   width: 90%;
+  max-width: 400px; /* Limitar el ancho en pantallas grandes */
   height: 220px;
   border-radius: 15px;
   background-size: cover;
   background-position: center;
   position: relative;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-}
-
-/* Ícono de edición del banner */
-.edit-icon-banner {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: #105685;
-  color: #ffffff;
-  border-radius: 50%;
-  padding: 6px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: transform 0.3s ease;
-
-  &:hover {
-    transform: scale(1.2);
-  }
+  margin: 0 auto; /* Centra horizontalmente */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .profile-image-container {
@@ -107,6 +106,22 @@ ion-content {
   }
 }
 
+.edit-icon-banner {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #105685;
+  color: #ffffff;
+  border-radius: 50%;
+  padding: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: scale(1.2);
+  }
+}
 .user-details {
   position: absolute;
   top: 50%;
@@ -230,7 +245,7 @@ ion-content {
         --background: #e0f7fa;
         --background-checked: #105685;
         margin-right: 10px;
-        transform: scale(1.2);
+        transform: scale(1.2); /* Ajustar tamaño del toggle */
       }
 
       label {
