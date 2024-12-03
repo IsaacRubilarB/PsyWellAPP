@@ -8,7 +8,6 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
   GoogleAuthProvider,
-  signOut,
   Auth,
   User,
   getIdToken,
@@ -34,22 +33,20 @@ export class AuthService {
     if (savedUser && savedToken) {
       this.user.next(JSON.parse(savedUser));
       this.token = savedToken;
-
-      this.refreshToken().catch(() => {
-        this.clearUserLocally();
-        this.user.next(null);
-        this.token = null;
-      });
     }
 
     onAuthStateChanged(this.auth, async (user) => {
       if (user) {
-        const token = await getIdToken(user, true);
-        this.storeUserLocally(user, token);
-        this.user.next(user);
-        this.token = token;
-
-        this.scheduleTokenRenewal();
+        try {
+          const token = await getIdToken(user, true);
+          this.storeUserLocally(user, token);
+          this.user.next(user);
+          this.token = token;
+          this.scheduleTokenRenewal();
+        } catch (error) {
+          console.error('Error al obtener el token del usuario:', error);
+          this.clearUserLocally();
+        }
       } else {
         this.clearUserLocally();
         this.user.next(null);
@@ -71,21 +68,7 @@ export class AuthService {
       this.storeUserLocally(user, token);
       this.token = token;
 
-      const userEmail = user.email;
-      if (!userEmail) {
-        throw new Error('El correo del usuario no está disponible.');
-      }
-
-      const userDocRef = this.firestore.collection('users').doc(user.uid);
-      const userDoc = await userDocRef.get().toPromise();
-
-      if (!userDoc?.exists) {
-        await userDocRef.set({
-          nombre: user.displayName || 'Usuario',
-          email: user.email,
-          idUsuario: await this.getBackendUserId(userEmail),
-        });
-      }
+      await this.syncUserWithFirestore(user);
 
       return { user, token };
     } catch (error) {
@@ -113,68 +96,66 @@ export class AuthService {
       const credential = GoogleAuthProvider.credentialFromResult(result);
       const accessToken = credential?.accessToken ?? null;
 
-      const userEmail = user.email;
-      if (!userEmail) {
-        throw new Error('El correo del usuario no está disponible.');
-      }
-
-      const userDocRef = this.firestore.collection('users').doc(user.uid);
-      const userDoc = await userDocRef.get().toPromise();
-
-      if (!userDoc?.exists) {
-        await userDocRef.set({
-          nombre: user.displayName || 'Usuario de Google',
-          email: user.email,
-          idUsuario: await this.getBackendUserId(userEmail),
-        });
-      }
-
       this.storeUserLocally(user, accessToken || '');
       this.token = accessToken;
 
+      try {
+        await this.syncUserWithFirestore(user);
+      } catch (error) {
+        console.warn('Error al sincronizar con Firestore, pero continuando con el acceso:', error);
+      }
+
+      this.user.next(user);
+
       return { user, token: accessToken };
     } catch (error: any) {
-      console.error('Error al iniciar sesión con Google:', error.message || error);
-      throw new Error('Error al iniciar sesión con Google. Intenta nuevamente.');
+      if (error.code === 'auth/network-request-failed') {
+        console.error('Error de red durante el inicio de sesión con Google. Verifica tu conexión a Internet e intenta nuevamente.');
+        throw new Error('Error de red: Verifica tu conexión a Internet e intenta nuevamente.');
+      } else {
+        console.error('Error al iniciar sesión con Google:', error.message || error);
+        throw new Error('Error al iniciar sesión con Google. Intenta nuevamente.');
+      }
+    }
+  }
+
+  private async syncUserWithFirestore(user: User) {
+    const userEmail = user.email;
+    if (!userEmail) {
+      throw new Error('El correo del usuario no está disponible.');
+    }
+
+    const userDocRef = this.firestore.collection('users').doc(user.uid);
+    const userDoc = await userDocRef.get().toPromise();
+
+    if (!userDoc?.exists) {
+      await userDocRef.set({
+        nombre: user.displayName || 'Usuario de Google',
+        email: user.email,
+        idUsuario: await this.getBackendUserId(userEmail),
+      });
     }
   }
 
   public async getBackendUserId(email: string): Promise<number> {
     try {
-      // Realizar la petición GET al endpoint para listar usuarios
-      const response = await fetch('http://localhost:8081/ListarUsuarios', {
-        method: 'GET',
+      const response = await fetch(`${environment.apiCalendario}obtenerIdUsuario`, {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
       });
-  
+
       if (!response.ok) {
-        throw new Error('Error al listar los usuarios del backend.');
+        throw new Error('Error al obtener el ID de usuario del backend.');
       }
-  
-      const usuarios = await response.json();
-  
-      // Buscar el usuario por correo
-      const usuario = usuarios.find((user: any) => user.email === email);
-  
-      // Si se encuentra el usuario, devolver su idUsuario; si no, devolver 0
-      return usuario ? usuario.idUsuario : 0;
+
+      const data = await response.json();
+      return data.idUsuario || 0;
     } catch (error) {
-      console.error('Error al obtener el ID de usuario del backend:', error);
+      console.error('Error al obtener ID de usuario del backend:', error);
       throw error;
     }
   }
-  
-
-  async isEmailRegistered(email: string): Promise<boolean> {
-    try {
-      const userDoc = await this.firestore.collection('users').ref.where('email', '==', email).get();
-      return !userDoc.empty;
-    } catch (error) {
-      console.error('Error al verificar si el correo está registrado:', error);
-      return false;
-    }
-  }
-  
 
   async fetchGoogleFitData(endpoint: string, body: any): Promise<any> {
     if (!this.token) {
@@ -232,46 +213,33 @@ export class AuthService {
     });
   }
 
-  // Método para renovar el token
-async refreshToken(): Promise<void> {
-  if (!this.auth.currentUser) {
-    throw new Error('No hay un usuario autenticado.');
-  }
-
-  try {
-    const user = this.auth.currentUser;
-    if (!user) {
-      throw new Error('Usuario actual no encontrado.');
+  async refreshToken(): Promise<void> {
+    if (!this.auth.currentUser) {
+      throw new Error('No hay un usuario autenticado.');
     }
 
-    // Forzar la renovación del token
-    const token = await getIdToken(user, true);
-    this.storeUserLocally(user, token); // Guarda el token renovado localmente
-    this.token = token;
-    console.log('Token renovado con éxito.');
-  } catch (error) {
-    console.error('Error al renovar el token:', error);
-    throw error;
-  }
-}
+    try {
+      const user = this.auth.currentUser;
+      if (!user) {
+        throw new Error('Usuario actual no encontrado.');
+      }
 
-// Método para obtener el Access Token actual
-getAccessToken(): string | null {
-  return this.token; // Devuelve el token almacenado o null si no está disponible
-}
-
-logout(): Promise<void> {
-  return this.auth
-    .signOut()
-    .then(() => {
-      this.clearUserLocally(); // Limpia datos locales si los usas
-      this.user.next(null); // Limpia el BehaviorSubject del usuario
-      console.log('Sesión cerrada con éxito.');
-    })
-    .catch((error) => {
-      console.error('Error al cerrar sesión:', error);
+      const token = await getIdToken(user, true);
+      this.storeUserLocally(user, token);
+      this.token = token;
+      this.user.next(user);
+      console.log('Token renovado con éxito.');
+    } catch (error) {
+      console.error('Error al renovar el token:', error);
       throw error;
-    });
-}
+    }
+  }
 
+  getAccessToken(): string | null {
+    return this.token;
+  }
+
+  getCurrentUser(): User | null {
+    return this.user.value;
+  }
 }

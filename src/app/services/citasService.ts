@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, map, Observable } from 'rxjs';
 import { ListaCitasResponse } from '../home/cita.model';
+import { environment } from 'src/environments/environment';
 
 export interface DisponibilidadInput {
   disponible: any;
@@ -17,9 +18,9 @@ export interface DisponibilidadInput {
 })
 export class CitasService {
 
-  private listarCitaUrl = 'http://localhost:8084/listarCitas';
-  private registrarCitaUrl = 'http://localhost:8084/registrarCita';
-  private disponibilidadUrl = 'http://localhost:8084/disponibilidad';
+  private listarCitaUrl = environment.apiCalendario+'listarCitas';
+  private registrarCitaUrl = environment.apiCalendario+'registrarCita';
+  private disponibilidadUrl = environment.apiCalendario+'disponibilidad';
 
   constructor(private http: HttpClient) {}
 

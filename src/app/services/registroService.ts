@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { RegistroEmocionalDTO } from '../models/registro-emocional-dto';
+import { environment } from 'src/environments/environment';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class RegistroService {
-  private apiRegistro = 'http://localhost:8082/registrarEmocion'; 
+  private apiRegistro = environment.apiRegistroEmocional+'registrarEmocion'; 
 
   constructor(private http: HttpClient) {}
 
