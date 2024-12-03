@@ -54,16 +54,16 @@ export class RelojComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     try {
-      if (!this.authService.isAuthenticated()) {
-        this.router.navigate(['/login']);
-        return;
-      }
-
+      // Verificar autenticación y token
       this.accessToken = this.authService.getAccessToken() || '';
       if (!this.accessToken) {
         console.warn('No se encontró un token de acceso. Intentando obtener uno nuevo...');
         const loginResult = await this.authService.loginWithGoogle();
         this.accessToken = loginResult?.token || '';
+      }
+
+      if (!this.accessToken) {
+        throw new Error('No se pudo obtener el token de acceso. Requiere iniciar sesión nuevamente.');
       }
 
       console.log('Token de acceso:', this.accessToken);
@@ -167,7 +167,7 @@ export class RelojComponent implements OnInit, OnDestroy {
         this.todayData.samsungSleep = await this.fetchSamsungHealthSleep();
       }
 
-      const email = this.authService.user.value?.email || '';
+      const email = this.authService.getCurrentUser()?.email || '';
       const realTimeData = {
         steps: this.todayData.steps,
         heartRate: this.todayData.heartRate,
@@ -210,7 +210,7 @@ export class RelojComponent implements OnInit, OnDestroy {
         endTime
       );
 
-      const email = this.authService.user.value?.email || '';
+      const email = this.authService.getCurrentUser()?.email || '';
       const weeklyData = {
         steps: this.weeklyTotals.steps,
         heartRate: this.weeklyTotals.heartRate,
@@ -226,7 +226,7 @@ export class RelojComponent implements OnInit, OnDestroy {
     }
   }
 
-  private async fetchFitnessData(dataType: string, startTime: number, endTime: number): Promise<number> {
+  async fetchFitnessData(dataType: string, startTime: number, endTime: number): Promise<number> {
     try {
       const endpoint = `https://www.googleapis.com/fitness/v1/users/me/dataset:aggregate`;
       const body = {
