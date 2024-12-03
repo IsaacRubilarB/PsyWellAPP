@@ -24,7 +24,7 @@ import { PsicologoModalComponent } from './psicologo-modal/psicologo-modal.compo
     AppComponent,
     PsicologoModalComponent,
     SafePipe ,
-    ModalImageComponent// Declara el SafePipe aquí
+    ModalImageComponent
   ],
   imports: [
     BrowserModule,

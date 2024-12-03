@@ -141,21 +141,37 @@ export class AuthService {
 
   public async getBackendUserId(email: string): Promise<number> {
     try {
-      const response = await fetch('http://localhost:8084/obtenerIdUsuario', {
-        method: 'POST',
+      // Realizar la petición GET al endpoint para listar usuarios
+      const response = await fetch('http://localhost:8081/ListarUsuarios', {
+        method: 'GET',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
       });
   
       if (!response.ok) {
-        throw new Error('Error al obtener el ID de usuario del backend.');
+        throw new Error('Error al listar los usuarios del backend.');
       }
   
-      const data = await response.json();
-      return data.idUsuario || 0;
+      const usuarios = await response.json();
+  
+      // Buscar el usuario por correo
+      const usuario = usuarios.find((user: any) => user.email === email);
+  
+      // Si se encuentra el usuario, devolver su idUsuario; si no, devolver 0
+      return usuario ? usuario.idUsuario : 0;
     } catch (error) {
-      console.error('Error al obtener ID de usuario del backend:', error);
+      console.error('Error al obtener el ID de usuario del backend:', error);
       throw error;
+    }
+  }
+  
+
+  async isEmailRegistered(email: string): Promise<boolean> {
+    try {
+      const userDoc = await this.firestore.collection('users').ref.where('email', '==', email).get();
+      return !userDoc.empty;
+    } catch (error) {
+      console.error('Error al verificar si el correo está registrado:', error);
+      return false;
     }
   }
   
@@ -244,5 +260,18 @@ getAccessToken(): string | null {
   return this.token; // Devuelve el token almacenado o null si no está disponible
 }
 
+logout(): Promise<void> {
+  return this.auth
+    .signOut()
+    .then(() => {
+      this.clearUserLocally(); // Limpia datos locales si los usas
+      this.user.next(null); // Limpia el BehaviorSubject del usuario
+      console.log('Sesión cerrada con éxito.');
+    })
+    .catch((error) => {
+      console.error('Error al cerrar sesión:', error);
+      throw error;
+    });
+}
 
 }

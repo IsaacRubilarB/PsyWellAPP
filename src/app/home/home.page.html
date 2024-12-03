@@ -11,22 +11,23 @@
     </ion-button>
   </div>
 
-  <div class="profile-info-container">
-    <!-- Información del perfil -->
-    <div class="profile-info" [style.background-image]="'url(' + bannerImage + ')'">
-      <div class="profile-image-container">
-        <ion-avatar>
-          <img [src]="profileImage" alt="User Profile" />
-        </ion-avatar>
-        <span class="edit-icon" (click)="openImageModal('profile')">✏️</span>
-      </div>
-
-      <div class="user-details">
-        <h2>{{ userName }}</h2>
-        <p>{{ userEmail }}</p>
-      </div>
+  <div class="profile-info" [style.background-image]="'url(' + bannerImage + ')'">
+    <!-- Ícono para editar el banner -->
+    <span class="edit-icon-banner" (click)="openImageModal('banner')">✏️</span>
+  
+    <div class="profile-image-container">
+      <ion-avatar>
+        <img [src]="profileImage" alt="User Profile" />
+      </ion-avatar>
+      <span class="edit-icon" (click)="openImageModal('profile')">✏️</span>
+    </div>
+  
+    <div class="user-details">
+      <h2>{{ userName }}</h2>
+      <p>{{ userEmail }}</p>
     </div>
   </div>
+  
 
   <div class="citas-container">
     <h2>Tus Próximas Citas</h2>

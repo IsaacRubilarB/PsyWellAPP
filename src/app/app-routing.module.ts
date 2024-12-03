@@ -6,6 +6,7 @@ import { GoogleMapsComponent } from './google-maps/google-maps.component';
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', loadChildren: () => import('./login/login.module').then(m => m.LoginModule) },
+
   { path: 'home', loadChildren: () => import('./home/home.module').then(m => m.HomePageModule), canActivate: [AuthGuard] },
   { path: 'google-maps', component: GoogleMapsComponent }, // Ruta al componente del mapa,
 
